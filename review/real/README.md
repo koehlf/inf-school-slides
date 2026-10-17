@@ -17,6 +17,8 @@ each as `-dark.pdf` (presenting) and `-light.pdf`.
 | B2 Leiste | [dark](sorting-B2-dark.pdf) · [light](sorting-B2-light.pdf) | [dark](euler-B2-dark.pdf) · [light](euler-B2-light.pdf) |
 | B5 Bühne | [dark](sorting-B5-dark.pdf) · [light](sorting-B5-light.pdf) | [dark](euler-B5-dark.pdf) · [light](euler-B5-light.pdf) |
 
+[`overview.png`](overview.png): one row per design (D01, D02, D06, B1, B2, B5): title, section, card step, text slide (sorting, dark), Königsberg map, Fleury step (Euler, light).
+
 Porting notes:
 
 - The text is the original's, with Swiss conventions («…», ss) and a few typos fixed. Step sequences (one Impress slide per step) are one frame with overlays.
