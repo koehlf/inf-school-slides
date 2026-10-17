@@ -56,10 +56,14 @@
 % new (the scripts have none) and keeps the bands, rims and boxes recognisable.
 \ifdefined\slidepalette\else\def\slidepalette{light}\fi
 \colorlet{baseColor}{SeaGreen}
-\newcommand{\slidecolor}[1]{\colorlet{baseColor}{#1}\slide@palette}
+% \slidecolor[primaryDark][primaryLight]{baseColor}; the defaults are the scripts'
+% standard shades, Networks overrides both (as in its colors.sty)
+\NewDocumentCommand{\slidecolor}{O{baseColor!30!black} O{baseColor!80!black} m}{%
+  \colorlet{baseColor}{#3}\def\slide@pdark{#1}\def\slide@plight{#2}\slide@palette}
+\def\slide@pdark{baseColor!30!black}\def\slide@plight{baseColor!80!black}
 \newcommand{\slide@palette}{%
-  \colorlet{primaryDark}{baseColor!30!black}%
-  \colorlet{primaryLight}{baseColor!80!black}%
+  \colorlet{primaryDark}{\slide@pdark}%
+  \colorlet{primaryLight}{\slide@plight}%
   \colorlet{borderColor}{primaryLight}%
   \colorlet{bgColor}{primaryDark}%
   \colorlet{titleColor}{white}%
@@ -77,6 +81,16 @@
     \colorlet{codeBg}{baseColor!10!black}%
     \colorlet{codeComment}{green!55!white!80!black}%
     \colorlet{codeString}{orange!70!white}%
+    \colorlet{nodeActive}{termColor}%
+    \colorlet{nodeActiveText}{pageBg}%
+    \colorlet{removedCol}{edgeCol!45!pageBg}%
+    \colorlet{cellFill}{baseColor!16!black}%
+    \colorlet{cellRim}{baseColor!45!black}%
+    \colorlet{cellActive}{baseColor!38!black}%
+    \colorlet{cellActiveRim}{termColor}%
+    \colorlet{cellText}{textFg}%
+    \colorlet{braceCol}{termColor!85!pageBg}%
+    \colorlet{figText}{textFg}%
   }{%
     \colorlet{pageBg}{white}%
     \colorlet{textFg}{black!87}%
@@ -91,6 +105,16 @@
     \colorlet{codeBg}{primaryLight!7!white}%
     \colorlet{codeComment}{green!50!black}%
     \colorlet{codeString}{red!60!black}%
+    \colorlet{nodeActive}{primaryDark}%
+    \colorlet{nodeActiveText}{white}%
+    \colorlet{removedCol}{edgeCol!50!pageBg}%
+    \colorlet{cellFill}{primaryLight!7!white}%
+    \colorlet{cellRim}{primaryLight!45!white}%
+    \colorlet{cellActive}{primaryLight!24!white}%
+    \colorlet{cellActiveRim}{primaryLight}%
+    \colorlet{cellText}{textFg}%
+    \colorlet{braceCol}{primaryLight}%
+    \colorlet{figText}{primaryDark}%
   }%
   \setbeamercolor{background canvas}{bg=pageBg}%
   \setbeamercolor{normal text}{fg=textFg}%
@@ -242,9 +266,10 @@
       \node[hex=\cover@hex, fill=bgColor!75!black, draw=borderColor!35!bgColor, line width=0.9mm]
         at ([xshift=\x mm, yshift=-\y mm]current page.north west) {};
     % title block
-    \fill[borderColor] ([xshift=12mm, yshift=36mm]current page.south west) rectangle ++(9mm, 0.8mm);
-    \node[anchor=north west, inner sep=0pt, text=white, font=\fontsize{30}{34}\selectfont\bfseries, text width=80mm]
-      at ([xshift=12mm, yshift=32mm]current page.south west) {\inserttitle};
+    % the title grows upwards from above the subtitle, so two-line titles fit
+    \node[anchor=south west, inner sep=0pt, text=white, font=\fontsize{30}{34}\selectfont\bfseries, text width=80mm]
+      (covertitle) at ([xshift=12mm, yshift=22mm]current page.south west) {\inserttitle};
+    \fill[borderColor] ([yshift=3.5mm]covertitle.north west) rectangle ++(9mm, 0.8mm);
     \node[anchor=north west, inner sep=0pt, text=white!80!bgColor, font=\normalsize, text width=80mm]
       at ([xshift=12mm, yshift=19mm]current page.south west) {\insertsubtitle};
     % footer band
@@ -314,26 +339,7 @@
     \pic at (hex.center) {boxicon={python}{\designIconGlyph}};}}
 
 % ------------------------------------------------------------------ figures
-% After the scripts' graph.sty and python_array.sty, but sized for projection
-% (review R-3): larger nodes and edge labels than in print.
-\tikzset{
-  vertex/.style={circle, fill=nodeFill, draw=borderColor, line width=0.9pt, minimum size=8mm,
-    inner sep=0pt, font=\bfseries\small, text=nodeText},
-  vertex_active/.style={vertex, fill=bgColor, draw=bgColor, text=white},
-  every edge/.style={draw=edgeCol, line width=1.2pt},
-  every edge quotes/.style={anchor=center, fill=pageBg, draw=edgeCol, line width=0.5pt,
-    rounded corners=\designInnerArc, inner xsep=2.4pt, inner ysep=1.4pt, font=\footnotesize, text=textFg},
-  chosen/.style={draw=chosenCol, line width=2.8pt},
-  cell/.style={draw=borderColor, fill=nodeFill, text=nodeText, minimum size=8.5mm, font=\ttfamily\bfseries,
-    inner sep=0, rounded corners=\designInnerArc},
-  cell empty/.style={cell, fill=pageBg},
-  cell done/.style={cell, fill=cellDone, text=white},
-  pointer/.style={-{Stealth[length=2.6mm]}, line width=1.5pt, draw=termColor},
-  brace/.style={decorate, decoration={brace, mirror, amplitude=2.5mm}, draw=textFg, line width=1pt},
-  onslide/.code args={<#1>#2}{\only<#1>{\pgfkeysalso{#2}}},
-}
-% \stepdots{n}: progress through a build sequence (current overlay filled)
-\newcommand{\stepdots}[1]{\tikz[baseline=-0.6ex]{\foreach \i in {1,...,#1}{
-  \alt<\i>{\node[hex=2.8mm, fill=termColor] at (\i*3.8mm,0) {};}{\node[hex=2.8mm, draw=termColor, line width=0.5pt] at (\i*3.8mm,0) {};}}}}
+% graph, arrays, card rows, pointers, braces, overlay helpers: slidefigures.sty
+\RequirePackage{slidefigures}
 
 \AtBeginDocument{\shorthandoff{"}}

@@ -1,0 +1,351 @@
+% Design catalogue (design.md §8, M0-2 proposal): every layout L1-L14, both
+% modes, all boxes, code, every figure family incl. an overlay sequence, then
+% a title page and one content page per subject (6 colours).
+% Build: theme/test/build_catalogue.sh  (light and dark)
+\ifdefined\slidepalette\else\def\slidepalette{dark}\fi
+\documentclass[aspectratio=169,12pt,xcolor={dvipsnames}]{beamer}
+\usepackage{infschoolslides}
+\slidecolor{Rhodamine!90!black}
+\slidesubject{Algorithmik}
+\slidechapter{3}
+\slidecoverimages{cover/algorithmik/playing-cards.jpg, cover/algorithmik/pencils.jpg, cover/algorithmik/maze.jpg,
+  cover/algorithmik/signpost.jpg, cover/algorithmik/bridges.jpg, cover/algorithmik/subway-map.jpg}
+\definecolor{networksBase}{HTML}{D2601A}
+\definecolor{networksDark}{HTML}{9E4310}
+
+\title{Sortieren}
+\subtitle{Selectionsort · Bubblesort · Mergesort}
+\author{Florian Köhl}
+
+% the Kruskal graph of the overlay sequence and the subject pages
+\newcommand{\kruskalgraph}[1][]{%
+  \begin{graph}[x=14mm, y=14mm, #1]
+    \node[vertex] (C) at (-1.2,0.4) {C}; \node[vertex] (E) at (0,1.2) {E};
+    \node[vertex] (D) at (1.2,0.4) {D};  \node[vertex] (A) at (-0.5,-0.6) {A};
+    \node[vertex] (B) at (0.8,-1) {B};
+    \path (C) edge["3", onslide=<3->{chosen}] (E)
+          (E) edge["10", onslide=<6->{removed}] (D)
+          (C) edge["2", onslide=<2->{chosen}] (A)
+          (A) edge["4", onslide=<4->{removed}] (E)
+          (A) edge["6", onslide=<6->{removed}] (D)
+          (D) edge["5", onslide=<6->{chosen}] (B)
+          (A) edge["5", onslide=<5->{chosen}] (B);
+  \end{graph}}
+
+\begin{document}
+
+% ================================================================== L1 Titel
+{\setbeamertemplate{footline}{}\begin{frame}[plain]\titlepage\end{frame}}
+
+% ================================================================== L3 Programm
+\begin{frame}{Programm}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \slidelabel{Heute}
+      \begin{enumerate}
+        \item Was heisst sortiert?
+        \item Selectionsort
+        \item Effizienz: Vergleiche zählen
+        \item Mergesort
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.4\textwidth}
+      \slidelabel{Skript}
+      \begin{itemize}\item Kapitel 3.1 – 3.4\end{itemize}
+      \vspace{5mm}
+      \slidelabel{Nächste Woche}
+      \begin{itemize}\item Prüfung\end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ================================================================== L2 Abschnitt
+\section{Selectionsort}
+\sectionslide{3.2}{Selectionsort}{«Wiederholtes Suchen des Minimums»}
+
+% ================================================================== L4 Aufzählung
+\begin{frame}{L4 Aufzählung: Effizienz}
+  \begin{itemize}
+    \item Wie «schnell» ist Selectionsort?
+    \item Wie messen wir die Effizienz eines Algorithmus?
+    \begin{itemize}
+      \item Zeitmessung? Hängt von Hardware und Implementierung ab.
+      \item Alternativen?
+    \end{itemize}
+    \item<2-> Grobe Idee: die \term{Anzahl Operationen} zählen
+    \begin{itemize}
+      \item<2-> Vergleiche zwischen zwei Elementen
+      \item<2-> Vertauschungen zweier Elemente
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+% ================================================================== L7 Begriff
+\begin{frame}{L7 Begriff: Sortiert?}
+  \begin{concept}[Aufsteigend sortiert]
+    Eine Liste ist \term{aufsteigend sortiert}, wenn jedes Element kleiner oder gleich gross ist
+    wie alle nachfolgenden Elemente.
+  \end{concept}
+  \begin{itemize}
+    \item Sind diese Karten sortiert?
+    \item Und die leere Liste?
+  \end{itemize}
+\end{frame}
+
+% ================================================================== boxes
+\begin{frame}{Boxen: info und example}
+  \begin{info}[Gut zu wissen]
+    Python sortiert mit \texttt{sorted(liste)} oder \texttt{liste.sort()}. Intern wird
+    \term{Timsort} verwendet, eine Mischung aus Mergesort und Insertionsort.
+  \end{info}
+  \begin{example}[Vergleiche zählen]
+    Für die Liste \texttt{[6, 2, 5]} vergleicht Selectionsort zuerst 6 mit 2, dann 2 mit 5
+    und schliesslich 6 mit 5: drei Vergleiche.
+  \end{example}
+\end{frame}
+
+% ================================================================== L5 Text + Grafik
+\begin{frame}{L5 Text + Grafik: Spannbäume}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \begin{itemize}
+        \item Auch Graphenalgorithmen sortieren: Kruskal betrachtet die Kanten \term{aufsteigend nach Gewicht}.
+        \item Gewählt wird jede Kante, die keinen Kreis bildet.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \centering
+      \begin{graph}[x=13mm, y=13mm]
+        \node[vertex] (C) at (-1.2,0.4) {C}; \node[vertex] (E) at (0,1.2) {E};
+        \node[vertex] (D) at (1.2,0.4) {D};  \node[vertex] (A) at (-0.5,-0.6) {A};
+        \node[vertex] (B) at (0.8,-1) {B};
+        \path (C) edge["3", chosen] (E) (E) edge["10"] (D) (C) edge["2", chosen] (A)
+              (A) edge["4"] (E) (A) edge["6"] (D) (D) edge["5"] (B) (A) edge["5", chosen] (B);
+      \end{graph}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ================================================================== L6 Grafik
+\begin{frame}{L6 Grafik: Selectionsort in Aktion}
+  \vspace*{6mm}
+  \cardArray{name=c, items={2h,6h,5h,9h,7h,10h}, parts={1/1/S,2/6/U}}
+  \swaparrow{c2}{c3}\pointerbelow{c3}{min}
+
+  \vspace{14mm}\centering Das kleinste Element in U ist die 5: Wir vertauschen es mit dem ersten Element von U.
+\end{frame}
+
+% ================================================================== L8 Algorithmus
+\section{Mergesort}
+\sectionslide{3.4}{Mergesort}{Divide and Conquer}
+
+\begin{frame}{L8 Algorithmus: Merge}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \begin{enumerate}
+        \item<alert@1> Vergleiche die vordersten Elemente beider Listen.
+        \item<alert@2> Füge das kleinere hinten an die neue Liste an.
+        \item<alert@3> Ist eine Liste leer, hänge den Rest der anderen an.
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \only<1>{\pythonArray{items={2,5,3,9}, parts={0/2/links,2/4/rechts}, highlight={0,2}, ptrs={0/i,2/j}, reserve=ptrs}}%
+      \only<2>{\pythonArray{items={2,5,3,9}, parts={0/2/links,2/4/rechts}, done={0}, highlight={1,2}, ptrs={1/i,2/j}, reserve=ptrs}}%
+      \only<3>{\pythonArray{items={2,5,3,9}, parts={0/2/links,2/4/rechts}, done={0,1,2,3}, reserve=ptrs}}
+      \vspace{4mm}
+      \only<1>{\pythonArray{items={~,~,~,~}, blank, drawindexes=false}}%
+      \only<2>{\pythonArray{items={2,~,~,~}, blank, done={0}, drawindexes=false}}%
+      \only<3>{\pythonArray{items={2,3,5,9}, done={0,1,2,3}, drawindexes=false}}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ================================================================== L9 Schritt für Schritt (overlay sequence)
+\begin{frame}{L9 Schritt für Schritt: Kruskal in Aktion}
+  \centering
+  \kruskalgraph
+
+  \vspace{3mm}
+  \only<1>{Wir betrachten die Kanten aufsteigend nach Gewicht.}%
+  \only<2>{C–A (2) bildet keinen Kreis: \term{gewählt}.}%
+  \only<3>{C–E (3) bildet keinen Kreis: \term{gewählt}.}%
+  \only<4>{A–E (4) würde einen Kreis bilden: \term{verworfen}.}%
+  \only<5>{A–B (5) bildet keinen Kreis: \term{gewählt}.}%
+  \only<6>{D–B (5) verbindet den letzten Knoten. Fertig: Die übrigen Kanten fallen weg.}
+
+  \vfill\stepdots{6}
+\end{frame}
+
+% ================================================================== L10 Code
+\begin{frame}[fragile]{L10 Code: Selectionsort in Python}
+  \begin{code}[selection\_sort.py]
+def selection_sort(liste):
+    for i in range(len(liste) - 1):
+        k = i  # Position des Minimums in U
+        for j in range(i + 1, len(liste)):
+            if liste[j] < liste[k]:
+                k = j
+        liste[i], liste[k] = liste[k], liste[i]
+    return "fertig"
+  \end{code}
+\end{frame}
+
+% ================================================================== L11 Formel
+\begin{frame}{L11 Formel: Der «kleine Gauss»}
+  \vspace*{4mm}
+  \[ 1 + 2 + 3 + \dots + (n-1) \;=\; \frac{(n-1)\cdot n}{2} \;=\; \frac{n^2-n}{2} \]
+  \vspace{3mm}
+  \begin{itemize}
+    \item Selectionsort braucht für $n$ Elemente $\frac{n^2-n}{2}$ \term{Vergleiche}.
+    \item Doppelt so viele Elemente: rund \term{viermal} so viele Vergleiche.
+  \end{itemize}
+\end{frame}
+
+% ================================================================== L12 Denkanstoss
+\begin{frame}{L12 Denkanstoss: Zwischenfazit}
+  \vfill
+  \begin{think}[Quadratische Laufzeit]
+    \large Selectionsort und Bubblesort brauchen für doppelt so viele Elemente viermal so lange.\par\medskip
+    \textbf{Wie schlimm ist das für eine Mailbox mit 6763 Nachrichten?}
+  \end{think}
+  \vfill
+\end{frame}
+
+% ================================================================== L13 Aufgabe, mode «Mach mit»
+\begin{frame}[doit={zu zweit · 15 Min}]{L13 Aufgabe: Ihr seid dran!}
+  \vfill
+  \begin{task}[Sortieren von Hand]{38–41}
+    \large Sortiere die Listen im Skript (S. 48) mit Selectionsort und Bubblesort von Hand.
+  \end{task}
+  \vfill
+\end{frame}
+
+% ================================================================== mode «Zum Lesen»
+\begin{frame}[read={Skript S. 46}]{Selectionsort: der Ablauf}
+  \begin{enumerate}
+    \item Teile die Liste in einen sortierten Teil \term{S} und einen unsortierten Teil \term{U}. Zu Beginn ist S leer.
+    \item Suche das kleinste Element in U.
+    \item Vertausche es mit dem ersten Element von U (falls es nicht schon dort steht).
+    \item S wird um dieses Element grösser, U um ein Element kleiner.
+    \item Hat U noch mehr als ein Element, gehe zu Schritt 2. Sonst ist die Liste sortiert.
+  \end{enumerate}
+\end{frame}
+
+% ================================================================== L14 Zusammenfassung
+\begin{frame}{L14 Zusammenfassung: Sortieren}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}
+        \item Selectionsort, Bubblesort: $\approx n^2$ Vergleiche
+        \item Mergesort: $\approx n \cdot \log n$ Vergleiche
+        \item \term{Divide and Conquer}: aufteilen, lösen, zusammenfügen
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{checklist}
+        \item Selectionsort von Hand ausführen
+        \item Vergleiche zählen
+        \item Mergesort erklären
+      \end{checklist}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ================================================================== figure families
+\section{Figuren}
+\begin{frame}{Figuren: Graphen}
+  \begin{columns}[c]
+    \begin{column}{0.48\textwidth}
+      \centering
+      \begin{graph}[x=15mm, y=15mm]
+        \node[vertex] (a) at (0,1) {A}; \node[vertex_active] (b) at (2,1) {B};
+        \node[vertex] (c) at (0,0) {C}; \node[vertex] (d) at (2,0) {D};
+        \path (a) edge["4"] (b) (a) edge["2", chosen] (c) (b) edge["7", removed] (d)
+              (c) edge["3"] (d) (a) edge["5", chosen] (d);
+      \end{graph}
+
+      \vspace{2mm}\footnotesize\color{mutedFg}
+      \texttt{vertex}, \texttt{vertex\_active}, Kante, \texttt{chosen}, \texttt{removed}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \centering
+      \begin{graph}[x=15mm, y=15mm]
+        \node[vertex] (s) at (0,0.5) {S}; \node[vertex] (x) at (1.3,1.2) {X};
+        \node[vertex] (y) at (1.3,-0.2) {Y}; \node[vertex] (t) at (2.6,0.5) {T};
+        \path (s) edge[dedge, "3"] (x) (s) edge[dedge, "1"] (y) (y) edge[dedge, "1"] (x)
+              (x) edge[dedge, "2"] (t) (y) edge[dedge, "6"] (t);
+      \end{graph}
+
+      \vspace{2mm}\footnotesize\color{mutedFg}\texttt{dedge} (gerichtet, gewichtet)
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Figuren: \texttt{\textbackslash pythonArray}}
+  \begin{columns}[b]
+    \begin{column}{0.45\textwidth}\pythonArray{items={7,3,9,1,4}, highlight={1,3}, ptrs={1/i,3/j}}\end{column}
+    \begin{column}{0.5\textwidth}\pythonArray{items={7,3,9,1,4,8}, parts={0/3/links,3/6/rechts}}\end{column}
+  \end{columns}
+  \vspace{10mm}
+  \begin{columns}[T]
+    \begin{column}{0.45\textwidth}\pythonArray{items={1,3,7,~,~,~}, blank, done={0,1,2}, drawindexes=false}\end{column}
+    \begin{column}{0.45\textwidth}\pythonArray{items={a,b,c}, nodesize=12mm}\end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Figuren: Karten}
+  \cardArray{items={2h,5h,6h,9h,7h,10h}, highlight={4}, parts={1/3/sortiert}, size=0.1}
+  \vspace{8mm}
+  \begin{columns}[c]
+    \begin{column}{0.48\textwidth}\cardSplit{items={{6h,2h},{9h,5h},{10h,7h}}, size=0.065}\end{column}
+    \begin{column}{0.48\textwidth}\cardMerge{sorted={2h,5h}, left={6h,9h}, right={7h,10h}, size=0.065}\end{column}
+  \end{columns}
+\end{frame}
+
+% ================================================================== subjects
+% \subjectpages{name}{chapter}{title}{cover images}: title page + content page
+\newcommand{\subjectpages}[4]{%
+  \slidesubject{#1}\slidechapter{#2}\slidecoverimages{#4}%
+  \title{#3}\subtitle{Titelseite und Inhaltsseite in der Farbe des Fachs}%
+  {\setbeamertemplate{footline}{}\begin{frame}[plain]\titlepage\end{frame}}
+  \section{#1}
+  \begin{frame}{#1: #3}
+    \begin{columns}[T]
+      \begin{column}{0.55\textwidth}
+        \begin{concept}[Begriff]
+          Ein \term{Fachbegriff} wird hervorgehoben, so wie im Skript.
+        \end{concept}
+        \begin{enumerate}
+          \item erster Schritt
+          \item zweiter Schritt mit \term{Begriff}
+        \end{enumerate}
+        \begin{itemize}\item Aufzählung\begin{itemize}\item zweite Ebene\end{itemize}\end{itemize}
+      \end{column}
+      \begin{column}{0.4\textwidth}
+        \centering
+        \begin{graph}[x=12mm, y=12mm]
+          \node[vertex] (a) at (0,1) {A}; \node[vertex_active] (b) at (2,1) {B};
+          \node[vertex] (c) at (0,0) {C}; \node[vertex] (d) at (2,0) {D};
+          \path (a) edge["4", chosen] (b) (a) edge["2"] (c) (b) edge["7", removed] (d) (c) edge["3", chosen] (d);
+        \end{graph}
+        \par\vspace{4mm}
+        \pythonArray{items={3,1,4,1}, highlight={1}, done={0}, nodesize=8.5mm}
+      \end{column}
+    \end{columns}
+  \end{frame}}
+
+\slidecolor{Rhodamine!90!black}
+\subjectpages{Algorithmik}{4}{Eulertouren und Spannbäume}{cover/algorithmik/bridges.jpg, cover/algorithmik/subway-map.jpg,
+  cover/algorithmik/maze.jpg, cover/algorithmik/signpost.jpg, cover/algorithmik/playing-cards.jpg, cover/algorithmik/pencils.jpg}
+\slidecolor{RoyalBlue}
+\subjectpages{Digitale Daten}{2}{Zahlensysteme}{}
+\slidecolor{SeaGreen}
+\subjectpages{Kryptologie}{3}{Symmetrische Verschlüsselung}{}
+\slidecolor{Emerald!95!black}
+\subjectpages{Logik}{1}{Aussagenlogik}{}
+\slidecolor[networksDark!90!black][networksBase!80!white]{networksBase}
+\subjectpages{Networks}{5}{Routing}{}
+\slidecolor{ForestGreen}
+\subjectpages{Programmieren}{6}{Schleifen}{}
+
+\end{document}

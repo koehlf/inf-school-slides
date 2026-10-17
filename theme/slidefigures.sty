@@ -1,0 +1,214 @@
+% slidefigures.sty -- figure families for slides (design.md §4), DESIGN PROPOSAL (M0-2).
+% Same macro, style and key names as the Algorithmik script (graph.sty,
+% python_array.sty), so a figure call can be copied between script and slide.
+% Sizes are slide tokens, colours are palette roles (both palettes).
+% Slide-only additions are marked "new".
+\ProvidesPackage{slidefigures}
+\RequirePackage{keyval,xparse,xstring,xfp}
+\usetikzlibrary{arrows.meta,quotes,calc,decorations.pathreplacing}
+
+% ------------------------------------------------------------------ tokens
+\newcommand{\designNodeSize}{8mm}          % graph vertices
+\newcommand{\designCellSize}{9.5mm}        % \pythonArray nodesize (cell = size - 1.2mm)
+\newcommand{\designCardSize}{0.13}         % card width as a fraction of \textwidth
+\newcommand{\designEdgeWidth}{1.2pt}
+\newcommand{\designChosenWidth}{2.8pt}
+\newcommand{\designPointerLength}{7mm}
+
+% ------------------------------------------------------------------ graphs (graph.sty)
+\newenvironment{graph}[1][]{\begin{tikzpicture}[#1]}{\end{tikzpicture}}
+\tikzset{
+  vertex/.style={circle, fill=nodeFill, draw=borderColor, line width=0.9pt, minimum size=\designNodeSize,
+    inner sep=0pt, font=\bfseries\small, text=nodeText},
+  vertex_active/.style={vertex, fill=nodeActive, draw=nodeActive, text=nodeActiveText},
+  every edge/.style={draw=edgeCol, line width=\designEdgeWidth},
+  every edge quotes/.style={edge weight},
+  edge weight/.style={anchor=center, fill=pageBg, draw=edgeCol, line width=0.5pt,
+    rounded corners=\designInnerArc, inner xsep=2.4pt, inner ysep=1.4pt, font=\footnotesize, text=nodeText,
+    execute at begin node={\BeginAccSupp{method=plain,ActualText={}}},
+    execute at end node={\EndAccSupp{}}},
+  dedge/.style={draw=edgeCol, -{Stealth[length=2.6mm, width=2.1mm]}, line width=\designEdgeWidth},
+  dedge quotes/.style={edge weight},
+  % edges chosen by an algorithm (e.g. Kruskal): dark (light palette) or white (dark), thicker
+  chosen/.style={draw=chosenCol, line width=\designChosenWidth},
+  % new: edges an algorithm has discarded (dashed, faded, weight faded too)
+  removed/.style={draw=removedCol, dash pattern=on 3pt off 2.5pt,
+    every edge quotes/.append style={draw=removedCol, text=mutedFg}},
+}
+
+% ------------------------------------------------------------------ free-use styles (new)
+\tikzset{
+  pointer/.style={-{Stealth[length=2.6mm]}, line width=1.5pt, draw=termColor},
+  pointer label/.style={font=\footnotesize\ttfamily\bfseries, text=termColor, inner sep=1pt},
+  brace/.style={decorate, decoration={brace, mirror, amplitude=2.5mm}, draw=braceCol, line width=1pt},
+  brace label/.style={font=\normalsize\bfseries, text=figText},
+  swap/.style={{Stealth[length=2.4mm]}-{Stealth[length=2.4mm]}, line width=1.3pt, draw=termColor},
+  cell/.style={rectangle, rounded corners=\designInnerArc, draw=cellRim, line width=0.6pt, fill=cellFill,
+    text=cellText, font=\ttfamily\bfseries, inner sep=0pt},
+  cell active/.style={cell, draw=cellActiveRim, fill=cellActive},
+  cell done/.style={cell, draw=cellDone, fill=cellDone, text=white},
+  cell blank/.style={cell, draw=edgeCol, fill=pageBg},
+  cell index/.style={font=\footnotesize, text=mutedFg},
+}
+
+% ------------------------------------------------------------------ overlay helpers
+\tikzset{
+  onslide/.code args={<#1>#2}{\only<#1>{\pgfkeysalso{#2}}},
+  alt/.code args={<#1>#2#3}{\alt<#1>{\pgfkeysalso{#2}}{\pgfkeysalso{#3}}},
+  invisible/.style={opacity=0, text opacity=0},
+  visible on/.style={alt={#1{}{invisible}}},
+}
+% \stepdots{n}: progress through a build sequence (current overlay filled), new
+\newcommand{\stepdots}[1]{\tikz[baseline=-0.6ex]{\foreach \i in {1,...,#1}{
+  \alt<\i>{\node[hex=2.8mm, fill=termColor] at (\i*3.8mm,0) {};}{\node[hex=2.8mm, draw=termColor, line width=0.5pt] at (\i*3.8mm,0) {};}}}}
+
+% membership in a comma list of numbers: \fig@ifin{<list>}{<n>}{true}{false}
+\newcommand{\fig@ifin}[4]{\edef\fig@list{,#1,}\StrDel{\fig@list}{ }[\fig@list]%
+  \edef\fig@item{,#2,}\IfSubStr{\fig@list}{\fig@item}{#3}{#4}}
+\newcommand{\fig@begincenter}{\ifx\fig@center\fig@true\par\begingroup\centering\fi}
+\newcommand{\fig@endcenter}{\ifx\fig@center\fig@true\par\endgroup\fi}
+\def\fig@true{true}
+
+% ------------------------------------------------------------------ \pythonArray (python_array.sty)
+% \pythonArray{items={2,5,3}, highlight={0,2}, ptrs={0/i,2/j}, parts={0/1/L,1/3/R}, drawindexes, blank, nodesize}
+% Indexes are 0-based as in the script. New keys:
+%   done={…}        cells already finished (e.g. merged)
+%   name=<prefix>   cells become nodes <prefix>0, <prefix>1, … (remember picture)
+%   reserve=ptrs    keep the room of the pointer row even without pointers, so a
+%                   build sequence of \only<n>{\pythonArray{…}} calls doesn't jump
+\define@key{pythonarray}{items}{\def\fig@items{#1}}
+\define@key{pythonarray}{drawindexes}[true]{\def\fig@drawindexes{#1}}
+\define@key{pythonarray}{ptrs}{\def\fig@ptrs{#1}}
+\define@key{pythonarray}{highlight}{\def\fig@highlight{#1}}
+\define@key{pythonarray}{done}{\def\fig@done{#1}}
+\define@key{pythonarray}{parts}{\def\fig@parts{#1}}
+\define@key{pythonarray}{center}[true]{\def\fig@center{#1}}
+\define@key{pythonarray}{topspace}{\def\fig@topspace{#1}}
+\define@key{pythonarray}{bottomspace}{\def\fig@bottomspace{#1}}
+\define@key{pythonarray}{nodesize}{\def\fig@nodesize{#1}}
+\define@key{pythonarray}{blank}[true]{\def\fig@blank{#1}}
+\define@key{pythonarray}{name}{\def\fig@name{#1}}
+\define@key{pythonarray}{reserve}{\def\fig@reserve{#1}}
+\DeclareDocumentCommand{\pythonArray}{m}{\begingroup
+  \setkeys{pythonarray}{items={}, ptrs={}, highlight={}, done={}, parts={}, center=true, drawindexes=true,
+    blank=false, topspace=0pt, bottomspace=0pt, nodesize=\designCellSize, name={}, reserve={}, #1}%
+  \fig@begincenter\vspace{\fig@topspace}%
+  \begin{tikzpicture}[x=\fig@nodesize, y=\fig@nodesize, baseline=(current bounding box.center),
+      remember picture/.expanded=\ifx\fig@name\@empty false\else true\fi]
+    \foreach \x [count=\i] in \fig@items {%
+      \pgfmathtruncatemacro{\fig@k}{\i-1}%
+      \def\fig@style{cell}%
+      \ifx\fig@blank\fig@true\def\fig@style{cell blank}\fi
+      \fig@ifin{\fig@highlight}{\fig@k}{\def\fig@style{cell active}}{}%
+      \fig@ifin{\fig@done}{\fig@k}{\def\fig@style{cell done}}{}%
+      \node[\fig@style, minimum size=\fig@nodesize-1.2mm] (\fig@name\fig@k) at (\i,0) {\x};
+      \ifx\fig@drawindexes\fig@true\node[cell index] at (\i,-0.85) {\fig@k};\fi}
+    \foreach \x/\y/\z in \fig@parts {%
+      \draw[brace, decoration={amplitude=4pt}] (\x+0.55,-1.2) -- node[brace label, below=4pt] {\z} (\y+0.45,-1.2);}
+    \foreach \x/\y in \fig@ptrs {%
+      \draw[pointer] (\x+1,1.3) -- node[pointer label, pos=0, above] {\y} (\x+1,0.6);}
+    \IfSubStr{\fig@reserve}{ptrs}{\path (1,1.9);}{}
+  \end{tikzpicture}%
+  \vspace{\fig@bottomspace}\fig@endcenter\endgroup}
+
+% ------------------------------------------------------------------ card rows (python_array.sty)
+% Card images: playing_cards/<card>.png, found via TEXINPUTS (scripts: pictures/playing_cards/).
+% \cardArray{items={2h,6h,5h}, parts={1/1/S,2/6/U}, highlight={3}, size, partStyle}
+% Positions are 1-based as in the script; cards are nodes 1, 2, … or, new, with
+% name=<prefix> nodes <prefix>1, … (remember picture) for \swaparrow and \pointerbelow.
+% card sizes are fractions of the frame's text width, also inside a column
+\newlength{\fig@textwidth}\AtBeginDocument{\setlength{\fig@textwidth}{\textwidth}}
+\newcommand{\fig@card}[2]{\includegraphics[width=#2\fig@textwidth]{playing_cards/#1.png}}
+\define@key{cardArray}{items}{\def\fig@items{#1}}
+\define@key{cardArray}{parts}{\def\fig@parts{#1}}
+\define@key{cardArray}{center}[true]{\def\fig@center{#1}}
+\define@key{cardArray}{topspace}{\def\fig@topspace{#1}}
+\define@key{cardArray}{bottomspace}{\def\fig@bottomspace{#1}}
+\define@key{cardArray}{highlight}{\def\fig@highlight{#1}}
+\define@key{cardArray}{size}{\def\fig@size{#1}}
+\define@key{cardArray}{partStyle}{\def\fig@partStyle{#1}}
+\define@key{cardArray}{name}{\def\fig@name{#1}}
+\DeclareDocumentCommand{\cardArray}{m}{\begingroup
+  \setkeys{cardArray}{items={}, parts={}, highlight={}, partStyle=\normalsize, size=\designCardSize, center=true,
+    topspace=0pt, bottomspace=0pt, name={}, #1}%
+  \fig@begincenter\vspace{\fig@topspace}%
+  \begin{tikzpicture}[baseline=(current bounding box.center), remember picture/.expanded=\ifx\fig@name\@empty false\else true\fi]
+    \foreach \x [count=\i] in \fig@items {%
+      \fig@ifin{\fig@highlight}{\i}{\edef\fig@s{\fpeval{\fig@size*1.1}}}{\edef\fig@s{\fig@size}}%
+      \ifnum\i=1
+        \node[inner sep=0pt, anchor=south west] (\fig@name\i) at (0,0) {\fig@card{\x}{\fig@s}};
+      \else
+        \pgfmathtruncatemacro{\fig@p}{\i-1}%
+        \node[inner sep=0pt, anchor=south west] (\fig@name\i) at ($(\fig@name\fig@p.south east)+(2mm,0)$) {\fig@card{\x}{\fig@s}};
+      \fi}
+    \foreach \x/\y/\z in \fig@parts {%
+      \draw[brace, decoration={raise=2mm}] (\fig@name\x.south west) -- node[brace label, font=\fig@partStyle\bfseries, below=5mm] {\z} (\fig@name\y.south east);}
+  \end{tikzpicture}%
+  \vspace{\fig@bottomspace}\fig@endcenter\endgroup}
+
+% \cardSplit{items={{2h,6h},{5h,9h}}, size, spacingoutside, spacinginside}: groups side by side
+\define@key{cardSplit}{items}{\def\fig@items{#1}}
+\define@key{cardSplit}{center}[true]{\def\fig@center{#1}}
+\define@key{cardSplit}{topspace}{\def\fig@topspace{#1}}
+\define@key{cardSplit}{bottomspace}{\def\fig@bottomspace{#1}}
+\define@key{cardSplit}{size}{\def\fig@size{#1}}
+\define@key{cardSplit}{spacingoutside}{\def\fig@out{#1}}
+\define@key{cardSplit}{spacinginside}{\def\fig@in{#1}}
+\DeclareDocumentCommand{\cardSplit}{m}{\begingroup
+  \setkeys{cardSplit}{items={}, size=0.10, center=true, topspace=0pt, bottomspace=0pt,
+    spacingoutside=0.5, spacinginside=0.1, #1}%
+  \fig@begincenter\vspace{\fig@topspace}%
+  \begin{tikzpicture}[baseline=(current bounding box.center)]
+    \coordinate (fig@last) at (-\fig@in,0);
+    \foreach \l [count=\g] in \fig@items {%
+      \ifnum\g>1 \coordinate (fig@last) at ($(fig@last)+(\fig@out-\fig@in,0)$);\fi
+      \foreach \x [count=\i] in \l {%
+        \node[inner sep=0pt, anchor=south west] (\g_\i) at ($(fig@last)+(\fig@in,0)$) {\fig@card{\x}{\fig@size}};
+        \coordinate (fig@last) at (\g_\i.south east);}}
+  \end{tikzpicture}%
+  \vspace{\fig@bottomspace}\fig@endcenter\endgroup}
+
+% \cardMerge{sorted={2h,5h}, left={6h,9h}, right={7h,10h}, comp, noSorted, size}
+% sorted row, then the two remaining lists stacked; comp draws the comparison arrow
+\define@key{cardMerge}{sorted}{\def\fig@sorted{#1}}
+\define@key{cardMerge}{left}{\def\fig@left{#1}}
+\define@key{cardMerge}{right}{\def\fig@right{#1}}
+\define@key{cardMerge}{center}[true]{\def\fig@center{#1}}
+\define@key{cardMerge}{topspace}{\def\fig@topspace{#1}}
+\define@key{cardMerge}{bottomspace}{\def\fig@bottomspace{#1}}
+\define@key{cardMerge}{size}{\def\fig@size{#1}}
+\define@key{cardMerge}{comp}[true]{\def\fig@comp{#1}}
+\define@key{cardMerge}{noSorted}[true]{\def\fig@noSorted{#1}}
+\DeclareDocumentCommand{\cardMerge}{m}{\begingroup
+  \setkeys{cardMerge}{sorted={}, left={}, right={}, noSorted=false, comp=true, size=\designCardSize, center=false,
+    topspace=0pt, bottomspace=0pt, #1}%
+  \fig@begincenter\vspace{\fig@topspace}%
+  \begin{tikzpicture}[baseline=(current bounding box.center)]
+    \coordinate (s_end) at (-2mm,0);
+    \ifx\fig@noSorted\fig@true\else
+      \foreach \x [count=\i] in \fig@sorted {%
+        \node[inner sep=0pt, anchor=south west] (s_\i) at ($(s_end)+(2mm,0)$) {\fig@card{\x}{\fig@size}};
+        \coordinate (s_end) at (s_\i.south east);}
+    \fi
+    \path (s_end) ++(0,0) coordinate (s_mid);
+    \coordinate (l_end) at ($(s_end)+(8mm,1mm)$);
+    \foreach \x [count=\i] in \fig@left {%
+      \node[inner sep=0pt, anchor=south west] (l_\i) at ($(l_end)+(2mm,0)$) {\fig@card{\x}{\fig@size}};
+      \coordinate (l_end) at (l_\i.south east);}
+    \coordinate (r_end) at ($(s_end)+(8mm,-1mm)$);
+    \foreach \x [count=\i] in \fig@right {%
+      \node[inner sep=0pt, anchor=north west] (r_\i) at ($(r_end)+(2mm,0)$) {\fig@card{\x}{\fig@size}};
+      \coordinate (r_end) at (r_\i.north east);}
+    \ifx\fig@comp\fig@true
+      \draw[swap] ([yshift=-0.5mm]l_1.south) -- ([yshift=0.5mm]r_1.north);
+    \fi
+  \end{tikzpicture}%
+  \vspace{\fig@bottomspace}\fig@endcenter\endgroup}
+
+% new: arrows between named nodes of a card row or array (after the figure, same frame)
+% \swaparrow{c3}{c5}: curved double arrow above two cards
+\newcommand{\swaparrow}[2]{\tikz[remember picture, overlay]
+  \draw[swap] ([yshift=1.5mm]#1.north) to[bend left=35] ([yshift=1.5mm]#2.north);}
+% \pointerbelow{c3}{min}: pointer from below, label at its foot
+\newcommand{\pointerbelow}[2]{\tikz[remember picture, overlay]
+  \draw[pointer] ([yshift=-1.5mm-\designPointerLength]#1.south) -- node[pointer label, pos=0, below] {#2} ([yshift=-1.5mm]#1.south);}
