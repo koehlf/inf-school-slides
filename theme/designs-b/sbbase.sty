@@ -157,6 +157,10 @@
 \definecolor{coverTint}{HTML}{E6B9D3}  % primaryLight!35!white
 \definecolor{coverDark}{HTML}{4F4045}  % primaryDark!75!black
 \definecolor{coverText}{HTML}{EDCCDF}  % primaryLight!25!white
+\ifdefined\sbsubjectbase
+  \colorlet{coverTint}{primaryLight!35!white}\colorlet{coverDark}{primaryDark!75!black}\colorlet{coverText}{primaryLight!25!white}
+  \ifsbdark\colorlet{nodeActiveText}{primaryDark!50!black}\fi
+\fi
 
 \setbeamercolor{normal text}{fg=textFg, bg=pageBg}
 \setbeamercolor{background canvas}{bg=pageBg}

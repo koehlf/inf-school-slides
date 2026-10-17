@@ -27,7 +27,6 @@ Porting notes:
 - Card values are mapped to the cards in `images/playing_cards/` (5→2, 6→5, 7→6, 8→7), because there is no 8 of hearts there.
 - Mode bands added where the original asks for work: «Let's go!», «Hands on!», «Ihr seid dran», «Teeren» (Mach mit), and «Finden einer Eulertour» (Zum Lesen).
 - Assumed: the Euler deck is Algorithmik chapter 4. The inbox photo comes from `sorting_2025.odp`.
-- Kryptologie has no cover photos in this repo yet, so its title slides show empty hexagons.
 - The «Merge: Analogie» slides and the second shortest-path variant are left out.
 
 Sources: `theme/real/` (`real-sorting.tex`, `real-euler.tex`, drivers `real-d.tex` and `real-b.tex`).
