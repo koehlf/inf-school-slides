@@ -1,0 +1,68 @@
+% D05 «Karte» (review V4): content on a card, like a script box on a tinted page
+\ProvidesPackage{design-d05}
+\renewcommand{\designnumber}{D05}
+\renewcommand{\designname}{Karte}
+\renewcommand{\designidea}{Der Inhalt liegt auf einer Karte mit runden Ecken, wie eine Box im Skript. Der Titel steht darüber auf der getönten Seite.}
+\renewcommand{\designprops}{%
+  \item getönte Seite, Inhalt auf einer Karte
+  \item Titel mit Sechseck-Punkt über der Karte
+  \item Seitenzahl auf der Ecke der Karte}
+\renewcommand{\designpros}{%
+  \item ruhig und modern
+  \item klarer Inhaltsbereich}
+\renewcommand{\designcons}{%
+  \item Rand kostet rundum 7\,mm
+  \item Box auf Karte: doppelte Rahmen}
+\renewcommand{\designpick}{die Folien ruhig und aufgeräumt wirken sollen.}
+
+\IfStrEq{\slidepalette}{dark}{\colorlet{dsgTint}{black}}{\colorlet{dsgTint}{primaryLight!10!white}}
+\setbeamersize{text margin left=15mm, text margin right=15mm}
+\setbeamertemplate{footline}{}
+\setbeamertemplate{background canvas}{\color{dsgTint}\vrule width\paperwidth height\paperheight}
+\setbeamertemplate{background}{\dsg@setmode
+  \begin{tikzpicture}[remember picture, overlay]
+    \dsg@ifnormal{\colorlet{dsgCardRim}{borderColor!45!pageBg}\def\dsg@rimw{0.6pt}}{\colorlet{dsgCardRim}{dsgModeBg}\def\dsg@rimw{1.2mm}}
+    \slide@ifmode{read}{\colorlet{dsgCard}{boxBg}}{\colorlet{dsgCard}{pageBg}}
+    \fill[dsgCard, draw=dsgCardRim, line width=\dsg@rimw, rounded corners=3mm]
+      ([xshift=7mm, yshift=6mm]current page.south west) rectangle ([xshift=-7mm, yshift=-15mm]current page.north east);
+    \node[hex=8mm, fill=bgColor, draw=borderColor, line width=\designRim, text=white, font=\footnotesize\bfseries]
+      at ([xshift=-7mm, yshift=6mm]current page.south east) {\insertframenumber};
+    \node[hex=8mm, fill=bgColor, draw=borderColor, line width=\designRim, text=white, font=\bfseries]
+      at ([xshift=12mm, yshift=-7.5mm]current page.north west) {\slide@chapter};
+  \end{tikzpicture}}
+\setbeamertemplate{frametitle}{\dsg@setmode
+  \begin{tikzpicture}[remember picture, overlay]
+    \node[anchor=west, text=pageTitle, font=\Large\bfseries] at ([xshift=19mm, yshift=-7.5mm]current page.north west) {\insertframetitle};
+    \dsg@ifnormal{\node[anchor=east, text=mutedFg, font=\footnotesize\bfseries] at ([xshift=-9mm, yshift=-7.5mm]current page.north east) {\boxtitle{\insertsectionhead}};}{%
+      \node[anchor=east, fill=dsgModeBg, rounded corners=\designArc, text=white, font=\footnotesize\bfseries, inner xsep=2mm, inner ysep=1mm]
+        (tag) at ([xshift=-9mm, yshift=-7.5mm]current page.north east) {\dsg@tag};
+      \dsg@modehex{[xshift=-5mm]tag.west}{8mm}{5.6mm}}
+  \end{tikzpicture}\vspace*{9mm}}
+
+\setbeamertemplate{title page}{%
+  \begin{tikzpicture}[remember picture, overlay]
+    \fill[dsgTint] (current page.south west) rectangle (current page.north east);
+    \fill[bgColor, rounded corners=3mm] ([xshift=7mm, yshift=6mm]current page.south west) rectangle ([xshift=-7mm, yshift=-6mm]current page.north east);
+    \begin{scope}
+      \clip[rounded corners=3mm] ([xshift=7mm, yshift=6mm]current page.south west) rectangle ([xshift=-7mm, yshift=-6mm]current page.north east);
+      \foreach \x/\y/\n in {0/0/1, 1/0.5/2, 1/-0.5/3, 2/0/4, 0/1/5, 0/-1/6}
+        \dsg@photo{[xshift=-22mm-\x*19.5mm, yshift=\y*22.5mm]current page.east}{22.5mm}{\n};
+    \end{scope}
+    \node[anchor=south west, font=\fontsize{32}{36}\selectfont\bfseries, text=white] at ([xshift=18mm, yshift=0mm]current page.west) {\inserttitle};
+    \node[anchor=north west, font=\large, text=primaryLight!40!white, text width=62mm] at ([xshift=19mm, yshift=-3mm]current page.west) {\insertsubtitle};
+    \node[anchor=south west, text=white!70!bgColor, font=\footnotesize\bfseries] at ([xshift=19mm, yshift=14mm]current page.south west)
+      {\boxtitle{\slide@subject\ · Kapitel \slide@chapter}};
+    \node[hex=8mm, fill=bgColor, draw=borderColor, line width=\designRim] at ([xshift=-7mm, yshift=6mm]current page.south east) {};
+  \end{tikzpicture}}
+
+\renewcommand{\sectionslide}[3]{{\setbeamertemplate{footline}{}\setbeamertemplate{background}{}
+\begin{frame}[plain]
+  \begin{tikzpicture}[remember picture, overlay]
+    \fill[pageBg, draw=borderColor!45!pageBg, line width=0.6pt, rounded corners=3mm]
+      ([xshift=7mm, yshift=6mm]current page.south west) rectangle ([xshift=-7mm, yshift=-6mm]current page.north east);
+    \node[hex=30mm, fill=bgColor, draw=borderColor, line width=1.2mm, text=white, font=\fontsize{26}{30}\selectfont\bfseries]
+      at ([xshift=36mm]current page.west) {#1};
+    \node[anchor=south west, text=pageTitle, font=\fontsize{28}{32}\selectfont\bfseries] at ([xshift=62mm, yshift=1mm]current page.west) {#2};
+    \node[anchor=north west, text=mutedFg, font=\large] at ([xshift=62mm, yshift=-3mm]current page.west) {#3};
+  \end{tikzpicture}
+\end{frame}}}

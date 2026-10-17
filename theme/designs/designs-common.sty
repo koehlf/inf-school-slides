@@ -1,0 +1,51 @@
+% designs-common.sty -- helpers shared by the design options (M0-3)
+\ProvidesPackage{designs-common}
+
+% the pitch page: each design file sets these
+\newcommand{\designnumber}{}
+\newcommand{\designname}{}
+\newcommand{\designidea}{}
+\newcommand{\designprops}{}
+\newcommand{\designpros}{}
+\newcommand{\designcons}{}
+\newcommand{\designpick}{}
+
+% modes: \dsg@setmode (at the start of a template) defines \dsg@icon (task/read),
+% \dsg@label («Mach mit · tag») and the colours dsgRim, dsgModeBg (doit bright), dsgModeText; \dsg@ifnormal/\dsg@ifdoit branch
+\def\dsg@doitname{doit}\def\dsg@normalname{normal}
+\newcommand{\dsg@ifnormal}[2]{\ifx\slide@mode\dsg@normalname #1\else #2\fi}
+\newcommand{\dsg@ifdoit}[2]{\ifx\slide@mode\dsg@doitname #1\else #2\fi}
+\newcommand{\dsg@setmode}{%
+  \ifx\slide@mode\dsg@doitname\def\dsg@icon{task}\def\dsg@labeltext{Mach mit}\colorlet{dsgRim}{white}%
+    \colorlet{dsgModeBg}{borderColor}\colorlet{dsgModeText}{termColor}%
+  \else\def\dsg@icon{read}\def\dsg@labeltext{Zum Lesen}\colorlet{dsgRim}{borderColor}%
+    \colorlet{dsgModeBg}{bgColor}\colorlet{dsgModeText}{mutedFg}\fi}
+\newcommand{\dsg@label}{\dsg@labeltext\ifx\slide@tag\@empty\else\ · \slide@tag\fi}
+\newcommand{\dsg@tag}{\boxtitle{\dsg@label}}
+% \dsg@modehex{<coordinate>}{<hex size>}{<glyph size>}: the mode icon in a hexagon
+\newcommand{\dsg@modehex}[3]{%
+  \node[hex=#2, fill=bgColor, draw=dsgRim, line width=\designRim] (modehex) at (#1) {};
+  \pic at (modehex.center) {boxicon={\dsg@icon}{#3}};}
+
+% a photo hexagon of the cover at a given size: \dsg@photo{<coordinate>}{<size>}{<n-th cover image>}
+\newcommand{\dsg@photo}[3]{{%
+  \renewcommand{\cover@hex}{#2}%
+  \edef\dsg@img{}%
+  \foreach \f [count=\j] in \cover@images {\ifnum\j=#3\relax\xdef\dsg@img{\f}\fi}%
+  \colorlet{coverTint}{primaryLight!35!white}%
+  \cover@photo{#1}{\dsg@img}}}
+
+% colour scheme «graphite»: neutral chrome, the subject colour only as accent
+\newcommand{\dsg@graphite}{%
+  \IfStrEq{\slidepalette}{dark}{%
+    \colorlet{pageBg}{black!93!white}\colorlet{bgColor}{white!17!black}\colorlet{borderColor}{white!42!black}%
+    \colorlet{primaryDark}{white!17!black}\colorlet{boxBg}{white!7!black}\colorlet{codeBg}{white!5!black}%
+    \colorlet{nodeFill}{white!14!black}\colorlet{cellFill}{white!12!black}\colorlet{cellRim}{white!35!black}%
+    \colorlet{cellActive}{baseColor!35!black}%
+  }{%
+    \colorlet{bgColor}{black!80}\colorlet{borderColor}{black!45}\colorlet{primaryDark}{black!80}%
+    \colorlet{boxBg}{black!3}\colorlet{codeBg}{black!4}\colorlet{nodeFill}{black!6}\colorlet{nodeText}{black!80}%
+    \colorlet{cellFill}{black!4}\colorlet{cellRim}{black!30}\colorlet{edgeCol}{black!40}\colorlet{removedCol}{black!22}%
+    \colorlet{chosenCol}{baseColor!80!black}\colorlet{nodeActive}{baseColor!80!black}%
+  }%
+  \setbeamercolor{background canvas}{bg=pageBg}}

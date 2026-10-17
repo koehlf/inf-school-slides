@@ -1,0 +1,69 @@
+% D04 «Wabe» (review V3): today's Impress master translated into the books' colours and Fira
+\ProvidesPackage{design-d04}
+\renewcommand{\designnumber}{D04}
+\renewcommand{\designname}{Wabe}
+\renewcommand{\designidea}{Das bisherige Impress-Master in neuer Farbe: drei Waben oben links, eine Netzlinie mit Punkten unter dem Titel.}
+\renewcommand{\designprops}{%
+  \item drei Waben, die erste mit der Kapitelnummer
+  \item Netzlinie unter dem Titel, Titel leicht
+  \item Binärzahl unten links, Seitenzahl unten rechts}
+\renewcommand{\designpros}{%
+  \item Klassen erkennen die alten Folien wieder
+  \item luftig, ohne schwere Flächen}
+\renewcommand{\designcons}{%
+  \item unruhigste Dekoration der zehn
+  \item leichter Titel wirkt von hinten schwächer}
+\renewcommand{\designpick}{der Wechsel für die Klassen möglichst sanft sein soll.}
+
+\setbeamersize{text margin left=14mm, text margin right=12mm}
+\setbeamertemplate{footline}{}
+\setbeamertemplate{background}{\dsg@setmode
+  \begin{tikzpicture}[remember picture, overlay]
+    \dsg@ifnormal{%
+      \node[hex=11mm, fill=borderColor, draw=borderColor, line width=\designRim, text=white, font=\bfseries]
+        at ([xshift=4mm, yshift=-4mm]current page.north west) {\slide@chapter};}{%
+      \dsg@modehex{[xshift=4mm, yshift=-4mm]current page.north west}{11mm}{7mm}}
+    \foreach \x/\y/\s in {1/-0.5/40, 0/-1/18}
+      \node[hex=11mm, fill=primaryLight!\s!pageBg, draw=borderColor, line width=0.3mm]
+        at ([xshift=4mm+\x*9.6mm, yshift=-4mm+\y*11mm]current page.north west) {};
+    \draw[edgeCol, line width=0.6pt] ([xshift=19mm, yshift=-14.5mm]current page.north west)
+      -- ([xshift=-18mm, yshift=-14.5mm]current page.north east) -- ([xshift=-9mm, yshift=-8mm]current page.north east)
+      -- ([xshift=-3mm, yshift=-8mm]current page.north east);
+    \foreach \p in {([xshift=19mm, yshift=-14.5mm]current page.north west), ([xshift=-18mm, yshift=-14.5mm]current page.north east),
+                    ([xshift=-9mm, yshift=-8mm]current page.north east)}
+      \fill[borderColor] \p circle (0.8mm);
+    \node[anchor=south west, opacity=0.4, text=mutedFg, font=\ttfamily\scriptsize] at ([xshift=4mm, yshift=2mm]current page.south west) {\textls[60]{\inf}};
+    \node[hex=12mm, shape border rotate=30, fill=borderColor] at ([xshift=-1mm, yshift=1mm]current page.south east) {};
+    \node[anchor=east, text=mutedFg, font=\footnotesize\bfseries] at ([xshift=-10mm, yshift=4mm]current page.south east) {\insertframenumber};
+  \end{tikzpicture}}
+\setbeamertemplate{frametitle}{\dsg@setmode\vspace*{1mm}\hspace*{9mm}%
+  {\color{pageTitle}\fontsize{22}{26}\selectfont\insertframetitle}%
+  \dsg@ifnormal{}{\begin{tikzpicture}[remember picture, overlay]
+    \node[anchor=south east, text=dsgModeText, font=\footnotesize\bfseries]
+      at ([xshift=-20mm, yshift=-13.5mm]current page.north east) {\dsg@tag};
+  \end{tikzpicture}}\par\vspace*{5mm}}
+
+\setbeamertemplate{title page}{%
+  \begin{tikzpicture}[remember picture, overlay]
+    \foreach \x/\y/\n in {0/0/1, 1/0.5/2, 1/-0.5/3, 0/-1/4, 0/1/5, 2/0/6}
+      \dsg@photo{[xshift=-14mm-\x*20mm, yshift=\y*23mm]current page.east}{23mm}{\n};
+    \draw[edgeCol, line width=0.6pt] ([xshift=12mm, yshift=-9mm]current page.west) -- ([xshift=-66mm, yshift=-9mm]current page.east);
+    \fill[borderColor] ([xshift=12mm, yshift=-9mm]current page.west) circle (0.9mm) ([xshift=-66mm, yshift=-9mm]current page.east) circle (0.9mm);
+    \node[anchor=south west, font=\fontsize{32}{36}\selectfont, text=pageTitle] at ([xshift=11mm, yshift=-6mm]current page.west) {\inserttitle};
+    \node[anchor=north west, font=\large, text=termColor] at ([xshift=12mm, yshift=-12mm]current page.west) {\insertsubtitle};
+    \node[anchor=south west, opacity=0.4, text=mutedFg, font=\ttfamily\scriptsize] at ([xshift=4mm, yshift=2mm]current page.south west) {\textls[60]{\inf\school}};
+    \node[anchor=north west, text=mutedFg, font=\footnotesize\bfseries] at ([xshift=12mm, yshift=-10mm]current page.north west)
+      {\boxtitle{\slide@subject\ · Kapitel \slide@chapter}};
+  \end{tikzpicture}}
+
+\renewcommand{\sectionslide}[3]{{\setbeamertemplate{footline}{}
+\begin{frame}[plain]
+  \begin{tikzpicture}[remember picture, overlay]
+    \node[hex=30mm, fill=borderColor, text=white, font=\fontsize{26}{30}\selectfont\bfseries] at ([xshift=32mm, yshift=4mm]current page.west) {#1};
+    \node[hex=16mm, fill=primaryLight!40!pageBg, draw=borderColor, line width=0.3mm] at ([xshift=48mm, yshift=-18mm]current page.west) {};
+    \draw[edgeCol, line width=0.6pt] ([xshift=58mm, yshift=-4mm]current page.west) -- ([xshift=-14mm, yshift=-4mm]current page.east);
+    \fill[borderColor] ([xshift=58mm, yshift=-4mm]current page.west) circle (0.9mm) ([xshift=-14mm, yshift=-4mm]current page.east) circle (0.9mm);
+    \node[anchor=south west, text=pageTitle, font=\fontsize{28}{32}\selectfont] at ([xshift=58mm, yshift=-2mm]current page.west) {#2};
+    \node[anchor=north west, text=mutedFg, font=\large] at ([xshift=58mm, yshift=-7mm]current page.west) {#3};
+  \end{tikzpicture}
+\end{frame}}}

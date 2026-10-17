@@ -1,0 +1,175 @@
+% Design options (M0-3): the same slides in ten designs, light and dark.
+%   \def\slidedesign{d03}  design file design-d03.sty (default d01)
+%   \def\slidepalette{dark} light or dark
+%   \def\slidescheme{…}     optional colour scheme: algorithmik (default), networks, graphite
+% Build all: theme/designs/build_designs.sh
+\ifdefined\slidedesign\else\def\slidedesign{d01}\fi
+\ifdefined\slidepalette\else\def\slidepalette{dark}\fi
+\ifdefined\slidescheme\else\def\slidescheme{algorithmik}\fi
+\def\designbigtype{d06}
+\ifx\slidedesign\designbigtype\def\designsize{14pt}\else\def\designsize{12pt}\fi
+\edef\designopts{aspectratio=169,\designsize,xcolor={dvipsnames}}
+\expandafter\documentclass\expandafter[\designopts]{beamer}
+\usepackage{infschoolslides}
+\definecolor{networksBase}{HTML}{D2601A}
+\definecolor{networksDark}{HTML}{9E4310}
+\IfStrEqCase{\slidescheme}{%
+  {algorithmik}{\slidecolor{Rhodamine!90!black}}%
+  {networks}{\slidecolor[networksDark!90!black][networksBase!80!white]{networksBase}}%
+  {graphite}{\slidecolor{Rhodamine!90!black}}}
+\slidesubject{Algorithmik}
+\slidechapter{3}
+\slidecoverimages{cover/algorithmik/playing-cards.jpg, cover/algorithmik/pencils.jpg, cover/algorithmik/maze.jpg,
+  cover/algorithmik/signpost.jpg, cover/algorithmik/bridges.jpg, cover/algorithmik/subway-map.jpg}
+\title{Sortieren}
+\subtitle{Selectionsort · Bubblesort · Mergesort}
+\author{Florian Köhl}
+\makeatletter
+\usepackage{designs-common}
+\usepackage{design-\slidedesign}
+\IfStrEq{\slidescheme}{graphite}{\dsg@graphite}{}
+% titles on the page (not in a band): dark in light mode, white in dark mode
+\IfStrEq{\slidepalette}{dark}{\colorlet{pageTitle}{white!95!black}}{\colorlet{pageTitle}{primaryDark}}
+% sections of the deck, for designs that show the deck's progress
+\newcommand{\decksections}{Einstieg, Selectionsort, Mergesort, Spannbäume}
+\makeatother
+
+\begin{document}
+
+% ------------------------------------------------------------------ L1 Titel
+{\setbeamertemplate{footline}{}\setbeamertemplate{background}{}\begin{frame}[plain]\titlepage\end{frame}}
+
+% ------------------------------------------------------------------ the design's pitch
+\section{Einstieg}
+\begin{frame}[t]{\designnumber\ «\designname»}
+  \setbeamerfont{itemize/enumerate body}{size=\small}\small\designidea\par\smallskip
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \slidelabel{Eigenschaften}
+      \begin{itemize}\setlength{\itemsep}{0.5mm}\designprops\end{itemize}
+      \smallskip\slidelabel{Nimm dieses Design, wenn …}
+      \designpick
+    \end{column}
+    \begin{column}{0.47\textwidth}
+      \slidelabel{Stärken}
+      \begin{itemize}\setlength{\itemsep}{0.5mm}\designpros\end{itemize}
+      \slidelabel{Schwächen}
+      \begin{itemize}\setlength{\itemsep}{0.5mm}\designcons\end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------ L2 Abschnitt
+\section{Selectionsort}
+\sectionslide{3.2}{Selectionsort}{«Wiederholtes Suchen des Minimums»}
+
+% ------------------------------------------------------------------ L4 Aufzählung
+\begin{frame}{Effizienz: Laufzeit}
+  \begin{itemize}
+    \item Wie «schnell» ist Selectionsort?
+    \item Wie messen wir die Effizienz eines Algorithmus?
+    \begin{itemize}
+      \item Zeitmessung? Hängt von Hardware und Implementierung ab.
+      \item Alternativen?
+    \end{itemize}
+    \item Grobe Idee: die \term{Anzahl Operationen} zählen
+    \begin{itemize}
+      \item Vergleiche zwischen zwei Elementen
+      \item Vertauschungen zweier Elemente
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+% ------------------------------------------------------------------ L7 Begriff
+\begin{frame}{Sortiert?}
+  \begin{concept}[Aufsteigend sortiert]
+    Eine Liste ist \term{aufsteigend sortiert}, wenn jedes Element kleiner oder gleich gross ist
+    wie alle nachfolgenden Elemente.
+  \end{concept}
+  \begin{itemize}
+    \item Sind diese Karten sortiert?
+    \item Und die leere Liste?
+  \end{itemize}
+\end{frame}
+
+% ------------------------------------------------------------------ L6 Grafik (cards)
+\begin{frame}{Selectionsort in Aktion}
+  \vspace*{2mm}
+  \cardArray{name=c, items={2h,6h,5h,9h,7h,10h}, parts={1/1/S,2/6/U}, size=0.12}
+  \swaparrow{c2}{c3}\pointerbelow{c3}{min}
+
+  \vspace{12mm}\centering Das kleinste Element in U ist die 5: Wir vertauschen es mit dem ersten Element von U.
+\end{frame}
+
+% ------------------------------------------------------------------ L10 Code
+\begin{frame}[fragile]{Selectionsort in Python}
+  \begin{code}[selection\_sort.py]
+def selection_sort(liste):
+    for i in range(len(liste) - 1):
+        k = i  # Position des Minimums in U
+        for j in range(i + 1, len(liste)):
+            if liste[j] < liste[k]:
+                k = j
+        liste[i], liste[k] = liste[k], liste[i]
+  \end{code}
+\end{frame}
+
+% ------------------------------------------------------------------ L13 Aufgabe, «Mach mit»
+\begin{frame}[doit={zu zweit · 15 Min}]{Ihr seid dran!}
+  \vfill
+  \begin{task}[Sortieren von Hand]{38–41}
+    \large Sortiere die Listen im Skript (S. 48) mit Selectionsort und Bubblesort von Hand.
+  \end{task}
+  \vfill
+\end{frame}
+
+% ------------------------------------------------------------------ L8 Algorithmus + figure
+\section{Mergesort}
+\begin{frame}{Mergesort: Merge}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.5\textwidth}
+      \begin{enumerate}
+        \item Vergleiche die vordersten Elemente beider Listen.
+        \item \alert{Füge das kleinere hinten an die neue Liste an.}
+        \item Ist eine Liste leer, hänge den Rest der anderen an.
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \pythonArray{items={2,5,3,9}, parts={0/2/links,2/4/rechts}, done={0}, highlight={1,2}, ptrs={1/i,2/j}}
+      \vspace{4mm}
+      \pythonArray{items={2,~,~,~}, blank, done={0}, drawindexes=false}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------ L9 Schritt für Schritt
+\section{Spannbäume}
+\begin{frame}{Kruskal in Aktion}
+  \centering
+  \begin{graph}[x=15mm, y=15mm]
+    \node[vertex] (C) at (-1.2,0.4) {C}; \node[vertex] (E) at (0,1.2) {E};
+    \node[vertex] (D) at (1.2,0.4) {D};  \node[vertex] (A) at (-0.5,-0.6) {A};
+    \node[vertex_active] (B) at (0.8,-1) {B};
+    \path (C) edge["3", onslide=<2->{chosen}] (E) (E) edge["10"] (D) (C) edge["2", chosen] (A)
+          (A) edge["4", onslide=<3->{removed}] (E) (A) edge["6"] (D) (D) edge["5"] (B) (A) edge["5"] (B);
+  \end{graph}
+
+  \vspace{3mm}
+  \only<1>{C–A (2) bildet keinen Kreis: \term{gewählt}.}%
+  \only<2>{C–E (3) bildet keinen Kreis: \term{gewählt}.}%
+  \only<3>{A–E (4) würde einen Kreis bilden: \term{verworfen}.}
+
+  \vfill\stepdots{3}
+\end{frame}
+
+% ------------------------------------------------------------------ «Zum Lesen»
+\begin{frame}[read={Skript S. 92}]{Ein Baum ist …}
+  \begin{enumerate}
+    \item ein \term{zusammenhängender} Graph ohne Kreise.
+    \item ein Graph, in dem es zwischen zwei Knoten genau \term{einen Pfad} gibt.
+    \item ein zusammenhängender Graph mit $n$ Knoten und $n-1$ Kanten.
+  \end{enumerate}
+  \medskip Alle drei Beschreibungen sind gleichwertig.
+\end{frame}
+
+\end{document}

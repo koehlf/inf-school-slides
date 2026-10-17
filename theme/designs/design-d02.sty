@@ -1,0 +1,59 @@
+% D02 «Band 2.0» (review V1): one slim band, page number in the band, no footer
+\ProvidesPackage{design-d02}
+\renewcommand{\designnumber}{D02}
+\renewcommand{\designname}{Band 2.0}
+\renewcommand{\designidea}{Ein einziges, schlankes Kopfband trägt Titel und Seitenzahl. Unten bleibt die Folie frei.}
+\renewcommand{\designprops}{%
+  \item Kopfband 10\,mm, Seitenzahl rechts im Band
+  \item kein Fussband, kein hängendes Sechseck
+  \item Modus färbt das ganze Band}
+\renewcommand{\designpros}{%
+  \item klar und ruhig, nah am Skript
+  \item 89\,\% der Höhe für Inhalt}
+\renewcommand{\designcons}{%
+  \item im dunklen Modus trennt sich das Band kaum von der Seite
+  \item Kapitelnummer fehlt auf Inhaltsfolien}
+\renewcommand{\designpick}{du die Bänder des Skripts magst, aber mehr Platz willst.}
+
+\setbeamersize{text margin left=12mm, text margin right=12mm}
+\setbeamertemplate{footline}{}
+\setbeamertemplate{frametitle}{\dsg@setmode
+  \begin{tikzpicture}[remember picture, overlay]
+    \dsg@ifnormal{\colorlet{dsgBand}{bgColor}}{\dsg@ifdoit{\colorlet{dsgBand}{borderColor}}{\colorlet{dsgBand}{bgColor!70!black}}}
+    \fill[dsgBand] (current page.north west) rectangle ([yshift=-10mm]current page.north east);
+    \fill[borderColor] ([yshift=-10mm]current page.north west) rectangle ([yshift=-10.5mm]current page.north east);
+    \dsg@ifdoit{\colorlet{dsgPage}{bgColor}}{\colorlet{dsgPage}{borderColor}}
+    \node[hex=7mm, fill=dsgPage, text=white, font=\footnotesize\bfseries]
+      at ([xshift=-10mm, yshift=-5mm]current page.north east) {\insertframenumber};
+    \dsg@ifnormal{%
+      \node[anchor=west, text=titleColor, font=\Large\bfseries] at ([xshift=12mm, yshift=-5mm]current page.north west) {\insertframetitle};}{%
+      \dsg@modehex{[xshift=15mm, yshift=-5mm]current page.north west}{8mm}{5.6mm}
+      \node[anchor=west, text=titleColor, font=\Large\bfseries] at ([xshift=22mm, yshift=-5mm]current page.north west) {\insertframetitle};
+      \node[anchor=east, fill=bgColor, rounded corners=\designArc, text=white, font=\footnotesize\bfseries, inner xsep=2mm, inner ysep=1mm]
+        at ([xshift=-17mm, yshift=-5mm]current page.north east) {\dsg@tag};}
+  \end{tikzpicture}\vspace*{7mm}}
+
+\setbeamertemplate{title page}{%
+  \begin{tikzpicture}[remember picture, overlay]
+    \fill[bgColor] (current page.south west) rectangle (current page.north east);
+    \foreach \x/\y/\s in {0/0/100, 1/0.5/60, 1/-0.5/30, 2/0/45, 2/1/20, 0/-1/25, 3/0.5/15}
+      \node[hex=22mm, shape border rotate=30, fill=primaryLight!\s!bgColor, draw=borderColor, line width=0.8mm]
+        at ([xshift=-12mm-\x*19.5mm, yshift=8mm+\y*22.5mm]current page.east) {};
+    \fill[borderColor] ([xshift=12mm, yshift=16mm]current page.west) rectangle ++(14mm,1mm);
+    \node[anchor=north west, font=\fontsize{32}{36}\selectfont\bfseries, text=white] at ([xshift=11mm, yshift=12mm]current page.west) {\inserttitle};
+    \node[anchor=north west, font=\large, text=primaryLight!40!white] at ([xshift=12mm, yshift=-2mm]current page.west) {\insertsubtitle};
+    \node[anchor=south west, text=white!70!bgColor, font=\footnotesize\bfseries] at ([xshift=12mm, yshift=6mm]current page.south west)
+      {\boxtitle{\slide@subject\ · Kapitel \slide@chapter}};
+    \pic at ([xshift=-12mm, yshift=6mm]current page.south east) {infschool logo={text=white, align=right, font=\normalsize}};
+  \end{tikzpicture}}
+
+\renewcommand{\sectionslide}[3]{{\setbeamertemplate{footline}{}
+\begin{frame}[plain]
+  \begin{tikzpicture}[remember picture, overlay]
+    \fill[bgColor] (current page.south west) rectangle (current page.north east);
+    \node[hex=34mm, shape border rotate=30, fill=primaryLight, draw=borderColor!50!white, line width=1mm,
+      text=white, font=\fontsize{28}{30}\selectfont\bfseries] at ([xshift=34mm]current page.west) {#1};
+    \node[anchor=west, text=white, font=\fontsize{28}{32}\selectfont\bfseries] at ([xshift=62mm, yshift=3mm]current page.west) {#2};
+    \node[anchor=north west, text=primaryLight!40!white, font=\large] at ([xshift=62mm, yshift=-4mm]current page.west) {#3};
+  \end{tikzpicture}
+\end{frame}}}

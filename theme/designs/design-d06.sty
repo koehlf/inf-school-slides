@@ -1,0 +1,51 @@
+% D06 «Klartext» (review V5): classroom first, 14 pt, a colour bar and almost no chrome
+\ProvidesPackage{design-d06}
+\renewcommand{\designnumber}{D06}
+\renewcommand{\designname}{Klartext}
+\renewcommand{\designidea}{Lesbarkeit zuerst: 14\,pt Grundschrift, grosser Titel, ein Farbstreifen links. Sonst nichts.}
+\renewcommand{\designprops}{%
+  \item 14\,pt statt 12\,pt
+  \item Streifen 3\,mm links, Seitenzahl als Text
+  \item Modus: Streifen wird breit, mit Symbol}
+\renewcommand{\designpros}{%
+  \item am besten lesbar, am meisten Platz
+  \item am einfachsten über 80 Decks}
+\renewcommand{\designcons}{%
+  \item wenig «inf.school» auf Inhaltsfolien
+  \item weniger Text pro Folie}
+\renewcommand{\designpick}{die hinterste Reihe alles lesen können soll.}
+
+\setbeamersize{text margin left=14mm, text margin right=10mm}
+\setbeamertemplate{footline}{}
+\setbeamertemplate{background}{\dsg@setmode
+  \begin{tikzpicture}[remember picture, overlay]
+    \dsg@ifnormal{%
+      \fill[borderColor] (current page.south west) rectangle ([xshift=3mm]current page.north west);}{%
+      \fill[dsgModeBg] (current page.south west) rectangle ([xshift=9mm]current page.north west);
+      \pic at ([xshift=4.5mm, yshift=-7mm]current page.north west) {boxicon={\dsg@icon}{6.5mm}};}
+    \node[anchor=south east, text=mutedFg, font=\footnotesize\bfseries] at ([xshift=-5mm, yshift=3mm]current page.south east) {\insertframenumber};
+  \end{tikzpicture}}
+\setbeamertemplate{frametitle}{\dsg@setmode\vspace*{2mm}%
+  {\color{pageTitle}\LARGE\bfseries\insertframetitle}\par
+  \dsg@ifnormal{}{{\color{dsgModeText}\footnotesize\bfseries\dsg@tag}\par}\vspace*{1mm}}
+
+\setbeamertemplate{title page}{%
+  \begin{tikzpicture}[remember picture, overlay]
+    \fill[borderColor] (current page.south west) rectangle ([xshift=3mm]current page.north west);
+    \fill[bgColor] (current page.south west) rectangle ([yshift=26mm]current page.south east);
+    \node[hex=26mm, fill=borderColor, draw=pageBg, line width=1.2mm, text=white, font=\fontsize{28}{30}\selectfont\bfseries]
+      at ([xshift=-26mm, yshift=26mm]current page.south east) {\slide@chapter};
+    \node[anchor=south west, font=\fontsize{40}{44}\selectfont\bfseries, text=pageTitle] at ([xshift=14mm, yshift=36mm]current page.south west) {\inserttitle};
+    \node[anchor=west, font=\large, text=white] at ([xshift=14mm, yshift=15mm]current page.south west) {\insertsubtitle};
+    \node[anchor=west, font=\footnotesize\bfseries, text=white!70!bgColor] at ([xshift=14mm, yshift=7mm]current page.south west) {\boxtitle{\slide@subject\ · Kapitel \slide@chapter}};
+  \end{tikzpicture}}
+
+\renewcommand{\sectionslide}[3]{{\setbeamertemplate{footline}{}\setbeamertemplate{background}{}
+\begin{frame}[plain]
+  \begin{tikzpicture}[remember picture, overlay]
+    \fill[borderColor] (current page.south west) rectangle ([xshift=3mm]current page.north west);
+    \node[anchor=south west, text=termColor, font=\fontsize{30}{34}\selectfont\bfseries] at ([xshift=14mm, yshift=12mm]current page.west) {#1};
+    \node[anchor=north west, text=pageTitle, font=\fontsize{36}{40}\selectfont\bfseries] at ([xshift=14mm, yshift=10mm]current page.west) {#2};
+    \node[anchor=north west, text=mutedFg, font=\Large] at ([xshift=14mm, yshift=-6mm]current page.west) {#3};
+  \end{tikzpicture}
+\end{frame}}}

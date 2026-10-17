@@ -1,0 +1,70 @@
+% D03 «Seitenleiste» (review V2): dark strip on the left, like the edge of a script cover
+\ProvidesPackage{design-d03}
+\renewcommand{\designnumber}{D03}
+\renewcommand{\designname}{Seitenleiste}
+\renewcommand{\designidea}{Eine dunkle Leiste links trägt Kapitel, Waben und Seitenzahl.}
+\renewcommand{\designprops}{%
+  \item Leiste 15\,mm mit Kapitel und Waben
+  \item Titel ohne Band, kurzer Farbstrich
+  \item Modus: Leiste wird hell}
+\renewcommand{\designpros}{%
+  \item volle Höhe für Grafiken
+  \item Marke gut sichtbar, auch dunkel}
+\renewcommand{\designcons}{%
+  \item kostet 10\,\% der Breite
+  \item neu, nicht aus dem Skript}
+\renewcommand{\designpick}{Grafiken die Hauptsache sind und die Marke trotzdem klar bleiben soll.}
+
+\setbeamersize{text margin left=25mm, text margin right=12mm}
+\setbeamertemplate{footline}{}
+\setbeamertemplate{background}{\dsg@setmode
+  \begin{tikzpicture}[remember picture, overlay]
+    \dsg@ifdoit{\colorlet{dsgStrip}{borderColor}}{\colorlet{dsgStrip}{bgColor}}
+    \fill[dsgStrip] (current page.south west) rectangle ([xshift=15mm]current page.north west);
+    \fill[borderColor] ([xshift=15mm]current page.south west) rectangle ([xshift=15.5mm]current page.north west);
+    \dsg@ifnormal{%
+      \node[hex=10mm, fill=bgColor, draw=borderColor, line width=\designRim, text=white, font=\bfseries]
+        at ([xshift=7.5mm, yshift=-8mm]current page.north west) {\slide@chapter};}{%
+      \dsg@modehex{[xshift=7.5mm, yshift=-8mm]current page.north west}{10mm}{7mm}}
+    \foreach \y/\s in {1/45, 2/22}
+      \node[hex=7mm, fill=primaryLight!\s!bgColor, draw=borderColor!60!bgColor, line width=0.3mm]
+        at ([xshift=7.5mm, yshift=-9mm-\y*9mm]current page.north west) {};
+    \node[rotate=90, anchor=west, opacity=0.35, text=white, font=\ttfamily\scriptsize] at ([xshift=7.5mm, yshift=18mm]current page.south west) {\textls[60]{\inf}};
+    \node[hex=7mm, fill=pageBg, draw=borderColor, line width=\designRim, text=textFg, font=\footnotesize\bfseries]
+      at ([xshift=15.25mm, yshift=8mm]current page.south west) {\insertframenumber};
+  \end{tikzpicture}}
+\setbeamertemplate{frametitle}{\dsg@setmode\vspace*{3mm}%
+  \dsg@ifnormal{}{\begin{tikzpicture}[remember picture, overlay]
+    \node[anchor=north east, fill=dsgModeBg, rounded corners=\designArc, text=white, font=\footnotesize\bfseries,
+      inner xsep=2mm, inner ysep=1mm] at ([xshift=-10mm, yshift=-4mm]current page.north east) {\dsg@tag};
+  \end{tikzpicture}}%
+  {\color{pageTitle}\Large\bfseries\insertframetitle}\par\vspace{0.5mm}
+  {\color{borderColor}\rule{18mm}{0.7mm}}\par\vspace{2mm}}
+
+\setbeamertemplate{title page}{%
+  \begin{tikzpicture}[remember picture, overlay]
+    \fill[pageBg] (current page.south west) rectangle (current page.north east);
+    \fill[bgColor] (current page.south west) rectangle ([xshift=62mm]current page.north west);
+    \fill[borderColor] ([xshift=62mm]current page.south west) rectangle ([xshift=63mm]current page.north west);
+    \foreach \x/\y/\n in {0/0/1, 1/0.5/2, 1/-0.5/3, 0/-1/4, 0/1/5}
+      \dsg@photo{[xshift=16mm+\x*22mm, yshift=\y*25.5mm]current page.west}{25mm}{\n};
+    \node[hex=25mm, fill=bgColor!75!black, draw=borderColor!35!bgColor, line width=0.9mm] at ([xshift=38mm, yshift=38mm]current page.west) {};
+    \node[hex=25mm, fill=bgColor!75!black, draw=borderColor!35!bgColor, line width=0.9mm] at ([xshift=38mm, yshift=-38mm]current page.west) {};
+    \node[anchor=south west, font=\fontsize{32}{36}\selectfont\bfseries, text=pageTitle] at ([xshift=74mm, yshift=1mm]current page.west) {\inserttitle};
+    \node[anchor=north west, font=\large, text=termColor] at ([xshift=74mm, yshift=-2mm]current page.west) {\insertsubtitle};
+    \node[anchor=south west, text=mutedFg, font=\footnotesize\bfseries] at ([xshift=74mm, yshift=6mm]current page.south west)
+      {\boxtitle{\slide@subject\ · Kapitel \slide@chapter}};
+    \pic at ([xshift=-10mm, yshift=6mm]current page.south east) {infschool logo={text=pageTitle, align=right, font=\normalsize}};
+  \end{tikzpicture}}
+
+\renewcommand{\sectionslide}[3]{{\setbeamertemplate{footline}{}\setbeamertemplate{background}{}
+\begin{frame}[plain]
+  \begin{tikzpicture}[remember picture, overlay]
+    \fill[bgColor] (current page.south west) rectangle ([xshift=62mm]current page.north west);
+    \fill[borderColor] ([xshift=62mm]current page.south west) rectangle ([xshift=63mm]current page.north west);
+    \node[hex=34mm, fill=bgColor, draw=borderColor, line width=1.2mm, text=white, font=\fontsize{28}{30}\selectfont\bfseries]
+      at ([xshift=62.5mm]current page.west) {#1};
+    \node[anchor=south west, text=pageTitle, font=\fontsize{28}{32}\selectfont\bfseries] at ([xshift=88mm, yshift=1mm]current page.west) {#2};
+    \node[anchor=north west, text=mutedFg, font=\large, text width=66mm] at ([xshift=88mm, yshift=-3mm]current page.west) {#3};
+  \end{tikzpicture}
+\end{frame}}}

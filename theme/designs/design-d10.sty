@@ -1,0 +1,71 @@
+% D10 «Wegweiser» (new): a line of section hexagons at the top shows where the deck stands
+\ProvidesPackage{design-d10}
+\renewcommand{\designnumber}{D10}
+\renewcommand{\designname}{Wegweiser}
+\renewcommand{\designidea}{Oben läuft eine Linie mit einem Sechseck pro Abschnitt, wie ein Liniennetzplan.}
+\renewcommand{\designprops}{%
+  \item Abschnittslinie oben, Titel darunter
+  \item Modus: Etikett rechts vom Titel}
+\renewcommand{\designpros}{%
+  \item roter Faden immer sichtbar
+  \item Graphen-Motiv als Marke}
+\renewcommand{\designcons}{%
+  \item braucht gute Abschnitte
+  \item max.\ 6 Abschnitte}
+\renewcommand{\designpick}{die Lektion eine klare Gliederung hat, die alle sehen sollen.}
+
+\setbeamersize{text margin left=14mm, text margin right=12mm}
+% \dsg@route{<y>}{<hex size>}{<label font>}: the section line at height y from the top
+\newcommand{\dsg@route}[3]{%
+  \edef\dsg@n{0}\foreach \s in \decksections {\pgfmathtruncatemacro{\t}{\dsg@n+1}\xdef\dsg@n{\t}}%
+  \pgfmathsetmacro{\dsg@step}{(\paperwidth/1mm-62)/(\dsg@n-1)}%
+  \draw[edgeCol, line width=0.6mm] ([xshift=14mm, yshift=-#1]current page.north west) -- ([xshift=-42mm, yshift=-#1]current page.north east);
+  \foreach \s [count=\i] in \decksections {%
+    \coordinate (st) at ([xshift=22mm+(\i-1)*\dsg@step*1mm, yshift=-#1]current page.north west);
+    \ifnum\i=\value{section}
+      \node[hex=#2, fill=termColor, draw=termColor, line width=\designRim] at (st) {};
+      \node[anchor=north, text=termColor, font=#3\bfseries, inner sep=0pt] at ([yshift=-0.6*#2]st) {\boxtitle{\s}};
+    \else
+      \node[hex=0.75*#2, fill=pageBg, draw=edgeCol, line width=0.4mm] at (st) {};
+      \node[anchor=north, text=mutedFg, font=#3, inner sep=0pt] at ([yshift=-0.6*#2]st) {\s};
+    \fi}}
+\setbeamertemplate{footline}{%
+  \begin{tikzpicture}[remember picture, overlay]
+    \node[hex=8mm, fill=bgColor, draw=borderColor, line width=\designRim, text=white, font=\footnotesize\bfseries]
+      at ([xshift=-10mm, yshift=8mm]current page.south east) {\insertframenumber};
+  \end{tikzpicture}}
+\setbeamertemplate{frametitle}{\dsg@setmode\vspace*{13mm}%
+  \begin{tikzpicture}[remember picture, overlay]
+    \dsg@route{4.5mm}{4mm}{\footnotesize}
+    \dsg@ifnormal{}{%
+      \node[anchor=east, fill=dsgModeBg, rounded corners=\designArc, text=white, font=\footnotesize\bfseries, inner xsep=2mm, inner ysep=1mm]
+        (tag) at ([xshift=-10mm, yshift=-17mm]current page.north east) {\dsg@tag};
+      \dsg@modehex{[xshift=-4.5mm]tag.west}{7mm}{4.9mm}}
+  \end{tikzpicture}%
+  {\color{pageTitle}\Large\bfseries\insertframetitle}\par\vspace*{2mm}}
+
+\setbeamertemplate{title page}{%
+  \begin{tikzpicture}[remember picture, overlay]
+    \dsg@photo{[xshift=-30mm, yshift=12mm]current page.east}{42mm}{6};
+    \node[anchor=south west, text=termColor, font=\footnotesize\bfseries] at ([xshift=14mm, yshift=-14mm]current page.north west) {\boxtitle{\slide@subject\ · Kapitel \slide@chapter}};
+    \node[anchor=north west, text=pageTitle, font=\fontsize{34}{38}\selectfont\bfseries] at ([xshift=14mm, yshift=-16mm]current page.north west) {\inserttitle};
+    \node[anchor=north west, text=mutedFg, font=\large] at ([xshift=14mm, yshift=-30mm]current page.north west) {\insertsubtitle};
+    % the route of the lesson: all sections as stations
+    \draw[edgeCol, line width=0.8mm] ([xshift=14mm, yshift=24mm]current page.south west) -- ([xshift=-14mm, yshift=24mm]current page.south east);
+    \foreach \s [count=\i] in \decksections {%
+      \coordinate (st) at ([xshift=14mm+(\i-1)*38mm, yshift=24mm]current page.south west);
+      \node[hex=7mm, fill=bgColor, draw=borderColor, line width=\designRim, text=white, font=\footnotesize\bfseries] at (st) {\i};
+      \node[anchor=north west, text=pageTitle, font=\footnotesize] at ([xshift=-3mm, yshift=-5mm]st) {\s};}
+    \pic at ([xshift=-14mm, yshift=6mm]current page.south east) {infschool logo={text=pageTitle, align=right, font=\normalsize}};
+  \end{tikzpicture}}
+
+\renewcommand{\sectionslide}[3]{{\setbeamertemplate{footline}{}
+\begin{frame}[plain]
+  \begin{tikzpicture}[remember picture, overlay]
+    \dsg@route{12mm}{8mm}{\normalsize}
+    \node[hex=26mm, fill=bgColor, draw=borderColor, line width=1mm, text=white, font=\fontsize{24}{28}\selectfont\bfseries]
+      at ([xshift=30mm, yshift=-6mm]current page.west) {#1};
+    \node[anchor=south west, text=pageTitle, font=\fontsize{30}{34}\selectfont\bfseries] at ([xshift=52mm, yshift=-5mm]current page.west) {#2};
+    \node[anchor=north west, text=mutedFg, font=\large] at ([xshift=52mm, yshift=-9mm]current page.west) {#3};
+  \end{tikzpicture}
+\end{frame}}}

@@ -1,0 +1,70 @@
+% D08 «Spalte» (new): the title lives in a dark column on the left, the content on the right
+\ProvidesPackage{design-d08}
+\renewcommand{\designnumber}{D08}
+\renewcommand{\designname}{Spalte}
+\renewcommand{\designidea}{Eine dunkle Titelspalte links trägt Kapitel, Abschnitt, Titel und Seitenzahl. Rechts bleibt die volle Höhe für den Inhalt.}
+\renewcommand{\designprops}{%
+  \item Spalte 40\,mm, Titel darf umbrechen
+  \item Abschnitt und Kapitel oben in der Spalte
+  \item Modus: Spalte wird hell, mit grossem Symbol}
+\renewcommand{\designpros}{%
+  \item lange Titel kein Problem
+  \item volle Höhe, sehr markant}
+\renewcommand{\designcons}{%
+  \item nur 70\,\% der Breite für Inhalt
+  \item breite Grafiken werden kleiner}
+\renewcommand{\designpick}{Folien eher hoch als breit sind: Text, Code, Schritte.}
+
+\setbeamersize{text margin left=48mm, text margin right=10mm}
+\setbeamertemplate{footline}{}
+\setbeamertemplate{background}{\dsg@setmode
+  \begin{tikzpicture}[remember picture, overlay]
+    \dsg@ifnormal{\colorlet{dsgCol}{bgColor}}{\colorlet{dsgCol}{dsgModeBg}}
+    \fill[dsgCol] (current page.south west) rectangle ([xshift=40mm]current page.north west);
+    \fill[borderColor] ([xshift=40mm]current page.south west) rectangle ([xshift=40.6mm]current page.north west);
+    \node[hex=7mm, fill=bgColor, draw=borderColor, line width=\designRim, text=white, font=\footnotesize\bfseries]
+      at ([xshift=40.3mm, yshift=8mm]current page.south west) {\insertframenumber};
+    \node[anchor=south west, opacity=0.25, text=white, font=\ttfamily\scriptsize] at ([xshift=4mm, yshift=3mm]current page.south west) {\textls[40]{\inf}};
+  \end{tikzpicture}}
+\setbeamertemplate{frametitle}{\dsg@setmode
+  \begin{tikzpicture}[remember picture, overlay]
+    \dsg@ifnormal{%
+      \node[hex=9mm, fill=bgColor, draw=borderColor, line width=\designRim, text=white, font=\bfseries]
+        at ([xshift=9mm, yshift=-9mm]current page.north west) {\slide@chapter};
+      \node[anchor=north west, text=white!70!bgColor, font=\footnotesize\bfseries, text width=31mm, inner sep=0pt]
+        at ([xshift=4mm, yshift=-16mm]current page.north west) {\raggedright\boxtitle{\insertsectionhead}};}{%
+      \dsg@modehex{[xshift=11mm, yshift=-11mm]current page.north west}{14mm}{9mm}
+      \node[anchor=north west, text=white, font=\footnotesize\bfseries, text width=32mm] at ([xshift=4mm, yshift=-20mm]current page.north west) {\dsg@tag};}
+    \dsg@ifnormal{\def\dsg@ty{-22mm}}{\def\dsg@ty{-31mm}}
+    \node[anchor=north west, inner sep=0pt, text=white, font=\fontsize{15}{18}\selectfont\bfseries, text width=33mm]
+      at ([xshift=4mm, yshift=\dsg@ty]current page.north west) {\raggedright\insertframetitle};
+  \end{tikzpicture}\vspace*{2mm}}
+
+\setbeamertemplate{title page}{%
+  \begin{tikzpicture}[remember picture, overlay]
+    \fill[pageBg] (current page.south west) rectangle (current page.north east);
+    \foreach \x/\y/\n in {96/12/1, 119.5/25.5/2, 143/12/3, 166.5/25.5/4, 96/39/5, 119.5/52.5/6}
+      \dsg@photo{[xshift=\x mm, yshift=-\y mm]current page.north west}{29mm}{\n};
+    \foreach \x/\y in {143/39, 166.5/52.5, 143/66, 96/66, 119.5/79.5}
+      \node[hex=29mm, fill=borderColor!12!pageBg, draw=borderColor!50!pageBg, line width=0.9mm] at ([xshift=\x mm, yshift=-\y mm]current page.north west) {};
+    \fill[bgColor] (current page.south west) rectangle ([xshift=76mm]current page.north west);
+    \fill[borderColor] ([xshift=76mm]current page.south west) rectangle ([xshift=76.8mm]current page.north west);
+    \node[anchor=north west, text=white!70!bgColor, font=\footnotesize\bfseries] at ([xshift=10mm, yshift=-10mm]current page.north west)
+      {\boxtitle{\slide@subject\ · Kapitel \slide@chapter}};
+    \node[anchor=south west, inner sep=0pt, text=white, font=\fontsize{32}{36}\selectfont\bfseries, text width=60mm]
+      at ([xshift=10mm, yshift=2mm]current page.west) {\inserttitle};
+    \node[anchor=north west, inner sep=0pt, text=primaryLight!40!white, font=\normalsize, text width=60mm] at ([xshift=10mm, yshift=-3mm]current page.west) {\insertsubtitle};
+    \pic at ([xshift=10mm, yshift=7mm]current page.south west) {infschool logo={text=white, font=\normalsize}};
+  \end{tikzpicture}}
+
+\renewcommand{\sectionslide}[3]{{\setbeamertemplate{footline}{}\setbeamertemplate{background}{}
+\begin{frame}[plain]
+  \begin{tikzpicture}[remember picture, overlay]
+    \fill[bgColor] (current page.south west) rectangle ([xshift=76mm]current page.north west);
+    \fill[borderColor] ([xshift=76mm]current page.south west) rectangle ([xshift=76.8mm]current page.north west);
+    \node[hex=40mm, fill=bgColor, draw=borderColor, line width=1.4mm, text=white, font=\fontsize{30}{34}\selectfont\bfseries]
+      at ([xshift=76.4mm]current page.west) {#1};
+    \node[anchor=south west, text=pageTitle, font=\fontsize{26}{30}\selectfont\bfseries] at ([xshift=102mm, yshift=1mm]current page.west) {#2};
+    \node[anchor=north west, text=mutedFg, font=\large, text width=50mm] at ([xshift=102mm, yshift=-3mm]current page.west) {#3};
+  \end{tikzpicture}
+\end{frame}}}

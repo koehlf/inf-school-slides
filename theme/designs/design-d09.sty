@@ -1,0 +1,59 @@
+% D09 «Fussband» (new): the title stands alone at the top; all chrome moves into a footer band
+\ProvidesPackage{design-d09}
+\renewcommand{\designnumber}{D09}
+\renewcommand{\designname}{Fussband}
+\renewcommand{\designidea}{Oben steht nur der Titel. Fach, Kapitel, Abschnitt und Seitenzahl wandern in ein Band am unteren Rand, wie die Fusszeile im Skript.}
+\renewcommand{\designprops}{%
+  \item Titel gross, ohne Rahmen
+  \item Fussband 7\,mm: Fach · Kapitel · Abschnitt, Seitenzahl
+  \item Modus: Sechseck vor dem Titel, Fussband hell}
+\renewcommand{\designpros}{%
+  \item Titel springt sofort ins Auge
+  \item Orientierung da, aber im Hintergrund}
+\renewcommand{\designcons}{%
+  \item unten oft vom Kopf der Klasse verdeckt
+  \item Modus weniger auffällig als bei einem Kopfband}
+\renewcommand{\designpick}{der Titel das Wichtigste auf der Folie sein soll.}
+
+\setbeamersize{text margin left=14mm, text margin right=12mm}
+\setbeamertemplate{footline}{\dsg@setmode
+  \begin{tikzpicture}[remember picture, overlay]
+    \dsg@ifnormal{\colorlet{dsgFoot}{bgColor}}{\colorlet{dsgFoot}{dsgModeBg}}
+    \fill[dsgFoot] (current page.south west) rectangle ([yshift=7mm]current page.south east);
+    \fill[borderColor] ([yshift=7mm]current page.south west) rectangle ([yshift=7.4mm]current page.south east);
+    \node[anchor=west, text=white!80!dsgFoot, font=\footnotesize\bfseries] at ([xshift=14mm, yshift=3.5mm]current page.south west)
+      {\dsg@ifnormal{\boxtitle{\slide@subject\ · Kapitel \slide@chapter\ · \insertsectionhead}}{\dsg@tag}};
+    \node[opacity=0.12, text=white, font=\ttfamily\scriptsize] at ([xshift=20mm, yshift=3.5mm]current page.south) {\textls[60]{\inf\school}};
+    \node[hex=9mm, fill=bgColor, draw=borderColor, line width=\designRim, text=white, font=\footnotesize\bfseries]
+      at ([xshift=-14mm, yshift=5mm]current page.south east) {\insertframenumber};
+  \end{tikzpicture}}
+\setbeamertemplate{frametitle}{\dsg@setmode\vspace*{3mm}%
+  \dsg@ifnormal{}{\begin{tikzpicture}[remember picture, overlay]
+    \dsg@modehex{[xshift=7.5mm, yshift=-8.5mm]current page.north west}{9mm}{6.3mm}
+  \end{tikzpicture}}%
+  {\color{pageTitle}\fontsize{22}{26}\selectfont\bfseries\insertframetitle}\par\vspace*{3mm}}
+
+\setbeamertemplate{title page}{%
+  \begin{tikzpicture}[remember picture, overlay]
+    \foreach \x/\n in {0/1, 1/2, 2/3, 3/4, 4/5, 5/6}
+      \dsg@photo{[xshift=25mm+\x*22mm, yshift={27mm+mod(\x,2)*12.5mm}]current page.south west}{25mm}{\n};
+    \node[anchor=south west, text=termColor, font=\footnotesize\bfseries] at ([xshift=14mm, yshift=-12mm]current page.north west) {\boxtitle{\slide@subject\ · Kapitel \slide@chapter}};
+    \node[anchor=north west, text=pageTitle, font=\fontsize{36}{40}\selectfont\bfseries] at ([xshift=14mm, yshift=-14mm]current page.north west) {\inserttitle};
+    \node[anchor=north west, text=mutedFg, font=\large] at ([xshift=14mm, yshift=-29mm]current page.north west) {\insertsubtitle};
+    \fill[bgColor] (current page.south west) rectangle ([yshift=10mm]current page.south east);
+    \fill[borderColor] ([yshift=10mm]current page.south west) rectangle ([yshift=10.4mm]current page.south east);
+    \node[anchor=west, text=white!80!bgColor, font=\footnotesize] at ([xshift=14mm, yshift=5mm]current page.south west) {\insertauthor};
+    \pic at ([xshift=-14mm, yshift=3.5mm]current page.south east) {infschool logo={text=white, align=right, font=\normalsize}};
+  \end{tikzpicture}}
+
+\renewcommand{\sectionslide}[3]{{\setbeamertemplate{footline}{}
+\begin{frame}[plain]
+  \begin{tikzpicture}[remember picture, overlay]
+    \node[hex=26mm, fill=bgColor, draw=borderColor, line width=1mm, text=white, font=\fontsize{24}{28}\selectfont\bfseries]
+      at ([yshift=-24mm]current page.north) {#1};
+    \node[text=pageTitle, font=\fontsize{30}{34}\selectfont\bfseries] at ([yshift=-4mm]current page.center) {#2};
+    \node[text=mutedFg, font=\large] at ([yshift=-15mm]current page.center) {#3};
+    \fill[bgColor] (current page.south west) rectangle ([yshift=7mm]current page.south east);
+    \fill[borderColor] ([yshift=7mm]current page.south west) rectangle ([yshift=7.4mm]current page.south east);
+  \end{tikzpicture}
+\end{frame}}}
