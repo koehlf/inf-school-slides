@@ -31,6 +31,8 @@ All six designs are built at **14 pt** base. Slides can step up or down per fram
 | default | 14.4 pt | 32 ‰ | 25 pt | text with figures, longer lists |
 | `text=small` | 12 pt | 26.5 ‰ | 21 pt | the two long step lists («Selectionsort», «Finden einer Eulertour»; originals: 28.6 ‰) |
 
+[`sizes.png`](sizes.png): the original slide, then D01, D06, B1, B5 (large, default, default, small). The two `overview` images still show the earlier 12 pt builds.
+
 At these sizes D01, D02, D06 and B1 fit every slide. **B2 and B5 overflow on several slides** (figures, Bäume, Pfade, Merge):
 B2 loses width to its strip, B5 reserves 15 mm for the title and 11 mm for the progress line, and set B spaces lists more widely.
 
