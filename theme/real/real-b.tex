@@ -1,10 +1,11 @@
 % Real slides in a set-B design (M0-3): a lesson ported 1:1 from the Impress decks.
 %   \def\slidedesign{B1}    design file sbB1.sty (from theme/designs-b/)
 %   \def\slidepalette{dark} light or dark
-%   \def\realdeck{sorting}  body file real-sorting.tex or real-euler.tex
+%   \def\realdeck{sorting}  body file real-sorting.tex, real-euler.tex or real-krypto.tex (Kryptologie colour)
 % Build all: theme/real/build_real.sh
 \ifdefined\slidedesign\else\def\slidedesign{B1}\fi
 \ifdefined\realdeck\else\def\realdeck{sorting}\fi
+\def\realkrypto{krypto}\ifx\realdeck\realkrypto\def\sbsubjectbase{SeaGreen}\fi
 \documentclass[aspectratio=169,12pt,t,xcolor={dvipsnames}]{beamer}
 \usepackage{sb\slidedesign}
 \usepackage{pifont}

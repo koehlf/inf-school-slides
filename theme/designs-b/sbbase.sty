@@ -51,9 +51,16 @@
 % The scripts define Rhodamine!90!black (CMYK) and mix it with black; these
 % are the RGB values those CMYK colours render as (poppler), fixed in RGB so
 % that the projector shows the same colours in every viewer.
+% Another subject: \def\sbsubjectbase{SeaGreen} before \usepackage, the scripts' recipe from that base.
+\ifdefined\sbsubjectbase
+  \colorlet{baseColor}{\sbsubjectbase}
+  \colorlet{primaryDark}{baseColor!30!black}
+  \colorlet{primaryLight}{baseColor!80!black}
+\else
 \definecolor{baseColor}{HTML}{DC3D9A}     % Rhodamine!90!black
 \definecolor{primaryDark}{HTML}{5D4750}   % baseColor!30!black
 \definecolor{primaryLight}{HTML}{B94F8A}  % baseColor!80!black
+\fi
 \colorlet{primary}{primaryLight}
 
 \newif\ifsbdark
@@ -64,6 +71,7 @@
   \definecolor{textFg}{HTML}{EFEAF0}
   \definecolor{mutedFg}{HTML}{ADA3AF}
   \definecolor{termColor}{HTML}{ED9ACB}       % baseColor!50!white, 9:1 on pageBg
+  \ifdefined\sbsubjectbase\colorlet{termColor}{baseColor!50!white}\fi
   \colorlet{borderColor}{primaryLight}
   \colorlet{bandBg}{primaryDark}
   \colorlet{bandFg}{white}
@@ -108,6 +116,7 @@
   \definecolor{textFg}{HTML}{1C171D}
   \definecolor{mutedFg}{HTML}{5E5661}
   \definecolor{termColor}{HTML}{A0457A}  % between primaryLight and primaryDark: 5.8:1 on white
+  \ifdefined\sbsubjectbase\colorlet{termColor}{baseColor!45!black}\fi
   \colorlet{borderColor}{primaryLight}
   \colorlet{bandBg}{primaryDark}
   \colorlet{bandFg}{white}
@@ -239,7 +248,9 @@
   \sbox{\sbimgbox}{\includegraphics{#1}}%
   \pgfmathsetmacro{\sbscale}{max((#2)/\wd\sbimgbox, (#3)/\ht\sbimgbox)}%
   \includegraphics[scale=\sbscale]{#1}}
-\NewDocumentCommand{\sbphotohex}{O{} m m m O{1.2mm}}{%
+% without a photo (subject has no cover images yet): an empty hexagon
+\NewDocumentCommand{\sbphotohex}{O{} m m m O{1.2mm}}{\edef\sbphotofile{#4}\ifdefempty{\sbphotofile}%
+  {\node[hex=#3, fill=hexFill, draw=hexRim, line width=#5, #1] at (#2) {};}{%
   \node[hex=#3, fill=white, #1, path picture={
       \begin{scope}[blend mode=luminosity]
         \node[inner sep=0pt] at (path picture bounding box.center)
@@ -249,7 +260,7 @@
         \fill[coverTint] (path picture bounding box.south west)
           rectangle (path picture bounding box.north east);
       \end{scope}}] at (#2) {};
-  \node[hex=#3, draw=borderColor, line width=#5, #1] at (#2) {};}
+  \node[hex=#3, draw=borderColor, line width=#5, #1] at (#2) {};}}
 
 % ---------------------------------------------------------------- boxes
 \newcommand{\boxtitle}[1]{\sbcaps{#1}}

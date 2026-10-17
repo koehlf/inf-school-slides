@@ -1,7 +1,7 @@
 % Real slides in a set-D design (M0-3): a lesson ported 1:1 from the Impress decks.
 %   \def\slidedesign{d01}   design file design-d01.sty (from theme/designs/)
 %   \def\slidepalette{dark} light or dark
-%   \def\realdeck{sorting}  body file real-sorting.tex or real-euler.tex
+%   \def\realdeck{sorting}  body file real-sorting.tex, real-euler.tex or real-krypto.tex (Kryptologie colour)
 % Build all: theme/real/build_real.sh
 \ifdefined\slidedesign\else\def\slidedesign{d01}\fi
 \ifdefined\slidepalette\else\def\slidepalette{dark}\fi
@@ -13,7 +13,7 @@
 \usepackage{infschoolslides}
 \usepackage{pifont}
 \usepackage{pgfplots}\pgfplotsset{compat=1.18}
-\slidecolor{Rhodamine!90!black}
+\IfStrEq{\realdeck}{krypto}{\slidecolor{SeaGreen}}{\slidecolor{Rhodamine!90!black}}
 \makeatletter
 \usepackage{designs-common}
 \usepackage{design-\slidedesign}

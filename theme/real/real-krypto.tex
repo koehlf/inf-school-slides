@@ -1,0 +1,255 @@
+% Real slides: «Kryptologie» (Einführung), ported 1:1 from references/krypto_intro.odp.
+% Slides that only reveal the next part of the same slide are one frame with overlays here.
+% The original has no section slides; the two \section commands only feed the chrome.
+% Pictures from the deck: theme/real/pictures/krypto/; the Polybios square and the punch card are typeset.
+% Input by real-d.tex or real-b.tex, which define \RTitle, \RSection and \RTask; the drivers set the Kryptologie colour.
+\slidesubject{Kryptologie}
+\slidechapter{1}
+\slidecoverimages{}
+\usetikzlibrary{shapes.symbols}
+\title{Kryptologie}
+\subtitle{Geheimschriften und Kryptosysteme}
+\author{Florian Köhl}
+
+% a box of the communication diagrams: \kbox{name}{position}{text}
+\newcommand{\kbox}[3]{\node[fill=primaryDark, draw=borderColor, line width=0.6pt, rounded corners=\designInnerArc, text=white,
+  minimum width=27mm, minimum height=8mm, font=\small] (#1) at (#2) {#3};}
+% the communication diagram; #1: true for a cryptosystem (key, Verschlüsselung)
+\newcommand{\kdiagram}[1]{%
+  \begin{tikzpicture}[x=8.6mm, y=10mm]
+    \node[font=\small, text=mutedFg] at (0,3.2) {Sender};
+    \node[font=\small, text=mutedFg] at (9,3.2) {Empfänger};
+    \kbox{k1}{0,2}{Klartext} \kbox{g1}{0,0}{Geheimtext}
+    \kbox{k2}{9,2}{Klartext} \kbox{g2}{9,0}{Geheimtext}
+    \draw[pointer, draw=borderColor] (k1) -- node[right, font=\footnotesize, text=textFg]
+      {\ifx#1t\textbf{Ver}schlüsselung\else Chiffrierung\fi} (g1);
+    \draw[pointer, draw=borderColor] (g2) -- node[left, font=\footnotesize, text=textFg]
+      {\ifx#1t\textbf{Ent}schlüsselung\else Dechiffrierung\fi} (k2);
+    \node[cloud, cloud puffs=11, draw=borderColor, fill=primaryDark, text=white, font=\small,
+      minimum width=26mm, minimum height=11mm] (m) at (4.5,0) {Medium};
+    \draw[edgeCol, line width=1pt, dashed, -{Stealth}] (g1) -- (m);
+    \draw[edgeCol, line width=1pt, dashed, -{Stealth}] (m) -- (g2);
+    \foreach \b in {k1,k2} \draw[borderColor, dashed, rounded corners=2mm]
+      ([shift={(-4mm,-14mm)}]\b.south west |- g1.south) rectangle ([shift={(4mm,3mm)}]\b.north east);
+    \ifx#1t
+      \node[anchor=west, inner sep=0pt] at ([xshift=2mm]k1.east) {\includegraphics[height=9mm]{real/pictures/krypto/key.png}};
+      \node[anchor=west, inner sep=0pt] at ([xshift=2mm]g2.east) {\includegraphics[height=9mm]{real/pictures/krypto/key.png}};
+    \fi
+  \end{tikzpicture}}
+
+\begin{document}
+
+\RTitle
+
+\begin{frame}{Ein bisschen Geschichte …}
+  \begin{itemize}
+    \only<1>{\item Wie alt ist die Kryptologie?}%
+    \only<2>{\item Die \term{Kryptologie} ist (fast) so alt wie die Schrift.
+    \begin{itemize}
+      \item Erste Schriften ab ca. 2700 v.\,Chr.
+      \item Lesen und Schreiben war lange ein Privileg.
+      \item Mit zunehmender Bildung kam das Bedürfnis nach geheimer Kommunikation.
+      \item Die Kryptologie war geboren!
+    \end{itemize}}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Was ist Kryptologie?}
+  \vfill
+  \begin{center}
+    \LARGE Kryptologie\\[2mm] $=$\\[2mm] \term{Kryptographie} $+$ \term{Krypt(o)analyse}
+  \end{center}
+  \vfill
+\end{frame}
+
+\begin{frame}{Kryptographie}
+  \begin{itemize}
+    \item \term{«Verschleiern»} von Information
+    \begin{itemize}
+      \item Altgriechisch «geheim schreiben»
+      \item Entwerfen von kryptographischen Systemen
+      \item Umwandeln von Texten zu Geheimtexten
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Krypt(o)analyse}
+  \begin{itemize}
+    \item \term{Information} aus «verschleierten» Texten \term{gewinnen}
+    \begin{itemize}
+      \item Analyse von kryptographischen Systemen
+      \item Entschlüsseln von Geheimtexten
+      \item Brechen (Knacken) von Kryptosystemen
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[doit={zu zweit}]{Let's get cracking!}
+  \begin{itemize}
+    \item Was steht denn da?
+    \begin{itemize}
+      \item Versucht, die «geheimen» Botschaften zu knacken!
+      \item Wie wurden diese erstellt?
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\section{Geheimschriften}
+
+\begin{frame}{Geheimschriften}
+  \begin{itemize}
+    \item Eine Geheimschrift ist ein \term{Paar von Algorithmen}.
+    \begin{itemize}
+      \item Algorithmus = «Verfahren»
+    \end{itemize}
+    \item \term{Chiffrierung}:
+    \begin{itemize}
+      \item Klartext → Geheimtext
+    \end{itemize}
+    \item \term{Dechiffrierung}:
+    \begin{itemize}
+      \item Geheimtext → Klartext
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Grundbegriffe}
+  \vspace*{4mm}
+  \centering\kdiagram{f}
+\end{frame}
+
+\begin{frame}{Alphabete und Texte}
+  \begin{itemize}
+    \only<1>{\item Was ist eigentlich ein Text?}%
+    \only<2>{%
+    \item Ein \term{Alphabet} ist eine \textbf{Menge von Symbolen}.
+    \begin{itemize}
+      \item Lateinische Grossbuchstaben: $\{$A, B, C, …, X, Y, Z$\}$
+      \item Das Computeralphabet: $\{0, 1\}$
+    \end{itemize}
+    \item Ein \term{Text} ist eine endliche \textbf{Folge von Symbolen} eines bestimmten Alphabets.
+    \begin{itemize}
+      \item \texttt{ICHBINEINTEXT}
+      \item \texttt{01101001}
+    \end{itemize}}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Geheimschriften}
+  \begin{itemize}
+    \item Eine Geheimschrift ist ein Paar von Verfahren / Algorithmen:
+    \begin{itemize}
+      \item \term{Chiffrierung}: Klartext → Geheimtext
+      \item \term{Dechiffrierung}: Geheimtext → Klartext
+    \end{itemize}
+    \item Zusätzlich: Angabe des \term{Klartext}- und des \term{Geheimtextalphabets}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Geheimschrift: Beispiel}
+  \begin{itemize}
+    \item Klartextalphabet: $\{$A, B, C, …, X, Y, Z$\}$
+    \item Geheimtextalphabet:\\
+      $\{$\foreach \c [count=\i] in {72,...,97} {\ding{\c}\ifnum\i<26 ,\,\allowbreak\fi}$\}$
+    \item Chiffrierung / Dechiffrierung nach Position im Alphabet (A = \ding{72}, B = \ding{73}, …)
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Geheimschrift: Beispiel}
+  \begin{itemize}
+    \item \term{Atbash}
+    \item Chiffrieren: A = Z, B = Y, C = X, …
+    \item Dechiffrieren?
+    \begin{itemize}
+      \item \texttt{HKRVTOVRM HKRVTOVRM ZM WVI DZMW …}
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Sicher?}
+  \begin{itemize}
+    \item Das Chiffrierungs- bzw. das Dechiffrierungs\term{verfahren} muss geheim gehalten werden.
+    \item Wenn diese einem Angreifer bekannt sind, so ist die Geheimschrift nicht sicher!
+  \end{itemize}
+\end{frame}
+
+\section{Kryptosysteme}
+
+\begin{frame}{Kerckhoffs' Prinzip}
+  \begin{concept}[Kerckhoffs' Prinzip]
+    Die Sicherheit eines Verschlüsselungsverfahrens darf \term{nicht} von der Geheimhaltung des Verfahrens
+    selbst abhängen.
+  \end{concept}
+  \begin{itemize}
+    \item Bei Geheimschriften ist dies nicht gegeben!
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Kryptosysteme}
+  \begin{itemize}
+    \item Bei einem \term{Kryptosystem} ist das Verschlüsselungsverfahren bekannt.
+    \item Das Verfahren benötigt jedoch zusätzlich zum Klartext einen weiteren Input: \term{einen Schlüssel}.
+    \item (Nur) der Schlüssel muss geheim gehalten werden!
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Kryptosysteme}
+  \vspace*{4mm}
+  \centering\kdiagram{t}
+\end{frame}
+
+\begin{frame}{Beispiel: Lochkarten}
+  \centering\vspace*{4mm}
+  \begin{tikzpicture}[x=17mm, y=9mm]
+    \foreach \row [count=\r] in {{A,T,X,O},{P,R,S,E},{I,G,V,M},{C,N,R,A},{E,T,L,O}}
+      \foreach \l [count=\c] in \row
+        \node[cell, minimum width=16mm, minimum height=8mm, font=\bfseries] (z\r\c) at (\c,-\r) {\l};
+    % the punch card: everything except the holes T, O, P, S, E, C, R, E, T
+    \begin{scope}[visible on=<2->]
+      \foreach \r/\c in {1/1, 1/3, 2/2, 3/1, 3/2, 3/3, 3/4, 4/2, 4/4, 5/3, 5/4}
+        \node[fill=mutedFg, draw=mutedFg, minimum width=16mm, minimum height=8mm, rounded corners=\designInnerArc] at (z\r\c) {};
+    \end{scope}
+  \end{tikzpicture}
+\end{frame}
+
+\begin{frame}[doit={Auftrag}]{Ihr seid dran!}
+  \begin{itemize}
+    \item Geheimschrift oder Kryptosystem?
+    \item Gebt jeweils an:
+    \begin{itemize}
+      \item Ist es eine Geheimschrift oder ein Kryptosystem?
+      \item Verfahren zur Verschlüsselung / Chiffrierung
+      \item Bei KS: Was ist der Schlüssel?
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Geheimschrift der Freimaurer}
+  \centering\vspace*{2mm}
+  \includegraphics[height=0.7\textheight]{real/pictures/krypto/freimaurer.png}
+\end{frame}
+
+\begin{frame}{Skytale}
+  \centering\vspace*{2mm}
+  \includegraphics[width=0.75\textwidth]{real/pictures/krypto/skytale.png}
+\end{frame}
+
+\begin{frame}{Polybios-Quadrat}
+  \centering\vspace*{4mm}
+  {\Large\ttfamily
+  \begin{tabular}{c|ccccc}
+       & 0 & 1 & 2 & 3  & 4 \\ \hline
+    0  & A & B & C & D  & E \\
+    1  & F & G & H & IJ & K \\
+    2  & L & M & N & O  & P \\
+    3  & Q & R & S & T  & U \\
+    4  & V & W & X & Y  & Z \\
+  \end{tabular}}
+\end{frame}
+
+\begin{frame}{Caesar-Verschlüsselung}
+  \centering\vspace*{2mm}
+  \includegraphics[height=0.7\textheight]{real/pictures/krypto/caesar.png}
+\end{frame}
+
+\end{document}

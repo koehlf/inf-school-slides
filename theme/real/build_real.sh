@@ -1,8 +1,9 @@
 #!/bin/sh
-# Builds the real decks (sorting, euler) in the shortlisted designs, light and dark,
+# Builds the real decks (sorting, euler, krypto) in the shortlisted designs, light and dark,
 # into review/real/<deck>-<design>-<palette>.pdf.
 #   theme/real/build_real.sh               all
 #   theme/real/build_real.sh D01 B5        some designs
+#   DECKS=krypto theme/real/build_real.sh  some decks
 set -e
 repo=$(cd "$(dirname "$0")/../.." && pwd)
 work=$repo/build/real; out=$repo/review/real
@@ -18,7 +19,7 @@ build() { # driver design palette deck jobname
 }
 designs=${*:-"D01 D02 D06 B1 B2 B5"}
 for d in $designs; do
-  for deck in sorting euler; do
+  for deck in ${DECKS:-sorting euler krypto}; do
     for p in dark light; do
       case $d in
         D*) build real-d.tex "$(echo "$d" | tr D d)" "$p" "$deck" "$deck-$d-$p" ;;
