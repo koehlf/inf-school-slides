@@ -1,0 +1,14 @@
+% Checks the VS Code recipes (design.md §7.2): the palette comes from
+% -usepretex, the theme and the shared images are found via TEXINPUTS.
+\ifdefined\slidepalette\else\def\slidepalette{(not set)}\fi
+\documentclass[aspectratio=169,12pt]{beamer}
+\setbeamertemplate{navigation symbols}{}
+\begin{document}
+\begin{frame}{Recipe test}
+  \begin{itemize}
+    \item Palette: \texttt{\slidepalette}
+    \item Theme on TEXINPUTS: \IfFileExists{infschoolslides.sty}{yes}{no (expected before M0-2)}
+    \item Images on TEXINPUTS: \IfFileExists{playing_cards/2h.png}{yes}{no (expected before M0-2)}
+  \end{itemize}
+\end{frame}
+\end{document}

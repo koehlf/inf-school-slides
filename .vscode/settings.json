@@ -1,0 +1,36 @@
+{
+  // LaTeX Workshop (design.md §7.2): the theme and the shared images are found
+  // via TEXINPUTS; aux files and PDFs go to build/work/, deck folders stay clean.
+  "latex-workshop.latex.outDir": "%WORKSPACE_FOLDER%/build/work/%RELATIVE_DIR%",
+  "latex-workshop.latex.autoBuild.run": "onSave",
+  "latex-workshop.latex.recipe.default": "first",
+  "latex-workshop.latex.recipes": [
+    { "name": "deck (dark)", "tools": ["latexmk-dark"] },
+    { "name": "deck (light)", "tools": ["latexmk-light"] }
+  ],
+  "latex-workshop.latex.tools": [
+    {
+      "name": "latexmk-dark",
+      "command": "latexmk",
+      "args": [
+        "-pdf", "-synctex=1", "-interaction=nonstopmode", "-file-line-error",
+        "-outdir=%OUTDIR%",
+        "-usepretex=\\def\\slidepalette{dark}",
+        "%DOC%"
+      ],
+      "env": { "TEXINPUTS": "%WORKSPACE_FOLDER%/theme//:%WORKSPACE_FOLDER%/images//:" }
+    },
+    {
+      "name": "latexmk-light",
+      "command": "latexmk",
+      "args": [
+        "-pdf", "-synctex=1", "-interaction=nonstopmode", "-file-line-error",
+        "-outdir=%OUTDIR%",
+        "-usepretex=\\def\\slidepalette{light}",
+        "-jobname=%DOCFILE%-light",
+        "%DOC%"
+      ],
+      "env": { "TEXINPUTS": "%WORKSPACE_FOLDER%/theme//:%WORKSPACE_FOLDER%/images//:" }
+    }
+  ]
+}
