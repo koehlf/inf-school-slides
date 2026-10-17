@@ -1,0 +1,85 @@
+% icons.sty -- the icons inside the box hexagons, drawn as one family:
+% a 24 x 24 grid, white outlines of one line width (\designIconStroke, the
+% width of the hexagon rims), round ends.
+% Each icon is drawn on a grid of <size> x <size>, see below.
+\ProvidesPackage{theme/slideicons}
+
+\newlength{\iconunit}
+\tikzset{
+  boxicon/.style={
+    x=\iconunit, y=\iconunit,
+    line width=\designIconStroke, line cap=round, line join=round,
+    draw=white, fill=none
+  }
+}
+
+% As a pic, centred on its position:  \pic at (hex.center) {boxicon={bulb}{6mm}};
+\tikzset{
+  pics/boxicon/.style 2 args={code={%
+    \setlength{\iconunit}{\dimexpr #2/24\relax}%
+    \begin{scope}[boxicon, shift={(-12,-12)}]
+      \csname boxicon@#1\endcsname
+    \end{scope}}}
+}
+% In running text: \boxicon{bulb}{6mm}
+\newcommand{\boxicon}[2]{\tikz[baseline=-0.5ex]{\pic {boxicon={#1}{#2}};}}
+
+% light bulb: definitions and concepts
+\@namedef{boxicon@bulb}{%
+  \draw (9,7.6) -- (7.4,9.4) arc[start angle=225, end angle=-45, radius=6.5]
+        -- (15,7.6) -- cycle;
+  \draw (9.6,4.8) -- (14.4,4.8);
+  \draw (10.6,2) -- (13.4,2);}
+
+% i in a circle: information
+\@namedef{boxicon@info}{%
+  %\draw (12,12) circle[radius=9.5];
+  %line width=0.8*\designIconStroke
+  \draw[line width=1.5*\designIconStroke] (12,6.5) -- (12,11.5);
+  \fill[white] (12,16) circle[radius=2];}
+
+% magnifying glass: examples
+\@namedef{boxicon@example}{%
+  \draw (10,14) circle[radius=6.5];
+  \draw (14.6,9.4) -- (20.5,3.5);}
+
+% question mark: Denkanstoss
+\@namedef{boxicon@think}{%
+  \draw (7.2,15.8) arc[start angle=165, end angle=-40, radius=5]
+        .. controls (13.5,9.5) and (12,9.2) .. (12,7.5);
+  \fill[white] (12,3.4) circle[radius=1.4];}
+
+% pencil: tasks
+\@namedef{boxicon@task}{%
+  \begin{scope}[shift={(12,12)}, rotate=45, xshift=2.25\iconunit]
+    \draw (-12,0) -- (-8.5,2.75) -- (7.5,2.75) -- (7.5,-2.75) -- (-8.5,-2.75) -- cycle;
+    \draw (4.5,2.75) -- (4.5,-2.75);
+  \end{scope}}
+
+% check mark: solutions
+\@namedef{boxicon@solution}{%
+  \draw (4.5,12.5) -- (9.5,7.5) -- (19.5,17.5);}
+
+% list with check boxes: "Kannst du das?"
+\@namedef{boxicon@checklist}{%
+  \foreach \y in {18,12,6} {
+    \draw[line width=0.8*\designIconStroke] (4,\y-2) rectangle (8,\y+2);
+    \draw (11.5,\y) -- (20,\y);
+  }}
+
+% two snakes: Python code
+\@namedef{boxicon@python}{%
+  \begin{scope}[rounded corners=2\iconunit]
+    \draw (12,15) -- (3,15) -- (3,7) -- (8,7);
+    \draw (12,9) -- (21,9) -- (21,17) -- (16,17);
+    \draw (8,15) -- (8,21) -- (16,21) -- (16,12) -- (8,12) -- (8,3)
+          -- (16,3) -- (16,9);
+  \end{scope}
+  \fill[white] (11,18) circle[radius=0.5*\designIconStroke];
+  \fill[white] (13,6) circle[radius=0.5*\designIconStroke];}
+
+% stacked layers: Vertiefung
+\@namedef{boxicon@deepdive}{%
+  \draw (12,21) -- (21,16.5) -- (12,12) -- (3,16.5) -- cycle;
+  \draw (3,11.5) -- (12,7) -- (21,11.5);
+  \draw (3,6.5) -- (12,2) -- (21,6.5);}

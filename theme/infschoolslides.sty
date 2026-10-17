@@ -1,0 +1,339 @@
+% infschoolslides.sty -- slide theme derived from the inf.school script layout
+% (books repo, common/layout/). Own copy: no file of the books repo is loaded.
+%
+% Before \documentclass (or with -jobname builds) you may set
+%   \def\slidepalette{dark}     light (default) or dark
+% In the preamble:
+%   \slidecolor{Rhodamine!90!black}   base colour of the subject (as colors.sty)
+%   \slidechapter{3}                  chapter number shown in the header hexagon
+%   \slidesubject{Algorithmik}        subject name for the title slide
+\ProvidesPackage{theme/infschoolslides}
+
+\RequirePackage[T1]{fontenc}
+\RequirePackage[ngerman]{babel}
+\RequirePackage[sfdefault,lining]{FiraSans}
+\RequirePackage[scaled=0.9,lining]{FiraMono}
+\RequirePackage{newtxsf}
+\RequirePackage{tikz}
+\usetikzlibrary{shapes.geometric,positioning,arrows.meta,quotes,babel,calc,decorations.pathreplacing}
+\RequirePackage[most]{tcolorbox}
+\RequirePackage{microtype}
+\RequirePackage{listings}
+\RequirePackage{xstring}
+\RequirePackage{accsupp}
+
+% ------------------------------------------------------------------ tokens
+% Same names and roles as the scripts' design.sty, values scaled from an A4
+% page (297 mm high) to a 16:9 Beamer page (90 mm high) where it matters.
+\newcommand{\designHexRound}{0.075}
+\newcommand{\hexround}[1]{\designHexRound*#1}
+\newcommand{\designArc}{0.9mm}
+\newcommand{\designInnerArc}{0.5mm}
+\newcommand{\designRim}{0.35mm}
+\newlength{\designIconStroke}\setlength{\designIconStroke}{0.35mm}
+\newcommand{\designBoxRule}{0.6pt}
+\newcommand{\designBandRule}{0.4mm}
+\newcommand{\designLeftRule}{2pt}
+\newcommand{\designBoxSideRule}{1pt}
+\newcommand{\designTitlePad}{0.7mm}
+\newcommand{\designHeaderHeight}{9mm}
+\newcommand{\designFooterHeight}{3mm}
+\newcommand{\designHeaderHex}{14mm}    % chapter hexagon hanging into the header
+\newcommand{\designPageHex}{7.5mm}     % page number hexagon on the footer
+\newcommand{\designChapterRule}{1.5mm}
+\newcommand{\designIconSize}{7.5mm}
+\newcommand{\designIconSizeLeft}{6.5mm}
+\newcommand{\designIconGlyph}{5.4mm}
+\newcommand{\designIconGlyphLeft}{4.7mm}
+\RequirePackage{theme/slideicons}
+\RequirePackage{theme/slidelogo}
+
+\tikzset{hex/.style={regular polygon, regular polygon sides=6, inner sep=0,
+  rounded corners=\hexround{#1}, minimum height=#1}}
+
+% ------------------------------------------------------------------ colours
+% Roles as in the scripts' colors.sty / definitions.sty; the dark palette is
+% new (the scripts have none) and keeps the bands, rims and boxes recognisable.
+\ifdefined\slidepalette\else\def\slidepalette{light}\fi
+\colorlet{baseColor}{SeaGreen}
+\newcommand{\slidecolor}[1]{\colorlet{baseColor}{#1}\slide@palette}
+\newcommand{\slide@palette}{%
+  \colorlet{primaryDark}{baseColor!30!black}%
+  \colorlet{primaryLight}{baseColor!80!black}%
+  \colorlet{borderColor}{primaryLight}%
+  \colorlet{bgColor}{primaryDark}%
+  \colorlet{titleColor}{white}%
+  \IfStrEq{\slidepalette}{dark}{%
+    \colorlet{pageBg}{baseColor!7!black}%
+    \colorlet{textFg}{white!90!black}%
+    \colorlet{mutedFg}{white!55!black}%
+    \colorlet{termColor}{baseColor!50!white}%
+    \colorlet{boxBg}{baseColor!15!black}%
+    \colorlet{nodeFill}{baseColor!28!black}%
+    \colorlet{nodeText}{white}%
+    \colorlet{edgeCol}{baseColor!70!white!75!black}%
+    \colorlet{chosenCol}{white}%
+    \colorlet{cellDone}{primaryLight}%
+    \colorlet{codeBg}{baseColor!10!black}%
+    \colorlet{codeComment}{green!55!white!80!black}%
+    \colorlet{codeString}{orange!70!white}%
+  }{%
+    \colorlet{pageBg}{white}%
+    \colorlet{textFg}{black!87}%
+    \colorlet{mutedFg}{black!50}%
+    \colorlet{termColor}{primaryLight}%
+    \colorlet{boxBg}{baseColor!4!white}%
+    \colorlet{nodeFill}{primaryLight!12!white}%
+    \colorlet{nodeText}{primaryDark}%
+    \colorlet{edgeCol}{primaryLight!75!white}%
+    \colorlet{chosenCol}{primaryDark}%
+    \colorlet{cellDone}{primaryLight}%
+    \colorlet{codeBg}{primaryLight!7!white}%
+    \colorlet{codeComment}{green!50!black}%
+    \colorlet{codeString}{red!60!black}%
+  }%
+  \setbeamercolor{background canvas}{bg=pageBg}%
+  \setbeamercolor{normal text}{fg=textFg}%
+  \setbeamercolor{alerted text}{fg=termColor}%
+  \setbeamercolor{subtitle}{fg=termColor}}
+\slide@palette
+
+\newcommand{\term}[1]{\textcolor{termColor}{\textbf{#1}}}
+\newcommand{\highlight}[1]{\textcolor{termColor}{#1}}
+\newcommand{\boxtitle}[1]{\textls[80]{\MakeUppercase{#1}}}
+\def\inf{011010010110111001100110}
+\def\school{011100110110001101101000011011110110111101101100}
+\newcommand{\slide@chapter}{}
+\newcommand{\slidechapter}[1]{\renewcommand{\slide@chapter}{#1}}
+\newcommand{\slide@subject}{}
+\newcommand{\slidesubject}[1]{\renewcommand{\slide@subject}{#1}}
+
+% ------------------------------------------------------------------ text
+\setbeamertemplate{navigation symbols}{}
+\setbeamersize{text margin left=14mm, text margin right=12mm}
+\setbeamertemplate{itemize item}{\tikz[baseline=-0.65ex]\node[hex=0.5em, fill=termColor]{};}
+\setbeamertemplate{itemize subitem}{\tikz[baseline=-0.65ex]\node[hex=0.42em, draw=termColor, line width=0.5pt]{};}
+\setbeamertemplate{enumerate item}{\tikz[baseline=-0.75ex]\node[hex=1.15em, fill=bgColor, draw=borderColor,
+  line width=\designRim, text=white, font=\scriptsize\bfseries]{\insertenumlabel};}
+\setbeamerfont{itemize/enumerate subbody}{size=\normalsize}
+\setbeamerfont{frametitle}{size=\Large, series=\bfseries}
+\setbeamerfont{framesubtitle}{size=\normalsize, series=\bfseries}
+
+% section heading inside a frame, as \section in the scripts
+\newcommand{\slidehead}[1]{{\color{termColor}\large\bfseries #1}\par\smallskip}
+% small label above a block, as the box titles
+\newcommand{\slidelabel}[1]{{\color{termColor}\scriptsize\bfseries\boxtitle{#1}}\par}
+
+% ------------------------------------------------------------------ bands
+% \slide@band{anchor}{page anchor}{height}: band with light rules on both edges
+\newcommand{\slide@band}[3]{%
+  \node[rectangle, anchor=#1, inner sep=0pt, outer sep=0pt, minimum width=\paperwidth,
+    minimum height=#3, fill=bgColor] (band) at (current page.#2) {};
+  \fill[borderColor] (band.north west) rectangle ([yshift=-\designBandRule]band.north east);
+  \fill[borderColor] (band.south west) rectangle ([yshift=\designBandRule]band.south east);}
+
+% ------------------------------------------------------------------ slide modes
+% Three modes tell the class what to do with a slide:
+%   normal              (default) follow along
+%   doit=<tag>          «Mach mit»: the class works now (task pencil, bright band,
+%                       tag with work form and time, e.g. doit={zu zweit · 15 Min})
+%   read=<tag>          «Zum Lesen»: read, don't copy (open book, tinted page,
+%                       tag with the reference, e.g. read={Skript S. 48})
+% Usage: \begin{frame}[doit={zu zweit · 15 Min}]{Ihr seid dran!}
+\def\slide@mode{normal}\def\slide@tag{}
+\define@key{beamerframe}{doit}[]{\gdef\slide@mode{doit}\gdef\slide@tag{#1}}
+\define@key{beamerframe}{read}[]{\gdef\slide@mode{read}\gdef\slide@tag{#1}}
+% every frame starts in normal mode: Beamer sets the key environment=frame
+% before the frame's own options, so the reset hooks in there
+\let\slide@envkey\KV@beamerframe@environment
+\def\KV@beamerframe@environment#1{\gdef\slide@mode{normal}\gdef\slide@tag{}\slide@envkey{#1}}
+\newcommand{\slide@ifmode}[3]{\IfStrEq{\slide@mode}{#1}{#2}{#3}}
+
+% open book, drawn in the family of the box icons (24-unit grid)
+\@namedef{boxicon@read}{%
+  \draw (12,5.5) -- (12,18.5);
+  \draw (12,18.5) .. controls (9.5,20) and (6,20) .. (3,19) -- (3,5.5) .. controls (6,6.5) and (9.5,6.5) .. (12,5.5);
+  \draw (12,18.5) .. controls (14.5,20) and (18,20) .. (21,19) -- (21,5.5) .. controls (18,6.5) and (14.5,6.5) .. (12,5.5);}
+
+% «Zum Lesen» pages get the light tint of the concept boxes
+\setbeamertemplate{background canvas}{%
+  \slide@ifmode{read}{\color{boxBg}}{\color{pageBg}}\vrule width\paperwidth height\paperheight}
+
+% header: band, faint binary, chapter hexagon hanging from the top-left corner
+% (as on odd script pages), title, section name on the right (as on even pages).
+% In the modes a second hexagon with the mode icon sits on the band's edge
+% (like the icons on the boxes) and a tag replaces the section name.
+\setbeamertemplate{frametitle}{%
+  \begin{tikzpicture}[remember picture, overlay]
+    \slide@band{north}{north}{\designHeaderHeight}
+    \slide@ifmode{doit}{%
+      \fill[borderColor] (band.north west) rectangle (band.south east);
+      \fill[bgColor] (band.south west) rectangle ([yshift=\designBandRule]band.south east);}{}
+    \node[opacity=0.06, anchor=east, font=\color{titleColor}\ttfamily\bfseries\large]
+      at ([xshift=-2mm]band.east) {\BeginAccSupp{method=plain,ActualText={}}\textls[100]{\inf}\EndAccSupp{}};
+    \ifx\slide@chapter\@empty\else
+      \node[hex=\designHeaderHex, draw=borderColor, line width=\designRim, fill=bgColor, anchor=north,
+        font=\color{titleColor}\bfseries\large] at ([xshift=2.5mm, yshift=-0.2mm]current page.north west) {\slide@chapter};
+    \fi
+    \slide@ifmode{doit}{\colorlet{modeRim}{white}\def\slide@icon{task}\def\slide@label{Mach mit}\colorlet{tagBg}{bgColor}}%
+      {\colorlet{modeRim}{borderColor}\def\slide@icon{read}\def\slide@label{Zum Lesen}\colorlet{tagBg}{bgColor!70!black}}%
+    \slide@ifmode{normal}{%
+      \node[anchor=west, inner sep=0pt, text=titleColor, font=\usebeamerfont{frametitle}]
+        at ([xshift=14mm]band.west) {\insertframetitle};
+      \node[anchor=east, inner sep=0pt, text=titleColor!80!bgColor, font=\scriptsize\bfseries]
+        at ([xshift=-5mm]band.east) {\insertsectionhead};}{%
+      \node[hex=10mm, draw=modeRim, line width=\designRim, fill=bgColor]
+        (modehex) at ([xshift=19mm, yshift=-1.5mm]band.west) {};
+      \pic at (modehex.center) {boxicon={\slide@icon}{7mm}};
+      \node[anchor=west, inner sep=0pt, text=titleColor, font=\usebeamerfont{frametitle}]
+        at ([xshift=26mm]band.west) {\insertframetitle};
+      \node[anchor=east, rounded corners=\designArc, fill=tagBg,
+        text=titleColor, font=\scriptsize\bfseries, inner xsep=2.2mm, inner ysep=1.1mm]
+        at ([xshift=-4mm]band.east) {\boxtitle{\slide@label%
+          \ifx\slide@tag\@empty\else\ · \slide@tag\fi}};}
+  \end{tikzpicture}%
+  \vspace*{5mm}%
+  \ifx\insertframesubtitle\@empty\else{\usebeamercolor[fg]{subtitle}\usebeamerfont{framesubtitle}\insertframesubtitle\par}\fi}
+
+% footer: thin band with the page number hexagon sitting on its edge
+\setbeamertemplate{footline}{%
+  \begin{tikzpicture}[remember picture, overlay]
+    \slide@band{south}{south}{\designFooterHeight}
+    \node[hex=\designPageHex, draw=borderColor, line width=\designRim, fill=bgColor,
+      font=\color{titleColor}\bfseries\tiny] at ([xshift=-14mm]band.north east) {\insertframenumber};
+  \end{tikzpicture}}
+
+% ------------------------------------------------------------------ title slide = cover
+% Honeycomb of photo hexagons (duotone in the subject colour, as on the
+% script covers), title block bottom left, logo, footer band with author.
+\newcommand{\cover@hex}{29mm}
+\newcommand{\cover@slots}{96/12, 119.5/25.5, 143/12, 166.5/25.5, 96/39, 119.5/52.5, 143/39, 166.5/52.5, 143/66}
+\newcommand{\cover@tiles}{96/66, 119.5/79.5, 72.5/25.5}
+\colorlet{coverTint}{primaryLight!35!white}
+\newsavebox{\cover@imgbox}
+\newcommand{\cover@image}[3]{%
+  \sbox{\cover@imgbox}{\includegraphics{#1}}%
+  \pgfmathsetmacro{\cover@scale}{max((#2)/\wd\cover@imgbox, (#3)/\ht\cover@imgbox)}%
+  \includegraphics[scale=\cover@scale]{#1}}
+\newcommand{\cover@photo}[2]{%
+  \node[hex=\cover@hex, fill=white, path picture={
+      \begin{scope}[blend mode=luminosity]
+        \node[inner sep=0pt] at (path picture bounding box.center) {\cover@image{#2}{\cover@hex}{0.866*\cover@hex}};
+      \end{scope}
+      \begin{scope}[blend mode=multiply]
+        \fill[coverTint] (path picture bounding box.south west) rectangle (path picture bounding box.north east);
+      \end{scope}}] at (#1) {};
+  \node[hex=\cover@hex, draw=borderColor, line width=0.9mm] at (#1) {};}
+\newcommand{\cover@images}{}
+\newcommand{\slidecoverimages}[1]{\renewcommand{\cover@images}{#1}}
+
+\setbeamertemplate{title page}{%
+  \begin{tikzpicture}[remember picture, overlay]
+    \fill[bgColor] (current page.south west) rectangle (current page.north east);
+    \colorlet{coverTint}{primaryLight!35!white}
+    \foreach \x/\y [count=\i] in \cover@slots {%
+      \edef\cover@img{}%
+      \foreach \f [count=\j] in \cover@images {\ifnum\j=\i\relax\xdef\cover@img{\f}\fi}%
+      \coordinate (c) at ([xshift=\x mm, yshift=-\y mm]current page.north west);
+      \ifx\cover@img\@empty
+        \node[hex=\cover@hex, fill=bgColor!75!black, draw=borderColor!35!bgColor, line width=0.9mm] at (c) {};
+      \else\cover@photo{c}{\cover@img}\fi}
+    \foreach \x/\y in \cover@tiles
+      \node[hex=\cover@hex, fill=bgColor!75!black, draw=borderColor!35!bgColor, line width=0.9mm]
+        at ([xshift=\x mm, yshift=-\y mm]current page.north west) {};
+    % title block
+    \fill[borderColor] ([xshift=12mm, yshift=36mm]current page.south west) rectangle ++(9mm, 0.8mm);
+    \node[anchor=north west, inner sep=0pt, text=white, font=\fontsize{30}{34}\selectfont\bfseries, text width=80mm]
+      at ([xshift=12mm, yshift=32mm]current page.south west) {\inserttitle};
+    \node[anchor=north west, inner sep=0pt, text=white!80!bgColor, font=\normalsize, text width=80mm]
+      at ([xshift=12mm, yshift=19mm]current page.south west) {\insertsubtitle};
+    % footer band
+    \fill[bgColor!75!black] (current page.south west) rectangle ([yshift=9mm]current page.south east);
+    \fill[borderColor] ([yshift=9mm]current page.south west) rectangle ([yshift=8.6mm]current page.south east);
+    \node[anchor=west, text=borderColor!60!white, font=\scriptsize\bfseries]
+      at ([xshift=12mm, yshift=4.5mm]current page.south west) {\boxtitle{\slide@subject}\ifx\slide@chapter\@empty\else\ · \boxtitle{Kapitel \slide@chapter}\fi};
+    \node[opacity=0.15, anchor=center, font=\color{white}\ttfamily\bfseries\scriptsize]
+      at ([yshift=4.5mm]current page.south) {\textls[100]{\inf\school}};
+    \node[anchor=east, text=white!80!bgColor, font=\scriptsize] at ([xshift=-12mm, yshift=4.5mm]current page.south east) {\insertauthor};
+    \pic at ([xshift=-12mm, yshift=13mm]current page.south east) {infschool logo={text=white, align=right, font=\normalsize}};
+  \end{tikzpicture}}
+
+% ------------------------------------------------------------------ section slide = chapter banner
+% \sectionslide{number}{title}{optional line below}
+\newcommand{\sectionslide}[3]{{\setbeamertemplate{footline}{}
+\begin{frame}[plain]
+  \begin{tikzpicture}[remember picture, overlay]
+    \node[rectangle, anchor=center, inner sep=0pt, minimum width=\paperwidth, minimum height=22mm, fill=bgColor]
+      (band) at ([yshift=6mm]current page.center) {};
+    \fill[borderColor] (band.north west) rectangle ([yshift=-\designChapterRule]band.north east);
+    \fill[borderColor] (band.south west) rectangle ([yshift=\designChapterRule]band.south east);
+    \node[hex=30mm, draw=borderColor, line width=1.4mm, fill=bgColor, font=\color{titleColor}\bfseries\fontsize{26}{30}\selectfont]
+      at ([xshift=-30mm, yshift=4mm]band.north east) {#1};
+    \node[anchor=west, text=titleColor, font=\fontsize{24}{28}\selectfont\bfseries] at ([xshift=14mm]band.west) {#2};
+    \node[anchor=north west, text=mutedFg, font=\normalsize, text width=110mm] at ([xshift=14mm, yshift=-6mm]band.south west) {#3};
+  \end{tikzpicture}
+\end{frame}}}
+
+% ------------------------------------------------------------------ boxes
+% titlebox: concept / info (title bar, icon hexagon on the top-right corner)
+\newtcolorbox{slidetitlebox}[3][]{enhanced, colback=boxBg, colbacktitle=bgColor, colframe=borderColor,
+  boxrule=\designBoxRule, leftrule=\designBoxSideRule, rightrule=\designBoxSideRule, arc=\designArc,
+  toptitle=\designTitlePad, bottomtitle=\designTitlePad, coltext=textFg, coltitle=titleColor,
+  title={\boxtitle{#2}}, fonttitle=\scriptsize\bfseries, width=\linewidth-2.5mm,
+  before skip=2mm, after skip=2mm,
+  overlay={\node[hex=\designIconSize, shape border rotate=30, draw=borderColor, line width=\designRim,
+    fill=bgColor, anchor=north] (hex) at ([yshift=0.5mm]frame.north east) {};
+    \pic at (hex.center) {boxicon={#3}{\designIconGlyph}};}, #1}
+\newenvironment{concept}[1][]{\begin{slidetitlebox}{#1}{bulb}}{\end{slidetitlebox}}
+\newenvironment{info}[1][]{\begin{slidetitlebox}{#1}{info}}{\end{slidetitlebox}}
+
+% markLeft: example / think / task / solution / checklist (left rule, icon top left)
+\newtcolorbox{markLeft}[3][]{enhanced, frame hidden, boxrule=0pt, arc=0pt, outer arc=0pt,
+  borderline west={\designLeftRule}{0pt}{borderColor}, colback=pageBg, colbacktitle=pageBg, coltext=textFg,
+  coltitle=textFg, toptitle=0.6mm, bottomtitle=0.6mm, before title=\hspace*{5mm}, title=#2,
+  fonttitle=\small, left=6mm, before skip=2mm, after skip=2mm,
+  overlay={\node[hex=\designIconSizeLeft, draw=borderColor, line width=\designRim, fill=bgColor, anchor=north]
+    (hex) at ([xshift=0.25mm]frame.north west) {};
+    \pic at (hex.center) {boxicon={#3}{\designIconGlyphLeft}};}, #1}
+\renewenvironment{example}[1][]{\begin{markLeft}{\term{\boxtitle{Beispiel:}} \highlight{\boxtitle{#1}}}{example}}{\end{markLeft}}
+\newenvironment{think}[1][]{\begin{markLeft}{\term{\boxtitle{Denkanstoss:}} \highlight{\boxtitle{#1}}}{think}}{\end{markLeft}}
+% \begin{task}[title]{number(s)}, e.g. {38--41}; the number is printed large as in the scripts
+\newenvironment{task}[2][]{\begin{markLeft}{\term{\boxtitle{Aufgabe} {\large #2}:} \highlight{\boxtitle{#1}}}{task}}{\end{markLeft}}
+\newenvironment{checklist}{\begin{markLeft}{\term{\boxtitle{Kannst du das?}}}{checklist}\begin{itemize}}
+  {\end{itemize}\end{markLeft}}
+
+% code: as the scripts' Python boxes (pythonhighlight.sty colours)
+\lstdefinestyle{slidepython}{language=Python, basicstyle=\ttfamily\small, keywordstyle=\color{termColor}\bfseries,
+  commentstyle=\color{codeComment}, stringstyle=\color{codeString}, numbers=left,
+  numberstyle=\tiny\color{mutedFg}, showstringspaces=false, columns=fullflexible, keepspaces=true}
+\newtcblisting{code}[1][]{enhanced, listing only, listing options={style=slidepython}, colback=codeBg, coltext=textFg,
+  colframe=borderColor, colbacktitle=bgColor, coltitle=titleColor, boxrule=\designBoxRule, arc=\designArc,
+  left=6mm, title={\boxtitle{#1}}, fonttitle=\scriptsize\bfseries, width=\linewidth-2.5mm,
+  overlay={\node[hex=\designIconSize, shape border rotate=30, draw=borderColor, line width=\designRim,
+    fill=bgColor, anchor=north] (hex) at ([yshift=0.5mm]frame.north east) {};
+    \pic at (hex.center) {boxicon={python}{\designIconGlyph}};}}
+
+% ------------------------------------------------------------------ figures
+% After the scripts' graph.sty and python_array.sty, but sized for projection
+% (review R-3): larger nodes and edge labels than in print.
+\tikzset{
+  vertex/.style={circle, fill=nodeFill, draw=borderColor, line width=0.9pt, minimum size=8mm,
+    inner sep=0pt, font=\bfseries\small, text=nodeText},
+  vertex_active/.style={vertex, fill=bgColor, draw=bgColor, text=white},
+  every edge/.style={draw=edgeCol, line width=1.2pt},
+  every edge quotes/.style={anchor=center, fill=pageBg, draw=edgeCol, line width=0.5pt,
+    rounded corners=\designInnerArc, inner xsep=2.4pt, inner ysep=1.4pt, font=\footnotesize, text=textFg},
+  chosen/.style={draw=chosenCol, line width=2.8pt},
+  cell/.style={draw=borderColor, fill=nodeFill, text=nodeText, minimum size=8.5mm, font=\ttfamily\bfseries,
+    inner sep=0, rounded corners=\designInnerArc},
+  cell empty/.style={cell, fill=pageBg},
+  cell done/.style={cell, fill=cellDone, text=white},
+  pointer/.style={-{Stealth[length=2.6mm]}, line width=1.5pt, draw=termColor},
+  brace/.style={decorate, decoration={brace, mirror, amplitude=2.5mm}, draw=textFg, line width=1pt},
+  onslide/.code args={<#1>#2}{\only<#1>{\pgfkeysalso{#2}}},
+}
+% \stepdots{n}: progress through a build sequence (current overlay filled)
+\newcommand{\stepdots}[1]{\tikz[baseline=-0.6ex]{\foreach \i in {1,...,#1}{
+  \alt<\i>{\node[hex=2.8mm, fill=termColor] at (\i*3.8mm,0) {};}{\node[hex=2.8mm, draw=termColor, line width=0.5pt] at (\i*3.8mm,0) {};}}}}
+
+\AtBeginDocument{\shorthandoff{"}}

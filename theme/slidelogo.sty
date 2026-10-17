@@ -1,0 +1,76 @@
+% logo.sty -- the inf.school wordmark: INF, a soft hexagon, school.
+%
+% Bold capitals INF, then a hexagon as tall as the capitals (dark fill,
+% light rim, like the chapter numbers), then school in regular weight. The
+% hexagon replaces the dot of the domain; copying the text gives
+% "inf.school". All sizes follow the font, so the logo scales with it.
+%
+% In running text:     {\large\infschoollogo}
+%                      \infschoollogo[text=white, fill=black]
+% In a TikZ picture:   \pic at (x) {infschool logo={align=right}};
+%
+% keys: text  colour of the words      (default: current colour)
+%       fill  fill of the hexagon      (default: bgColor)
+%       rim   rim of the hexagon       (default: borderColor)
+%       font  font size etc.           (default: current font)
+%       align left: (x) is the start of the baseline, right: its end
+\ProvidesPackage{theme/slidelogo}
+\RequirePackage{tikz}
+\usetikzlibrary{shapes.geometric}
+\RequirePackage{accsupp}
+
+% ---------------------------------------------------------------- geometry
+% in em of the logo font; the hexagon is centred on half the cap height
+\newcommand{\logo@hexsize}{0.74}  % width of the hexagon
+\newcommand{\logo@gap}{0.11}      % space on both sides of the hexagon
+\newcommand{\logo@rim}{0.052}     % rim width (7 % of the hexagon)
+
+% ---------------------------------------------------------------- keys
+\pgfkeys{
+  /infschool/.is family, /infschool,
+  text/.store in  = \logo@text,  text  = .,
+  fill/.store in  = \logo@fill,  fill  = bgColor,
+  rim/.store in   = \logo@rimcolor, rim = borderColor,
+  font/.store in  = \logo@font,  font  = {},
+  align/.store in = \logo@align, align = left,
+}
+\def\logo@right{right}
+\newlength{\logo@len}
+
+% ---------------------------------------------------------------- the pic
+\tikzset{
+  pics/infschool logo/.default={},
+  pics/infschool logo/.style={code={%
+    \pgfkeys{/infschool, #1}%
+    \begingroup
+    % TikZ typesets with \nullfont between nodes, so measure outside the picture
+    \pgfinterruptpicture
+      \logo@font\selectfont
+      \setlength{\logo@len}{1em}\xdef\logo@em{\the\logo@len}%
+      \settowidth{\logo@len}{\bfseries INF}\xdef\logo@winf{\the\logo@len}%
+      \settowidth{\logo@len}{\mdseries school}\xdef\logo@wschool{\the\logo@len}%
+      \settoheight{\logo@len}{\bfseries I}\xdef\logo@cap{\the\logo@len}%
+    \endpgfinterruptpicture
+    \pgfmathsetlengthmacro{\logo@hs}{\logo@hexsize*\logo@em}%
+    \pgfmathsetlengthmacro{\logo@g}{\logo@gap*\logo@em}%
+    \ifx\logo@align\logo@right
+      \pgfmathsetlengthmacro{\logo@x}{-(\logo@winf+2*\logo@g+\logo@hs+\logo@wschool)}%
+    \else
+      \def\logo@x{0pt}%
+    \fi
+    \node[inner sep=0pt, outer sep=0pt, anchor=base west, text=\logo@text,
+      font=\logo@font\bfseries] at (\logo@x, 0)
+      {\BeginAccSupp{method=plain,ActualText={inf.}}INF\EndAccSupp{}};
+    \node[regular polygon, regular polygon sides=6, inner sep=0pt, outer sep=0pt,
+      minimum height=\logo@hs, rounded corners=\designHexRound*\logo@hs,
+      fill=\logo@fill, draw=\logo@rimcolor, line width=\logo@rim*\logo@em]
+      at (\logo@x+\logo@winf+\logo@g+0.5*\logo@hs, 0.5*\logo@cap) {};
+    \node[inner sep=0pt, outer sep=0pt, anchor=base west, text=\logo@text,
+      font=\logo@font\mdseries] at (\logo@x+\logo@winf+2*\logo@g+\logo@hs, 0)
+      {school};
+    \endgroup}},
+}
+
+% ---------------------------------------------------------------- in text
+\newcommand{\infschoollogo}[1][]{%
+  \tikz[baseline=0pt]\pic{infschool logo={#1}};}
