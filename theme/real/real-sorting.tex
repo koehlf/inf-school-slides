@@ -1,0 +1,417 @@
+% Real slides: «Sortieren» (Algorithmik, Kapitel 3), ported 1:1 from references/sorting_2025.odp.
+% Step sequences of the original (one Impress slide per step) are one frame with overlays here.
+% The card values are mapped to the cards in images/playing_cards/ (5→2, 6→5, 7→6, 8→7; 9, 10 stay).
+% Input by real-d.tex or real-b.tex, which define \RTitle, \RSection and \RTask.
+\slidesubject{Algorithmik}
+\slidechapter{3}
+\slidecoverimages{cover/algorithmik/playing-cards.jpg, cover/algorithmik/pencils.jpg, cover/algorithmik/maze.jpg,
+  cover/algorithmik/signpost.jpg, cover/algorithmik/bridges.jpg, cover/algorithmik/subway-map.jpg}
+\title{Sortieren}
+\subtitle{Selectionsort · Bubblesort · Mergesort}
+\author{Florian Köhl}
+
+% one step of a card sequence: \cardstep<overlay>{cards}{parts}{arrows}{caption}
+\newcommand<>{\cardstep}[4]{\only#5{%
+  \cardArray{name=c, items={#1}, parts={#2}, size=0.11}#3%
+  \par\vspace{15mm}#4}}
+% a row of cells for the merge figures: \cellrow{y}{group size}{gap}{values}{name}
+\newcommand{\cellrow}[5]{%
+  \foreach \v [count=\i from 0] in {#4} {%
+    \pgfmathsetmacro{\xx}{\i+#3*floor(\i/#2)}%
+    \node[cell, minimum size=\designCellSize-1.2mm] (#5\i) at (\xx,#1) {\v};}}
+% \ptr{node}: pointer from below onto a cell
+\newcommand{\ptr}[1]{\draw[pointer] ([yshift=-8mm]#1.south) -- ([yshift=-1mm]#1.south);}
+
+\begin{document}
+
+\RTitle
+
+\begin{frame}{Sortieren}
+  \begin{itemize}
+    \item Was heisst Sortieren?
+    \item Was sortieren Menschen?
+    \item Was sortieren Computer?
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Sortieren}
+  \begin{itemize}
+    \item Was ist eine aufsteigend sortierte Liste?
+  \end{itemize}
+  \pause
+  \begin{concept}[Aufsteigend sortiert]
+    Eine Liste ist \term{aufsteigend sortiert}, sofern jedes Element in der Liste kleiner oder gleich gross ist
+    wie alle nachfolgenden Elemente.
+  \end{concept}
+\end{frame}
+
+\begin{frame}{Sortiert?}
+  \vspace*{6mm}
+  \only<1>{\cardArray{items={2h,5h,6h,7h,9h,10h}, size=0.12}}%
+  \only<2>{\cardArray{items={2h,6h,5h,9h,7h,10h}, size=0.12}}%
+  \only<3>{\cardArray{items={10h,9h,7h,6h,5h,2h}, size=0.12}}
+\end{frame}
+
+\begin{frame}{Sortieralgorithmen}
+  \begin{itemize}
+    \item Bedingungen: Wir dürfen pro Zug …
+    \begin{itemize}
+      \item maximal zwei Karten aufgedeckt haben
+      \item zwei Elemente miteinander vergleichen
+      \item zwei Elemente miteinander vertauschen
+    \end{itemize}
+    \item Entwickelt paarweise ein Vorgehen, um eine Folge von (verdeckten) Karten zu sortieren!
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[doit={zu zweit}]{Let's go!}
+  \vspace*{8mm}
+  \cardArray{items={back,back,back,back,back,back}, size=0.12}
+\end{frame}
+
+\RSection{1}{Selectionsort}{Wiederholtes Suchen des Minimums}
+
+\begin{frame}{Selectionsort}
+  \begin{enumerate}
+    \item Teile die Elemente in einen sortierten (\term{S}) und einen unsortierten (\term{U}) Teil auf.
+      S ist zu Beginn leer, U umfasst alle Elemente.
+    \item Suche das kleinste Element in U.
+    \item Tausche es mit dem ersten Element von U, sofern es nicht bereits dort steht.
+    \item S wird um das eben gefundene Element vergrössert, U wird ein Element kürzer.
+    \item Falls U mehr als 1 Element hat, gehe zu Schritt 2.
+    \item Ende: Die Elemente sind sortiert.
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{Selectionsort in Aktion}
+  \vspace*{6mm}
+  \cardstep<1>{5h,2h,9h,6h,10h,7h}{1/6/U}{}{}
+  \cardstep<2>{5h,2h,9h,6h,10h,7h}{1/6/U}{\pointerbelow[8mm]{c2}{min}}{}
+  \cardstep<3>{5h,2h,9h,6h,10h,7h}{1/6/U}{\pointerbelow[8mm]{c2}{min}\swaparrow{c1}{c2}}{}
+  \cardstep<4>{2h,5h,9h,6h,10h,7h}{1/1/S,2/6/U}{}{U hat mehr als 1 Element → wiederholen}
+  \cardstep<5>{2h,5h,9h,6h,10h,7h}{1/1/S,2/6/U}{\pointerbelow[8mm]{c2}{min}}{(keine Vertauschung notwendig)}
+  \cardstep<6>{2h,5h,9h,6h,10h,7h}{1/2/S,3/6/U}{}{U hat mehr als 1 Element → wiederholen …}
+  \cardstep<7>{2h,5h,9h,6h,10h,7h}{1/2/S,3/6/U}{\pointerbelow[8mm]{c4}{min}\swaparrow{c3}{c4}}{}
+  \cardstep<8>{2h,5h,6h,9h,10h,7h}{1/3/S,4/6/U}{\pointerbelow[8mm]{c6}{min}\swaparrow{c4}{c6}}{}
+  \cardstep<9>{2h,5h,6h,7h,10h,9h}{1/4/S,5/6/U}{\pointerbelow[8mm]{c6}{min}\swaparrow{c5}{c6}}{}
+  \cardstep<10>{2h,5h,6h,7h,9h,10h}{1/5/S,6/6/U}{}{U hat nur 1 Element → fertig!}
+\end{frame}
+
+\begin{frame}{Fragen zu Selectionsort?}
+\end{frame}
+
+\begin{frame}{Effizienz}
+  \begin{itemize}
+    \item Was ist ein effizienter Algorithmus?
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Effizienz: Laufzeit}
+  \begin{itemize}
+    \item Wie «schnell» ist Selectionsort?
+    \item Wie messen wir die Effizienz eines solchen Algorithmus?
+    \begin{itemize}
+      \item Zeitmessung?
+      \item Alternativen?
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Effizienz: Laufzeit}
+  \begin{itemize}
+    \item Zeitmessung nicht immer geeignet!
+    \begin{itemize}
+      \item Unterschiedliche Hardware
+      \item Unterschiedliche Implementierung
+      \item Unterschiedliche Inputs (Eingaben)
+    \end{itemize}
+    \item<2-> Grobe Idee: Anzahl \term{Operationen} zählen
+    \begin{itemize}
+      \item<2-> «Wie viele Schritte braucht es?»
+      \item<2-> Vergleiche zwischen zwei Elementen
+      \item<2-> Vertauschungen zweier Elemente
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Effizienz (Laufzeit)}
+  \begin{itemize}
+    \item \textbf{Problem 1:} Wir kennen die Grösse des Inputs nicht.
+    \begin{itemize}
+      \item z.\,B. wie lang die Liste ist, die wir sortieren sollen.
+    \end{itemize}
+    \item \textbf{Lösung:} Wir geben die Effizienz in Abhängigkeit von der Länge des Inputs an.
+    \begin{itemize}
+      \item Oft als $n$ bezeichnet.
+    \end{itemize}
+    \item<2-> \textbf{Problem 2:} Wir kennen den Input nicht.
+    \begin{itemize}
+      \item<2-> z.\,B. wie die Liste aussieht, die wir sortieren sollen.
+    \end{itemize}
+    \item<2-> \textbf{Lösung:} Wir geben die Effizienz für den besten oder schlechtesten Fall an.
+    \begin{itemize}
+      \item<2-> Oft auch für den «durchschnittlichen» Fall
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Beispiel Selectionsort}
+  \begin{itemize}
+    \item Liste mit 6 Elementen
+    \only<1>{%
+    \item Betrachte den ersten Durchgang des Algorithmus.
+    \begin{itemize}
+      \item Wie viele Vergleiche benötigen wir (bis wir das Minimum gefunden haben)?
+      \item Wie viele Vertauschungen braucht es dann?
+    \end{itemize}
+    \item Wie sieht es in den nächsten Durchgängen aus?}%
+    \only<2>{%
+    \begin{itemize}
+      \item 1.~Durchgang: 5 Vergleiche, max.~1 Vertauschung
+      \item 2.~Durchgang: 4 Vergleiche, max.~1 Vertauschung
+      \item 3.~Durchgang: 3 Vergleiche, max.~1 Vertauschung
+      \item 4.~Durchgang: 2 Vergleiche, max.~1 Vertauschung
+      \item 5.~Durchgang: 1 Vergleich, max.~1 Vertauschung
+    \end{itemize}
+    \item $1 + 2 + 3 + 4 + 5 = 15$ Vergleiche, mit max.~5 Vertauschungen.}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Beispiel Selectionsort (2)}
+  \begin{itemize}
+    \item Liste mit $n$ Elementen
+    \only<1>{\item Wie viele «Durchgänge» benötigen wir?}%
+    \only<2>{%
+    \begin{itemize}
+      \item 1.~Durchgang: $n-1$ Vergleiche, max.~1 Vertauschung
+      \item 2.~Durchgang: $n-2$ Vergleiche, max.~1 Vertauschung
+      \item 3.~Durchgang: $n-3$ Vergleiche, max.~1 Vertauschung
+      \item …
+      \item $(n-1)$.~Durchgang: 1 Vergleich, max.~1 Vertauschung
+    \end{itemize}
+    \item $1 + 2 + 3 + \dots + (n-3) + (n-2) + (n-1)$ Vergleiche}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{«Kleiner Gauss»}
+  \vspace*{8mm}
+  \[ 1 + 2 + 3 + \dots + (x-2) + (x-1) + x \;=\; \frac{x \cdot (x+1)}{2} \]
+  \vspace{4mm}
+  \[ \sum_{i=1}^{x} i \;=\; \frac{x \cdot (x+1)}{2} \]
+\end{frame}
+
+\begin{frame}{Beispiel Selectionsort (2)}
+  \begin{itemize}
+    \item $1 + 2 + 3 + \dots + (n-3) + (n-2) + (n-1)$ Vergleiche
+  \end{itemize}
+  \[ 1 + 2 + 3 + \dots + (n-2) + (n-1) \;=\; \frac{(n-1) \cdot n}{2} \;=\; \frac{n^2-n}{2} \text{ Vergleiche} \]
+  \begin{itemize}
+    \item $n-1$ Durchgänge mit je max.~1 Vertauschung: max.~$n-1$ Vertauschungen
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Selectionsort: Effizienz}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{itemize}
+        \item \textbf{Bester Fall:} (Wann?)
+        \begin{itemize}
+          \item 0 Vertauschungen
+          \item $\frac{n^2-n}{2}$ Vergleiche
+        \end{itemize}
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{itemize}
+        \item \textbf{Schlechtester Fall:} (Wann?)
+        \begin{itemize}
+          \item $n-1$ Vertauschungen
+          \item $\frac{n^2-n}{2}$ Vergleiche
+        \end{itemize}
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\RSection{2}{Bubblesort}{Wiederholtes paarweises Vertauschen}
+
+\begin{frame}{Sortieren: Bubblesort}
+  \begin{itemize}
+    \item Gehe die Liste von links nach rechts durch.
+    \begin{itemize}
+      \item Vergleiche jeweils das aktuelle Element mit seinem rechten Nachbarn (falls vorhanden).
+      \item Falls die beiden Elemente in der falschen Reihenfolge sind, vertausche sie.
+    \end{itemize}
+    \item Falls du in diesem Durchgang eine Vertauschung vorgenommen hast, wiederhole den Vorgang.
+    \item Ansonsten ist die Liste sortiert.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Bubblesort in Aktion}
+  \vspace*{6mm}
+  \cardstep<1>{5h,2h,9h,6h,10h,7h}{}{\pointerbelow{c1}{}\pointerbelow{c2}{}\swaparrow{c1}{c2}}{}
+  \cardstep<2>{2h,5h,9h,6h,10h,7h}{}{\pointerbelow{c2}{}\pointerbelow{c3}{}}{}
+  \cardstep<3>{2h,5h,9h,6h,10h,7h}{}{\pointerbelow{c3}{}\pointerbelow{c4}{}\swaparrow{c3}{c4}}{}
+  \cardstep<4>{2h,5h,6h,9h,10h,7h}{}{\pointerbelow{c4}{}\pointerbelow{c5}{}}{}
+  \cardstep<5>{2h,5h,6h,9h,10h,7h}{}{\pointerbelow{c5}{}\pointerbelow{c6}{}\swaparrow{c5}{c6}}{}
+  \cardstep<6>{2h,5h,6h,9h,7h,10h}{}{}{%
+    \begin{itemize}
+      \item 1.~Durchgang fertig!
+      \item Haben wir vertauscht? Ja → also nochmals!
+    \end{itemize}}
+\end{frame}
+
+\begin{frame}[doit={zu zweit}]{Ihr seid dran!}
+  \vfill
+  \RTask{38–41}{Sortieren von Hand}{Löst die Aufgaben 38–41 im Skript.}
+  \vfill
+\end{frame}
+
+\begin{frame}{Zwischenfazit}
+  \begin{itemize}
+    \item Selectionsort und Bubblesort haben beide eine \term{quadratische Laufzeit}.
+    \begin{itemize}
+      \item Die Laufzeitfunktion beinhaltet ein $n^2$.
+      \item Verdoppelung der Inputgrösse führt zu Vervierfachung der Laufzeit.
+    \end{itemize}
+    \item Wie ineffizient ist das?
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{«Quadratische Laufzeit»: Beispiel}
+  \vspace*{2mm}
+  \centering\includegraphics[width=0.92\textwidth]{real/pictures/inbox.png}
+\end{frame}
+
+\RSection{3}{Mergesort}{Divide and Conquer}
+
+\begin{frame}{Divide and Conquer}
+  \begin{itemize}
+    \item Ansatz zum Lösen von Problemen
+    \item \term{Divide}
+    \begin{itemize}
+      \item Aufteilen in Teilprobleme
+      \item so lange, bis sie trivial lösbar sind
+    \end{itemize}
+    \item \term{Conquer}
+    \begin{itemize}
+      \item Kombination der Teillösungen zur Lösung des ganzen Problems
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Beispiel: Mergesort}
+  \begin{itemize}
+    \item Effizientes Sortierverfahren
+    \item Basiert auf \term{Divide and Conquer}
+  \end{itemize}
+  \vspace{8mm}
+  \pythonArray{items={2,8,5,3,9,4,1,7}, drawindexes=false}
+\end{frame}
+
+\begin{frame}{Mergesort: Aufteilen}
+  \only<1-2>{Wir teilen die Liste in zwei Teillisten auf.}%
+  \only<3->{Gleicher Ansatz für die beiden resultierenden Teillisten.}
+  \par\vspace{3mm}\centering
+  \begin{tikzpicture}[x=\designCellSize, y=\designCellSize]
+    \cellrow{0}{8}{0}{2,8,5,3,9,4,1,7}{a}
+    \begin{scope}[visible on=<2->, xshift=-0.5*\designCellSize]\cellrow{-1.35}{4}{1}{2,8,5,3,9,4,1,7}{b}\end{scope}
+    \begin{scope}[visible on=<3->, xshift=-1.2*\designCellSize]\cellrow{-2.7}{2}{0.8}{2,8,5,3,9,4,1,7}{c}\end{scope}
+    \begin{scope}[visible on=<4->, xshift=-2.1*\designCellSize]\cellrow{-4.05}{1}{0.6}{2,8,5,3,9,4,1,7}{d}\end{scope}
+  \end{tikzpicture}
+\end{frame}
+
+\begin{frame}{Mergesort: Conquer}
+  \begin{itemize}
+    \item Resultat: viele kleine Listen der Länge 1
+    \begin{itemize}
+      \item Diese sind trivialerweise bereits sortiert!
+    \end{itemize}
+    \item Nun müssen wir diese Teillisten wieder zu einem Resultat zusammenfügen.
+    \begin{itemize}
+      \item Das «Merge» in Mergesort
+      \item Wir machen das paarweise.
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Mergesort: Merge}
+  «Merge» von zwei sortierten Listen:
+  \begin{enumerate}
+    \item Falls beide Listen nicht leer sind:
+    \begin{enumerate}
+      \item Vergleiche das kleinste noch nicht gemergte Element der linken mit demjenigen der rechten Liste.
+      \item Wähle das kleinere der beiden aus und füge es in die neue Liste hinzu.
+      \item Gehe zu Schritt 1.
+    \end{enumerate}
+    \item Falls eine der beiden Listen leer ist:
+    \begin{enumerate}
+      \item Füge alle Elemente der nicht leeren Liste der Reihe nach in die neue Liste ein.
+    \end{enumerate}
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{Mergesort: Conquer}
+  \centering
+  \begin{tikzpicture}[x=\designCellSize, y=\designCellSize]
+    \cellrow{0}{1}{0.6}{2,8,5,3,9,4,1,7}{a}
+    \begin{scope}[xshift=0.6*\designCellSize]\cellrow{-1.4}{2}{1.2}{2,8,3,5,4,9,1,7}{p}\end{scope}
+    \foreach \i in {0,...,3} \node[cell blank, minimum size=\designCellSize-1.2mm] (m\i) at (\i+0.6,-3.6) {};
+    \foreach \v [count=\i from 0] in {2,3,5,8} {\pgfmathtruncatemacro{\s}{\i+1}\node[cell done, visible on=<\s->, minimum size=\designCellSize-1.2mm] at (m\i) {\v};}
+    \only<1>{\ptr{p0}\ptr{p2}}\only<2>{\ptr{p1}\ptr{p2}}\only<3>{\ptr{p1}\ptr{p3}}\only<4>{\ptr{p1}}
+  \end{tikzpicture}
+
+  \vspace{4mm}
+  \only<1>{2 < 3: die 2 kommt in die Liste.}\only<2>{3 < 8: die 3 kommt in die Liste.}%
+  \only<3>{5 < 8: die 5 kommt in die Liste.}\only<4>{Die rechte Liste ist leer: die 8 kommt in die Liste.}
+  \vfill\stepdots{4}
+\end{frame}
+
+\begin{frame}{Mergesort: Conquer}
+  \begin{itemize}
+    \item Gleiches Verfahren mit der rechten Teilliste.
+    \item Dann bleiben noch 2 Teillisten (à je 4 Elemente) übrig.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Mergesort: Conquer}
+  \centering
+  \begin{tikzpicture}[x=\designCellSize, y=\designCellSize]
+    \cellrow{0}{4}{1.4}{2,3,5,8,1,4,7,9}{p}
+    \foreach \i in {0,...,7} \node[cell blank, minimum size=\designCellSize-1.2mm] (m\i) at (\i+0.7,-2.3) {};
+    \foreach \v [count=\i from 0] in {1,2,3,4,5,7,8,9} {\pgfmathtruncatemacro{\s}{\i+1}\node[cell done, visible on=<\s->, minimum size=\designCellSize-1.2mm] at (m\i) {\v};}
+    \only<1>{\ptr{p0}\ptr{p4}}\only<2>{\ptr{p0}\ptr{p5}}\only<3>{\ptr{p1}\ptr{p5}}\only<4>{\ptr{p2}\ptr{p5}}%
+    \only<5>{\ptr{p2}\ptr{p6}}\only<6>{\ptr{p3}\ptr{p6}}\only<7>{\ptr{p3}\ptr{p7}}\only<8>{\ptr{p7}}
+  \end{tikzpicture}
+
+  \vspace{4mm}
+  \only<1>{1 < 2: die 1 kommt in die Liste.}\only<2>{2 < 4: die 2 kommt in die Liste.}%
+  \only<3>{3 < 4: die 3 kommt in die Liste.}\only<4>{4 < 5: die 4 kommt in die Liste.}%
+  \only<5>{5 < 7: die 5 kommt in die Liste.}\only<6>{7 < 8: die 7 kommt in die Liste.}%
+  \only<7>{8 < 9: die 8 kommt in die Liste.}\only<8>{Die linke Liste ist leer: die 9 kommt in die Liste.}
+  \vfill\stepdots{8}
+\end{frame}
+
+\begin{frame}{Mergesort: Effizienz}
+  \begin{itemize}
+    \item $O(n \cdot \log(n))$
+    \item Sprich: Grössenordnung $n \cdot \log(n)$
+    \item Ist das viel besser als «quadratisch»?
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{$n^2$ vs.\ $n \cdot \log(n)$}
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[width=0.8\textwidth, height=0.52\textheight, axis lines=left, xmin=0, xmax=40, ymin=0, ymax=1600,
+        xlabel={$n$}, axis line style={draw=mutedFg}, tick style={draw=mutedFg}, ticklabel style={font=\footnotesize, text=mutedFg},
+        label style={text=textFg}, legend style={draw=none, fill=none, text=textFg, font=\footnotesize}, legend pos=north west,
+        grid=major, grid style={draw=edgeCol!40!pageBg}]
+      \addplot[termColor, line width=1.5pt, domain=1:40, samples=60] {x^2};
+      \addplot[edgeCol, line width=1.5pt, domain=1:40, samples=60] {x*ln(x)/ln(2)};
+      \legend{$n^2$, $n \cdot \log_2(n)$}
+    \end{axis}
+  \end{tikzpicture}
+\end{frame}
+
+\end{document}

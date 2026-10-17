@@ -5,6 +5,12 @@ card row, code, «Mach mit» task, merge with arrays, a 3-step Kruskal sequence,
 in 15 designs, all in the Algorithmik colour, each as `-dark.pdf` (presenting) and `-light.pdf`.
 Page 2 of every PDF is the design's pitch: idea, properties, strengths, weaknesses, «Nimm dieses Design, wenn …».
 
+## Shortlist (2026-10-17)
+
+**D01, D02, D06, B1, B2, B5** go into the next round; the final design will probably combine several of them.
+All other designs stay here for reference.
+The shortlist is shown on two real lessons ported from the Impress decks: see [`review/real/`](review/real/README.md).
+
 ## Set D: `review/designs/` (sources `theme/designs/`)
 
 | Design | Idea |

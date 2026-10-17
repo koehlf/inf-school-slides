@@ -62,10 +62,10 @@
       font=\bfseries\fontsize{26}{30}\selectfont] at ([xshift=88mm, yshift=45mm]sw) {\sbchapter};
     \node[anchor=base west, text=coverTint, font=\small\bfseries, inner sep=0pt]
       at ([xshift=10mm, yshift=66mm]sw) {\sbcaps[150]{\sbsubject\sbsep Kapitel \sbchapter}};
-    \node[anchor=base west, text=white, font=\bfseries\fontsize{34}{38}\selectfont, inner sep=0pt]
-      (t) at ([xshift=10mm, yshift=50mm]sw) {\inserttitle};
+    \node[anchor=north west, text=white, font=\bfseries\fontsize{26}{30}\selectfont, inner sep=0pt, text width=66mm]
+      (t) at ([xshift=10mm, yshift=61mm]sw) {\sbnohyph\inserttitle};
     \node[anchor=north west, text=coverText, font=\normalsize, inner sep=0pt, text width=60mm]
-      at ([yshift=-5mm]t.base west) {\sbnohyph\insertsubtitle};
+      at ([yshift=-4mm]t.south west) {\sbnohyph\insertsubtitle};
     \node[anchor=base west, text=white, font=\normalsize, inner sep=0pt]
       at ([xshift=10mm, yshift=9mm]sw) {\insertauthor};
     \pic at ([xshift=10mm, yshift=17mm]sw) {infschool logo={font=\normalsize, text=white, fill=bandBg, rim=bandRule}};

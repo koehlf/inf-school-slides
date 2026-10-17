@@ -59,10 +59,10 @@
       \fi}
     \node[anchor=base west, text=termColor, font=\small\bfseries, inner sep=0pt]
       at ([xshift=12mm, yshift=66mm]sw) {\sbcaps[150]{\sbsubject\sbsep Kapitel \sbchapter}};
-    \node[anchor=base west, text=textFg, font=\bfseries\fontsize{40}{44}\selectfont, inner sep=0pt]
-      (t) at ([xshift=11mm, yshift=50mm]sw) {\inserttitle};
-    \node[anchor=base west, text=mutedFg, font=\large, inner sep=0pt]
-      at ([yshift=-9mm]t.base west) {\insertsubtitle};
+    \node[anchor=north west, text=textFg, font=\bfseries\fontsize{34}{38}\selectfont, inner sep=0pt, text width=135mm]
+      (t) at ([xshift=11mm, yshift=61mm]sw) {\sbnohyph\inserttitle};
+    \node[anchor=north west, text=mutedFg, font=\large, inner sep=0pt]
+      at ([yshift=-4mm]t.south west) {\insertsubtitle};
     \node[anchor=base east, text=textFg, inner sep=0pt] at ([xshift=-12mm, yshift=66mm]current page.south east) {\insertauthor};
     \pic at ([xshift=-12mm, yshift=58mm]current page.south east)
       {infschool logo={align=right, font=\normalsize, text=textFg, fill=hexFill, rim=hexRim}};

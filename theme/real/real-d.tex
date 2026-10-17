@@ -1,0 +1,27 @@
+% Real slides in a set-D design (M0-3): a lesson ported 1:1 from the Impress decks.
+%   \def\slidedesign{d01}   design file design-d01.sty (from theme/designs/)
+%   \def\slidepalette{dark} light or dark
+%   \def\realdeck{sorting}  body file real-sorting.tex or real-euler.tex
+% Build all: theme/real/build_real.sh
+\ifdefined\slidedesign\else\def\slidedesign{d01}\fi
+\ifdefined\slidepalette\else\def\slidepalette{dark}\fi
+\ifdefined\realdeck\else\def\realdeck{sorting}\fi
+\def\designbigtype{d06}
+\ifx\slidedesign\designbigtype\def\designsize{14pt}\else\def\designsize{12pt}\fi
+\edef\designopts{aspectratio=169,\designsize,xcolor={dvipsnames}}
+\expandafter\documentclass\expandafter[\designopts]{beamer}
+\usepackage{infschoolslides}
+\usepackage{pifont}
+\usepackage{pgfplots}\pgfplotsset{compat=1.18}
+\slidecolor{Rhodamine!90!black}
+\makeatletter
+\usepackage{designs-common}
+\usepackage{design-\slidedesign}
+\IfStrEq{\slidepalette}{dark}{\colorlet{pageTitle}{white!95!black}}{\colorlet{pageTitle}{primaryDark}}
+\newcommand{\decksections}{}
+% the API of the real decks, mapped to this set
+\newcommand{\RTitle}{{\setbeamertemplate{footline}{}\setbeamertemplate{background}{}\begin{frame}[plain]\titlepage\end{frame}}}
+\newcommand{\RSection}[3]{\section{#2}\sectionslide{\slide@chapter.#1}{#2}{«#3»}}
+\newcommand{\RTask}[3]{\begin{task}[#2]{#1}\large #3\end{task}}
+\makeatother
+\input{real-\realdeck}

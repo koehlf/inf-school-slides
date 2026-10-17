@@ -75,8 +75,8 @@
       \fi}
     \coordinate (bar) at ([xshift=10mm, yshift=60mm]current page.south west);
     \fill[borderColor, rounded corners=0.4mm] (bar) rectangle ++(12mm,-1.2mm);
-    \node[anchor=north west, inner sep=0pt, text=white, font=\bfseries\fontsize{36}{40}\selectfont]
-      (t) at ([yshift=-4mm]bar) {\inserttitle};
+    \node[anchor=north west, inner sep=0pt, text=white, font=\bfseries\fontsize{30}{34}\selectfont, text width=64mm]
+      (t) at ([yshift=-4mm]bar) {\sbnohyph\inserttitle};
     \node[anchor=north west, inner sep=0pt, text=coverText, font=\large]
       (s) at ([yshift=-4mm]t.south west) {\insertsubtitle};
     \node[anchor=north west, inner sep=0pt, text=coverTint, font=\small\bfseries]

@@ -1,0 +1,24 @@
+% Real slides in a set-B design (M0-3): a lesson ported 1:1 from the Impress decks.
+%   \def\slidedesign{B1}    design file sbB1.sty (from theme/designs-b/)
+%   \def\slidepalette{dark} light or dark
+%   \def\realdeck{sorting}  body file real-sorting.tex or real-euler.tex
+% Build all: theme/real/build_real.sh
+\ifdefined\slidedesign\else\def\slidedesign{B1}\fi
+\ifdefined\realdeck\else\def\realdeck{sorting}\fi
+\documentclass[aspectratio=169,12pt,t,xcolor={dvipsnames}]{beamer}
+\usepackage{sb\slidedesign}
+\usepackage{pifont}
+\usepackage{pgfplots}\pgfplotsset{compat=1.18}
+\makeatletter
+% the frame keys of set D as aliases
+\define@key{beamerframe}{doit}{\global\sbmachmittrue\gdef\sbtag{#1}}
+\define@key{beamerframe}{read}{\global\sblesentrue\gdef\sbtag{#1}}
+\makeatother
+% the API of the real decks, mapped to this set
+\newcommand{\slidesubject}[1]{\setsubject{#1}}
+\newcommand{\slidechapter}[1]{\setchapter{#1}}
+\newcommand{\slidecoverimages}[1]{\setphotos{#1}}
+\newcommand{\RTitle}{\sbtitleframe}
+\newcommand{\RSection}[3]{\setcounter{section}{\numexpr#1-1\relax}\section{#2}\sbsectionframe{#3}}
+\newcommand{\RTask}[3]{\begin{task}{#1}{#2}\large #3\end{task}}
+\input{real-\realdeck}

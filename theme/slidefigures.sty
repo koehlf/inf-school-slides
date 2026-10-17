@@ -209,6 +209,6 @@
 % \swaparrow{c3}{c5}: curved double arrow above two cards
 \newcommand{\swaparrow}[2]{\tikz[remember picture, overlay]
   \draw[swap] ([yshift=1.5mm]#1.north) to[bend left=35] ([yshift=1.5mm]#2.north);}
-% \pointerbelow{c3}{min}: pointer from below, label at its foot
-\newcommand{\pointerbelow}[2]{\tikz[remember picture, overlay]
-  \draw[pointer] ([yshift=-1.5mm-\designPointerLength]#1.south) -- node[pointer label, pos=0, below] {#2} ([yshift=-1.5mm]#1.south);}
+% \pointerbelow[gap]{c3}{min}: pointer from below, label at its foot; gap 8mm clears a part brace
+\NewDocumentCommand{\pointerbelow}{O{1.5mm} m m}{\tikz[remember picture, overlay]
+  \draw[pointer] ([yshift=-#1-\designPointerLength]#2.south) -- node[pointer label, pos=0, below] {#3} ([yshift=-#1]#2.south);}
