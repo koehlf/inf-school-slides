@@ -1,0 +1,100 @@
+% sbB3.sty -- design B3 «Wabe»: no bands, the slide stays open. A number
+% hexagon leads the frame title, a hairline closes it; the page number sits
+% in a small honeycomb fragment at the bottom right. Cover with one large
+% photo hexagon, section slide as a path of section hexagons.
+% Modes: icon hexagon instead of the number, a pill with the tag and a
+% coloured frame around the whole slide.
+\ProvidesPackage{sbB3}
+\RequirePackage{sbbase}
+
+\setbeamersize{text margin left=13mm, text margin right=13mm}
+\setbeamertemplate{headline}{}
+\setbeamertemplate{frametitle}{\vbox to 14mm{}}
+\setbeamertemplate{footline}{\vbox to 8mm{}}
+
+% honeycomb fragment with the page number: \sbcluster{x}{y}{fill}{rim}
+\newcommand{\sbcluster}[4]{%
+  \foreach \dx/\dy in {-6.4/3.7, -6.4/-3.7, 0/7.4} {
+    \node[hex=8.5mm, draw=#4, line width=0.4mm] at (#1+\dx mm,#2+\dy mm) {};}
+  \node[hex=8.5mm, fill=#3, draw=#4, line width=0.4mm, text=white, font=\bfseries\footnotesize]
+    at (#1,#2) {\insertframenumber};}
+
+\setbeamertemplate{background}{%
+  \begin{tikzpicture}
+    \useasboundingbox (0,0) rectangle (\the\paperwidth,\the\paperheight);
+    \ifsbspecial\else
+    \sbmodecheck
+    \coordinate (h) at (13mm+5mm,\paperheight-10mm);
+    \ifsbmode
+      \draw[\sbmodecol, line width=1.6mm] (0.8mm,0.8mm) rectangle (\paperwidth-0.8mm,\paperheight-0.8mm);
+      \node[hex=11mm, fill=\sbmodecol, draw=\sbmoderim, line width=\designRim] (hx) at (h) {};
+      \pic at (hx.center) {boxicon={\sbmodeicon}{6.6mm}};
+      \ifsbmachmit
+        \node[anchor=east, fill=doCol, text=doFg, rounded corners=1.2mm, font=\small\bfseries,
+          inner xsep=2.5mm, inner ysep=1.3mm] at (\paperwidth-13mm,\paperheight-10mm)
+          {\sbcaps{Mach mit}\enspace·\enspace\sbtag};
+      \else
+        \node[anchor=east, draw=readRim, line width=0.6pt, text=readText, rounded corners=1.2mm,
+          font=\small\bfseries, inner xsep=2.5mm, inner ysep=1.3mm] at (\paperwidth-13mm,\paperheight-10mm)
+          {\sbcaps{Zum Lesen}\enspace·\enspace\sbtag};
+      \fi
+      \sbcluster{\paperwidth-12mm}{7mm}{\sbmodecol}{\sbmoderim}
+    \else
+      \node[hex=11mm, fill=hexFill, draw=hexRim, line width=\designRim, text=white,
+        font=\bfseries\scriptsize] at (h) {\sbhexnum};
+      \sbcluster{\paperwidth-12mm}{7mm}{hexFill}{faint}
+    \fi
+    \node[anchor=west, inner sep=0pt, text=textFg, font=\bfseries\LARGE] at (25.5mm,\paperheight-10mm) {\insertframetitle};
+    \draw[borderColor!45!pageBg, line width=0.6pt] (24mm,\paperheight-16.5mm) -- (\paperwidth-13mm,\paperheight-16.5mm);
+    \pic at (13mm,3.6mm) {infschool logo={font=\scriptsize, text=mutedFg, fill=pageBg, rim=mutedFg}};
+    \fi
+  \end{tikzpicture}}
+
+% ---------------------------------------------------------------- title slide
+\newcommand{\sbtitleframe}{%
+\begin{frame}[plain,special]
+  \begin{tikzpicture}[remember picture, overlay]
+    \coordinate (sw) at (current page.south west);
+    % faint honeycomb lattice on the right
+    \foreach \i in {0,...,9} {\foreach \j in {-1,...,7} {
+      \pgfmathsetmacro{\hx}{78+\i*10.5}\pgfmathsetmacro{\hy}{\j*12.12+mod(\i,2)*6.06}
+      \node[hex=14mm, draw=faint, line width=0.5pt] at ([xshift=\hx mm, yshift=\hy mm]sw) {};}}
+    \sbgetphoto{1}\sbphotohex{[xshift=128mm, yshift=45mm]sw}{64mm}{\sbphoto}[1.4mm]
+    \sbgetphoto{3}\sbphotohex{[xshift=94.5mm, yshift=70mm]sw}{21mm}{\sbphoto}[0.9mm]
+    \sbgetphoto{2}\sbphotohex{[xshift=94.5mm, yshift=20mm]sw}{21mm}{\sbphoto}[0.9mm]
+    \node[hex=16mm, fill=hexFill, draw=hexRim, line width=0.8mm, text=white,
+      font=\bfseries\fontsize{20}{24}\selectfont] at ([xshift=90mm, yshift=45mm]sw) {\sbchapter};
+    \node[anchor=base west, text=termColor, font=\small\bfseries, inner sep=0pt]
+      at ([xshift=13mm, yshift=62mm]sw) {\sbcaps[150]{\sbsubject\sbsep Kapitel \sbchapter}};
+    \node[anchor=base west, text=textFg, font=\bfseries\fontsize{34}{38}\selectfont, inner sep=0pt]
+      (t) at ([xshift=13mm, yshift=47mm]sw) {\inserttitle};
+    \node[anchor=north west, text=mutedFg, font=\normalsize, inner sep=0pt, text width=62mm]
+      at ([yshift=-5mm]t.base west) {\sbnohyph\insertsubtitle};
+    \node[anchor=base west, text=textFg, inner sep=0pt] at ([xshift=13mm, yshift=10mm]sw) {\insertauthor};
+    \pic at ([xshift=13mm, yshift=4mm]sw) {infschool logo={font=\scriptsize, text=mutedFg, fill=pageBg, rim=mutedFg}};
+  \end{tikzpicture}
+\end{frame}}
+
+% ---------------------------------------------------------------- section slide
+% path of section hexagons: previous, current (large), next
+\newcommand{\sbsectionframe}[1]{%
+\begin{frame}[plain,special]
+  \begin{tikzpicture}[remember picture, overlay]
+    \coordinate (sw) at (current page.south west);
+    \pgfmathtruncatemacro{\sbprev}{\value{section}-1}
+    \pgfmathtruncatemacro{\sbnext}{\value{section}+1}
+    \draw[faint, line width=1.2mm] ([xshift=20mm, yshift=58mm]sw) -- ([xshift=140mm, yshift=58mm]sw);
+    \ifnum\sbprev>0
+      \node[hex=17mm, fill=pageBg, draw=faint, line width=0.8mm, text=mutedFg, font=\bfseries\normalsize]
+        at ([xshift=45mm, yshift=58mm]sw) {\sbchapter.\sbprev};
+    \fi
+    \node[hex=17mm, fill=pageBg, draw=faint, line width=0.8mm, text=mutedFg, font=\bfseries\normalsize]
+      at ([xshift=115mm, yshift=58mm]sw) {\sbchapter.\sbnext};
+    \node[hex=34mm, fill=hexFill, draw=hexRim, line width=1.4mm, text=white,
+      font=\bfseries\fontsize{28}{32}\selectfont] at ([xshift=80mm, yshift=58mm]sw) {\sbsecnum};
+    \node[anchor=base, text=textFg, font=\bfseries\fontsize{28}{32}\selectfont, inner sep=0pt]
+      at ([xshift=80mm, yshift=25mm]sw) {\insertsectionhead};
+    \node[anchor=base, text=termColor, font=\large, inner sep=0pt]
+      at ([xshift=80mm, yshift=15mm]sw) {«#1»};
+  \end{tikzpicture}
+\end{frame}}

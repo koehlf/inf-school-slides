@@ -1,0 +1,118 @@
+% sbB4.sty -- design B4 «Register»: every slide is a sheet on a desk, the
+% frame title is a register tab on the sheet with the section hexagon in
+% it, the page number hexagon sits on the bottom edge of the sheet.
+% Modes add a second tab at the right (icon and tag) and colour the sheet's
+% edge. Section slide with register tabs for the sections.
+\ProvidesPackage{sbB4}
+\RequirePackage{sbbase}
+
+% desk around the sheet; the sheet takes the page colour (figures use it)
+\ifsbdark
+  \definecolor{deskBg}{HTML}{0B080C}
+  \definecolor{pageBg}{HTML}{1E1820}
+\else
+  \definecolor{deskBg}{HTML}{EFE6EB}
+\fi
+\setbeamercolor{background canvas}{bg=deskBg}
+\colorlet{sheetRim}{borderColor!45!pageBg}
+
+\setbeamersize{text margin left=12mm, text margin right=12mm}
+\setbeamertemplate{headline}{}
+\setbeamertemplate{frametitle}{\vbox to 16mm{}}
+\setbeamertemplate{footline}{\vbox to 9mm{}}
+
+\newcommand{\sbSheetTop}{76mm}
+\newlength{\sbtabw}\newlength{\sbmodetabw}
+% tab: \sbtab{x}{width}{fill} (rounded top corners, square bottom)
+\newcommand{\sbtab}[3]{%
+  \fill[#3, rounded corners=2mm] (#1,\sbSheetTop-1mm) rectangle ++(#2,10.5mm);
+  \fill[#3] (#1,\sbSheetTop-1mm) rectangle ++(#2,3mm);}
+
+\setbeamertemplate{background}{%
+  \settowidth{\sbtabw}{\bfseries\Large\insertframetitle}%
+  \sbmodecheck
+  \ifsbmode\settowidth{\sbmodetabw}{\small\bfseries\sbcaps{\sbmodename}\enspace·\enspace\sbtag}\fi
+  \begin{tikzpicture}
+    \useasboundingbox (0,0) rectangle (\the\paperwidth,\the\paperheight);
+    \ifsbspecial\else
+    \sbmodecheck
+    \fill[pageBg, rounded corners=2mm] (6mm,5mm) rectangle (\paperwidth-6mm,\sbSheetTop);
+    % title tab
+    \sbtab{6mm}{\sbtabw+20mm}{bandBg}
+    \node[hex=9mm, fill=bandBg, draw=bandRule, line width=0.3mm, text=white, font=\bfseries\scriptsize]
+      at (12.5mm,\sbSheetTop+4.8mm) {\sbhexnum};
+    \node[anchor=west, inner sep=0pt, text=white, font=\bfseries\Large] at (18.5mm,\sbSheetTop+4.3mm) {\insertframetitle};
+    \ifsbmode
+      \sbtab{\paperwidth-6mm-\sbmodetabw-17mm}{\sbmodetabw+17mm}{\sbmodecol}
+      \node[phex=7.5mm, fill=\sbmodecol, draw=white, line width=0.3mm] (mh)
+        at (\paperwidth-6mm-\sbmodetabw-11.5mm,\sbSheetTop+4.5mm) {};
+      \pic at (mh.center) {boxicon={\sbmodeicon}{5.2mm}};
+      \node[anchor=east, inner sep=0pt, text=white, font=\small\bfseries] at (\paperwidth-11mm,\sbSheetTop+4.3mm)
+        {\sbcaps{\sbmodename}\enspace·\enspace\sbtag};
+      \draw[\ifsbmachmit doCol\else readRim\fi, line width=1.4pt, rounded corners=2mm]
+        (6mm,5mm) rectangle (\paperwidth-6mm,\sbSheetTop);
+    \else
+      \draw[sheetRim, line width=0.6pt, rounded corners=2mm] (6mm,5mm) rectangle (\paperwidth-6mm,\sbSheetTop);
+      \pic at (\paperwidth-7mm,\sbSheetTop+3mm) {infschool logo={align=right, font=\scriptsize, text=mutedFg, fill=deskBg, rim=mutedFg}};
+    \fi
+    % page number on the sheet's bottom edge
+    \node[hex=8.5mm, fill=bandBg, draw=bandRule, line width=0.3mm, text=white, font=\bfseries\footnotesize]
+      at (\paperwidth-16mm,5mm) {\insertframenumber};
+    \fi
+  \end{tikzpicture}}
+
+% ---------------------------------------------------------------- title slide
+\newcommand{\sbtitleframe}{%
+\begin{frame}[plain,special]
+  \begin{tikzpicture}[remember picture, overlay]
+    \coordinate (sw) at (current page.south west);
+    \fill[pageBg, rounded corners=2mm] ([xshift=6mm, yshift=5mm]sw) rectangle ([xshift=134mm, yshift=72mm]sw);
+    \draw[sheetRim, line width=0.6pt, rounded corners=2mm] ([xshift=6mm, yshift=5mm]sw) rectangle ([xshift=134mm, yshift=72mm]sw);
+    \fill[bandBg, rounded corners=2mm] ([xshift=6mm, yshift=71mm]sw) rectangle ++(72mm,11mm);
+    \fill[bandBg] ([xshift=6mm, yshift=71mm]sw) rectangle ++(72mm,3mm);
+    \node[hex=8mm, fill=bandBg, draw=bandRule, line width=0.3mm, text=white, font=\bfseries\small]
+      at ([xshift=12.5mm, yshift=77mm]sw) {\sbchapter};
+    \node[anchor=west, inner sep=0pt, text=white, font=\small\bfseries] at ([xshift=18.5mm, yshift=76.6mm]sw)
+      {\sbcaps[120]{\sbsubject\sbsep Kapitel \sbchapter}};
+    \foreach \x/\y/\n in {126/54/1, 148.5/41/2, 126/28/4, 148.5/67/3, 148.5/15/5} {
+      \sbgetphoto{\n}\sbphotohex{[xshift=\x mm, yshift=\y mm]sw}{29mm}{\sbphoto}[0.9mm]}
+    \node[anchor=base west, text=textFg, font=\bfseries\fontsize{34}{38}\selectfont, inner sep=0pt]
+      (t) at ([xshift=16mm, yshift=46mm]sw) {\inserttitle};
+    \node[anchor=north west, text=mutedFg, font=\normalsize, inner sep=0pt, text width=90mm]
+      at ([yshift=-5mm]t.base west) {\sbnohyph\insertsubtitle};
+    \draw[borderColor, line width=1.2mm, line cap=round] ([xshift=16mm, yshift=58mm]sw) -- ++(12mm,0);
+    \node[anchor=base west, text=textFg, inner sep=0pt] at ([xshift=16mm, yshift=12mm]sw) {\insertauthor};
+    \pic at ([xshift=-7mm, yshift=-6mm]current page.north east)
+      {infschool logo={align=right, font=\scriptsize, text=mutedFg, fill=deskBg, rim=mutedFg}};
+  \end{tikzpicture}
+\end{frame}}
+
+% ---------------------------------------------------------------- section slide
+\newcommand{\sbsectionframe}[1]{%
+\begin{frame}[plain,special]
+  \begin{tikzpicture}[remember picture, overlay]
+    \coordinate (sw) at (current page.south west);
+    \pgfmathtruncatemacro{\sbprev}{\value{section}-1}
+    \pgfmathtruncatemacro{\sbnext}{\value{section}+1}
+    % register tabs on the right edge of the sheet
+    \foreach \n/\y in {\sbprev/60, \sbnext/28} {
+      \ifnum\n>0
+        \fill[faint, rounded corners=2mm] ([xshift=130mm, yshift=\y mm-6.5mm]sw) rectangle ++(23mm,13mm);
+        \node[text=mutedFg, font=\bfseries\normalsize] at ([xshift=147mm, yshift=\y mm]sw) {\sbchapter.\n};
+      \fi}
+    \fill[bandBg, rounded corners=2mm] ([xshift=130mm, yshift=36mm]sw) rectangle ++(25mm,18mm);
+    \node[text=white, font=\bfseries\Large] at ([xshift=147mm, yshift=45mm]sw) {\sbsecnum};
+    \fill[pageBg, rounded corners=2mm] ([xshift=6mm, yshift=5mm]sw) rectangle ([xshift=140mm, yshift=76mm]sw);
+    \draw[sheetRim, line width=0.6pt, rounded corners=2mm] ([xshift=6mm, yshift=5mm]sw) rectangle ([xshift=140mm, yshift=76mm]sw);
+    \fill[bandBg] ([xshift=139.7mm, yshift=36mm]sw) rectangle ++(3mm,18mm);
+    \fill[bandBg, rounded corners=2mm] ([xshift=6mm, yshift=75mm]sw) rectangle ++(64mm,11mm);
+    \fill[bandBg] ([xshift=6mm, yshift=75mm]sw) rectangle ++(64mm,3mm);
+    \node[anchor=west, inner sep=0pt, text=white, font=\small\bfseries] at ([xshift=12mm, yshift=80.6mm]sw)
+      {\sbcaps[120]{Kapitel \sbchapter\sbsep \inserttitle}};
+    \node[anchor=base west, text=textFg, font=\bfseries\fontsize{30}{34}\selectfont, inner sep=0pt]
+      at ([xshift=16mm, yshift=44mm]sw) {\insertsectionhead};
+    \node[anchor=base west, text=termColor, font=\large, inner sep=0pt]
+      at ([xshift=16mm, yshift=33mm]sw) {«#1»};
+    \draw[borderColor, line width=1.2mm, line cap=round] ([xshift=16mm, yshift=56mm]sw) -- ++(12mm,0);
+  \end{tikzpicture}
+\end{frame}}

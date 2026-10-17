@@ -1,0 +1,91 @@
+% sbB2.sty -- design B2 «Leiste»: a dark rail along the left edge carries
+% the brand: section number hexagon at the top, binary text, the vertical
+% wordmark and the page number at the bottom. Title area stays open: a
+% small capital kicker (section) above the frame title. Modes recolour the
+% rail, swap the number for the icon and add a pill at the top right.
+\ProvidesPackage{sbB2}
+\RequirePackage{sbbase}
+
+\newcommand{\sbRailW}{14mm}
+\setbeamersize{text margin left=22mm, text margin right=10mm}
+\setbeamertemplate{headline}{}
+\setbeamertemplate{frametitle}{\vbox to 14mm{}}
+\setbeamertemplate{footline}{\vbox to 5mm{}}
+
+\setbeamertemplate{background}{%
+  \begin{tikzpicture}
+    \useasboundingbox (0,0) rectangle (\the\paperwidth,\the\paperheight);
+    \ifsbspecial\else
+    \sbmodecheck
+    \ifsbmode\colorlet{rail}{\sbmodecol}\else\colorlet{rail}{bandBg}\fi
+    \fill[rail] (0,0) rectangle (\sbRailW,\paperheight);
+    \fill[\ifsbmode\sbmoderim\else bandRule\fi] (\sbRailW,0) rectangle (\sbRailW-\designBandRule,\paperheight);
+    \ifsbmode
+      \node[hex=11mm, fill=rail, draw=white, line width=\designRim] (rh) at (0.5*\sbRailW,\paperheight-9mm) {};
+      \pic at (rh.center) {boxicon={\sbmodeicon}{6.5mm}};
+    \else
+      \node[hex=11mm, fill=rail, draw=bandRule, line width=\designRim, text=white,
+        font=\bfseries\footnotesize] at (0.5*\sbRailW,\paperheight-9mm) {\sbhexnum};
+    \fi
+    \node[rotate=90, anchor=east, text=rail!80!white, font=\ttfamily\bfseries\small]
+      at (0.5*\sbRailW,\paperheight-17mm) {\sbnocopy{\textls[120]{\sbinf}}};
+    \pic at (\paperwidth-8mm,3.2mm) {infschool logo={align=right, font=\scriptsize, text=mutedFg, fill=pageBg, rim=mutedFg}};
+    \node[hex=9.5mm, fill=rail, draw=white, line width=0.3mm, text=white, font=\bfseries\footnotesize]
+      at (0.5*\sbRailW,7.5mm) {\insertframenumber};
+    % title
+    \node[anchor=base west, inner sep=0pt, text=\ifsbmode\sbmodetext\else termColor\fi, font=\bfseries\footnotesize]
+      at (22mm,\paperheight-8mm) {\sbcaps[120]{\ifsbmode\sbmodename\else\sbsecline\fi}};
+    \node[anchor=base west, inner sep=0pt, text=textFg, font=\bfseries\LARGE]
+      at (22mm,\paperheight-15.5mm) {\insertframetitle};
+    \ifsbmachmit
+      \node[anchor=north east, fill=doCol, text=doFg, rounded corners=1.2mm, font=\small\bfseries,
+        inner xsep=2.5mm, inner ysep=1.4mm] at (\paperwidth-8mm,\paperheight-5mm) {\sbtag};
+    \fi
+    \ifsblesen
+      \node[anchor=north east, draw=readRim, line width=0.5pt, text=readText, rounded corners=1.2mm,
+        font=\small\bfseries, inner xsep=2.5mm, inner ysep=1.4mm] at (\paperwidth-8mm,\paperheight-5mm) {\sbtag};
+    \fi
+    \fi
+  \end{tikzpicture}}
+
+% ---------------------------------------------------------------- title slide
+\newcommand{\sbtitleframe}{%
+\begin{frame}[plain,special]
+  \begin{tikzpicture}[remember picture, overlay]
+    \coordinate (sw) at (current page.south west);
+    \fill[bandBg] (sw) rectangle ([xshift=88mm]current page.north west);
+    \fill[bandRule] ([xshift=88mm]sw) rectangle ([xshift=88mm-\designBandRule]current page.north west);
+    % photo cluster on the page colour
+    \foreach \x/\y/\n in {119/66/1, 143/52/2, 119/38/3, 143/24/4, 119/10/5, 143/80/6} {
+      \sbgetphoto{\n}\sbphotohex{[xshift=\x mm, yshift=\y mm]sw}{29mm}{\sbphoto}[0.8mm]}
+    \node[hex=22mm, fill=bandBg, draw=bandRule, line width=1mm, text=white,
+      font=\bfseries\fontsize{26}{30}\selectfont] at ([xshift=88mm, yshift=45mm]sw) {\sbchapter};
+    \node[anchor=base west, text=coverTint, font=\small\bfseries, inner sep=0pt]
+      at ([xshift=10mm, yshift=66mm]sw) {\sbcaps[150]{\sbsubject\sbsep Kapitel \sbchapter}};
+    \node[anchor=base west, text=white, font=\bfseries\fontsize{34}{38}\selectfont, inner sep=0pt]
+      (t) at ([xshift=10mm, yshift=50mm]sw) {\inserttitle};
+    \node[anchor=north west, text=coverText, font=\normalsize, inner sep=0pt, text width=60mm]
+      at ([yshift=-5mm]t.base west) {\sbnohyph\insertsubtitle};
+    \node[anchor=base west, text=white, font=\normalsize, inner sep=0pt]
+      at ([xshift=10mm, yshift=9mm]sw) {\insertauthor};
+    \pic at ([xshift=10mm, yshift=17mm]sw) {infschool logo={font=\normalsize, text=white, fill=bandBg, rim=bandRule}};
+  \end{tikzpicture}
+\end{frame}}
+
+% ---------------------------------------------------------------- section slide
+\newcommand{\sbsectionframe}[1]{%
+\begin{frame}[plain,special]
+  \begin{tikzpicture}[remember picture, overlay]
+    \coordinate (sw) at (current page.south west);
+    \fill[bandBg] (sw) rectangle ([xshift=60mm]current page.north west);
+    \fill[bandRule] ([xshift=60mm]sw) rectangle ([xshift=60mm-\designBandRule]current page.north west);
+    \node[hex=44mm, fill=bandBg, draw=bandRule, line width=1.2mm, text=white,
+      font=\bfseries\fontsize{32}{36}\selectfont] at ([xshift=30mm, yshift=45mm]sw) {\sbsecnum};
+    \node[anchor=base west, text=mutedFg, font=\small\bfseries, inner sep=0pt]
+      at ([xshift=72mm, yshift=58mm]sw) {\sbcaps[150]{Kapitel \sbchapter\sbsep \inserttitle}};
+    \node[anchor=base west, text=textFg, font=\bfseries\fontsize{28}{32}\selectfont, inner sep=0pt]
+      at ([xshift=72mm, yshift=44mm]sw) {\insertsectionhead};
+    \node[anchor=north west, text=termColor, font=\large, inner sep=0pt, text width=78mm]
+      at ([xshift=72mm, yshift=38mm]sw) {\sbnohyph«#1»};
+  \end{tikzpicture}
+\end{frame}}

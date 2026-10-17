@@ -1,0 +1,87 @@
+% sbB5.sty -- design B5 «Bühne»: as much stage as possible for the content.
+% No bands: the frame title stands alone, a large hexagon in the top right
+% corner (mostly off the slide) carries the section number, a thin progress
+% line at the bottom carries the page number in a hexagon that travels
+% through the deck. Modes fill the corner hexagon with the icon and replace
+% the progress line by a coloured strip with mode and tag.
+\ProvidesPackage{sbB5}
+\RequirePackage{sbbase}
+
+\setbeamersize{text margin left=12mm, text margin right=14mm}
+\setbeamertemplate{headline}{}
+\setbeamertemplate{frametitle}{\vbox to 15mm{}}
+\setbeamertemplate{footline}{\vbox to 11mm{}}
+
+\setbeamertemplate{background}{%
+  \begin{tikzpicture}
+    \useasboundingbox (0,0) rectangle (\the\paperwidth,\the\paperheight);
+    \ifsbspecial\else
+    \sbmodecheck
+    \coordinate (corner) at (\paperwidth+1mm,\paperheight+3mm);
+    \ifsbmode
+      \node[hex=46mm, fill=\sbmodecol, draw=\sbmoderim, line width=1mm] at (corner) {};
+      \pic at ([xshift=-12mm, yshift=-12mm]corner) {boxicon={\sbmodeicon}{9mm}};
+      \fill[\sbmodecol] (0,0) rectangle (\paperwidth,9mm);
+      \fill[\sbmoderim] (0,9mm) rectangle (\paperwidth,9mm-\designBandRule);
+      \node[anchor=base west, inner sep=0pt, text=white, font=\small]
+        at (12mm,3.3mm) {\textbf{\sbcaps[120]{\sbmodename}}\quad\sbtag};
+      \node[anchor=base east, inner sep=0pt, text=white, font=\bfseries\small]
+        at (\paperwidth-12mm,3.3mm) {\insertframenumber};
+    \else
+      \node[hex=46mm, draw=faint, line width=1.4mm] at (corner) {};
+      \node[text=termColor, font=\bfseries\Large] at ([xshift=-8.5mm, yshift=-11mm]corner) {\sbhexnum};
+      % progress line with the travelling page number
+      \pgfmathsetmacro{\sbprog}{(\insertframenumber-1)/max(1,\inserttotalframenumber-1)}
+      \draw[faint, line width=0.8mm, line cap=round] (12mm,5mm) -- (\paperwidth-12mm,5mm);
+      \draw[termColor, line width=0.8mm, line cap=round] (12mm,5mm) -- ({12mm+\sbprog*(\paperwidth-24mm)},5mm);
+      \node[hex=8.5mm, fill=hexFill, draw=hexRim, line width=0.3mm, text=white, font=\bfseries\footnotesize]
+        at ({12mm+\sbprog*(\paperwidth-24mm)},5mm) {\insertframenumber};
+    \fi
+    \node[anchor=base west, inner sep=0pt, text=textFg, font=\bfseries\LARGE] at (12mm,\paperheight-13mm) {\insertframetitle};
+    \fi
+  \end{tikzpicture}}
+
+% ---------------------------------------------------------------- title slide
+\newcommand{\sbtitleframe}{%
+\begin{frame}[plain,special]
+  \begin{tikzpicture}[remember picture, overlay]
+    \coordinate (sw) at (current page.south west);
+    \node[anchor=north west, text=faint, font=\ttfamily\bfseries\fontsize{12.5}{15}\selectfont, inner sep=0pt, align=left]
+      at ([xshift=12mm, yshift=-5mm]current page.north west) {\sbnocopy{\textls[60]{\sbinf}}\\\sbnocopy{\textls[60]{\sbschool}}};
+    % honeycomb strip along the bottom edge
+    \foreach \i/\n in {0/0, 1/1, 2/2, 3/0, 4/3, 5/4, 6/0, 7/5, 8/6} {
+      \pgfmathsetmacro{\hx}{4+\i*20.5}\pgfmathsetmacro{\hy}{mod(\i,2)==0 ? 2 : 13.5}
+      \coordinate (c) at ([xshift=\hx mm, yshift=\hy mm]sw);
+      \ifnum\n=0
+        \node[hex=26mm, fill=hexFill, draw=hexRim, line width=0.8mm] at (c) {};
+      \else
+        \sbgetphoto{\n}\sbphotohex{c}{26mm}{\sbphoto}[0.8mm]
+      \fi}
+    \node[anchor=base west, text=termColor, font=\small\bfseries, inner sep=0pt]
+      at ([xshift=12mm, yshift=66mm]sw) {\sbcaps[150]{\sbsubject\sbsep Kapitel \sbchapter}};
+    \node[anchor=base west, text=textFg, font=\bfseries\fontsize{40}{44}\selectfont, inner sep=0pt]
+      (t) at ([xshift=11mm, yshift=50mm]sw) {\inserttitle};
+    \node[anchor=base west, text=mutedFg, font=\large, inner sep=0pt]
+      at ([yshift=-9mm]t.base west) {\insertsubtitle};
+    \node[anchor=base east, text=textFg, inner sep=0pt] at ([xshift=-12mm, yshift=66mm]current page.south east) {\insertauthor};
+    \pic at ([xshift=-12mm, yshift=58mm]current page.south east)
+      {infschool logo={align=right, font=\normalsize, text=textFg, fill=hexFill, rim=hexRim}};
+  \end{tikzpicture}
+\end{frame}}
+
+% ---------------------------------------------------------------- section slide
+\newcommand{\sbsectionframe}[1]{%
+\begin{frame}[plain,special]
+  \begin{tikzpicture}[remember picture, overlay]
+    \coordinate (sw) at (current page.south west);
+    \sbgetphoto{1}\sbphotohex{[xshift=18mm, yshift=45mm]sw}{86mm}{\sbphoto}[1.6mm]
+    \node[hex=34mm, fill=hexFill, draw=hexRim, line width=1.4mm, text=white,
+      font=\bfseries\fontsize{28}{32}\selectfont] at ([xshift=61mm, yshift=45mm]sw) {\sbsecnum};
+    \node[anchor=base west, text=mutedFg, font=\small\bfseries, inner sep=0pt]
+      at ([xshift=84mm, yshift=58mm]sw) {\sbcaps[150]{Kapitel \sbchapter\sbsep \inserttitle}};
+    \node[anchor=base west, text=textFg, font=\bfseries\fontsize{28}{32}\selectfont, inner sep=0pt]
+      at ([xshift=84mm, yshift=44mm]sw) {\insertsectionhead};
+    \node[anchor=north west, text=termColor, font=\large, inner sep=0pt, text width=66mm]
+      at ([xshift=84mm, yshift=37mm]sw) {\sbnohyph«#1»};
+  \end{tikzpicture}
+\end{frame}}

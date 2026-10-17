@@ -1,0 +1,150 @@
+% sbdeck.tex -- the sample deck, the same content in every design.
+% Input by B<n>.tex after \documentclass, \usepackage{sbB<n>} and the pitch
+% (\sbdesignid, \sbdesignname, \sbpitchpage).
+\title{Sortieren}
+\subtitle{Selectionsort · Bubblesort · Mergesort}
+\author{Florian Köhl}
+\setsubject{Algorithmik}
+\setchapter{3}
+\setphotos{cover/algorithmik/playing-cards.jpg, cover/algorithmik/maze.jpg,
+  cover/algorithmik/signpost.jpg, cover/algorithmik/pencils.jpg,
+  cover/algorithmik/subway-map.jpg, cover/algorithmik/bridges.jpg}
+
+\begin{document}
+
+% 1 title slide (L1)
+\sbtitleframe
+
+% 2 pitch page
+\begin{frame}{\sbdesignid\ «\sbdesignname»}
+  \sbpitchpage
+\end{frame}
+
+% 3 section slide (L2)
+\setcounter{section}{1}
+\section{Selectionsort}
+\sbsectionframe{Wiederholtes Suchen des Minimums}
+
+% 4 bullets (L4)
+\begin{frame}{Effizienz: Laufzeit}
+  \begin{itemize}
+    \item Wie «schnell» ist Selectionsort?
+    \item Wie messen wir die Effizienz eines Algorithmus?
+      \begin{itemize}
+        \item Zeitmessung? Hängt von Hardware und Implementierung ab.
+        \item Alternativen?
+      \end{itemize}
+    \item Grobe Idee: die \term{Anzahl Operationen} zählen
+      \begin{itemize}
+        \item Vergleiche zwischen zwei Elementen
+        \item Vertauschungen zweier Elemente
+      \end{itemize}
+  \end{itemize}
+\end{frame}
+
+% 5 definition (L7)
+\begin{frame}{Sortiert?}
+  \begin{concept}[Aufsteigend sortiert]
+    Eine Liste ist \term{aufsteigend sortiert}, wenn jedes Element kleiner
+    oder gleich gross ist wie alle nachfolgenden Elemente.
+  \end{concept}
+  \begin{itemize}
+    \item Sind diese Karten sortiert?
+    \item Und die leere Liste?
+  \end{itemize}
+\end{frame}
+
+% 6 figure (L6)
+\begin{frame}{Selectionsort in Aktion}
+  \vspace{5mm}
+  \cardArray{name=c, items={2h,6h,5h,9h,7h,10h}, parts={1/1/S,2/6/U}, size=0.12}
+  \swaparrow{c2}{c3}\pointerbelow{c3}{min}
+  \vfill
+  \begin{center}
+    Das kleinste Element in U ist die 5:\\
+    Wir vertauschen es mit dem ersten Element von U.
+  \end{center}
+\end{frame}
+
+% 7 code (L10)
+\begin{frame}[fragile]{Selectionsort in Python}
+\begin{codebox}{selection\_sort.py}
+def selection_sort(liste):
+    for i in range(len(liste) - 1):
+        k = i  # Position des Minimums in U
+        for j in range(i + 1, len(liste)):
+            if liste[j] < liste[k]:
+                k = j
+        liste[i], liste[k] = liste[k], liste[i]
+\end{codebox}
+\end{frame}
+
+% 8 task in «Mach mit» mode (L13)
+\begin{frame}[machmit={zu zweit · 15 Min}]{Ihr seid dran!}
+  \vspace{2mm}
+  \begin{task}{38–41}{Sortieren von Hand}
+    Sortiere die Listen im Skript (S.~48) mit Selectionsort und Bubblesort
+    von Hand.
+  \end{task}
+\end{frame}
+
+% 9 algorithm + figure (L8)
+\section{Mergesort}
+\begin{frame}{Mergesort: Merge}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.5\textwidth}
+      \sbstep{1}{Vergleiche die vordersten Elemente beider Listen.}
+      \sbstep[hl]{2}{Füge das kleinere hinten an die neue Liste an.}
+      \sbstep{3}{Ist eine Liste leer, hänge den Rest der anderen an.}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \vspace{1mm}
+      \pythonArray{items={2,5,3,9}, parts={0/2/links,2/4/rechts}, done={0},
+        highlight={1,2}, ptrs={1/i,2/j}}
+      \vspace{5mm}
+      \pythonArray{items={2,\phantom{0},\phantom{0},\phantom{0}}, blank, done={0},
+        drawindexes=false}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% 10 step by step (L9)
+\section{Spannbäume}
+\begin{frame}{Kruskal in Aktion}
+  \begin{center}
+  \begin{graph}[x=1.45cm, y=0.94cm]
+    \node[vertex] (C) at (0,2) {C};
+    \node[vertex] (E) at (2.6,2.5) {E};
+    \node[vertex] (D) at (5,1.3) {D};
+    \node[vertex] (A) at (1.3,0) {A};
+    \node[vertex] (B) at (4,-0.4) {B};
+    \draw (E) edge["10"] (D);
+    \draw (A) edge["6"] (D);
+    \draw (D) edge["5"] (B);
+    \draw (A) edge["5"] (B);
+    \draw (A) edge["4", onslide=<3->{removed}] (E);
+    \draw (C) edge["3", onslide=<2->{chosen}] (E);
+    \draw (C) edge["2", chosen] (A);
+  \end{graph}
+  \end{center}
+  \vfill
+  \begin{center}
+    \only<1>{C–A (2) bildet keinen Kreis: \term{gewählt}.}%
+    \only<2>{C–E (3) bildet keinen Kreis: \term{gewählt}.}%
+    \only<3>{A–E (4) würde einen Kreis bilden: \term{verworfen}.}\par
+    \vspace{2mm}\stepdots{3}
+  \end{center}
+\end{frame}
+
+% 11 «Zum Lesen» mode
+\begin{frame}[lesen={Skript S. 92}]{Ein Baum ist …}
+  \begin{enumerate}
+    \item ein \term{zusammenhängender} Graph ohne Kreise.
+    \item ein Graph, in dem es zwischen zwei Knoten genau \term{einen Pfad} gibt.
+    \item ein zusammenhängender Graph mit $n$ Knoten und $n-1$ Kanten.
+  \end{enumerate}
+  \medskip
+  Alle drei Beschreibungen sind gleichwertig.
+\end{frame}
+
+\end{document}

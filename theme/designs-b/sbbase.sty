@@ -1,0 +1,338 @@
+% sbbase.sty -- shared base of the five comparison designs B1-B5
+% (designer B). Palette (light/dark), fonts, design tokens, box icons,
+% boxes, code box, lists, the two slide modes and helpers. The chrome
+% (title area, page number, title and section slides) lives in sbB<n>.sty.
+%
+% Palette switch: \def\slidepalette{dark} before \documentclass
+% (latexmk -usepretex='\def\slidepalette{dark}'); default is light.
+\ProvidesPackage{sbbase}
+\providecommand{\slidepalette}{light}
+
+% ---------------------------------------------------------------- packages
+\usefonttheme{professionalfonts}
+\RequirePackage[T1]{fontenc}
+\RequirePackage[sfdefault]{FiraSans}
+\RequirePackage[lining,scaled=0.94]{FiraMono}
+\RequirePackage{newtxsf}
+\RequirePackage[ngerman]{babel}
+\AtBeginDocument{\shorthandoff{"}}  % TikZ edge quotes: edge["5"]
+\RequirePackage{microtype}
+\RequirePackage{etoolbox}
+\RequirePackage{xparse}
+\RequirePackage{accsupp}
+\RequirePackage{tikz}
+\usetikzlibrary{babel,positioning,shapes.geometric,shapes.misc,calc,arrows.meta,quotes,decorations.pathreplacing}
+\RequirePackage[most]{tcolorbox}
+\RequirePackage{listings}
+
+% ---------------------------------------------------------------- tokens
+% same names and values as the scripts' design.sty where they exist
+\newcommand{\designHexRound}{0.075}
+\newcommand{\hexround}[1]{\designHexRound*#1}
+\newcommand{\designArc}{0.9mm}
+\newcommand{\designInnerArc}{0.5mm}
+\newcommand{\designRim}{0.4mm}
+\newcommand{\designIconStroke}{0.4mm}
+\newcommand{\designBandRule}{0.5mm}
+\newcommand{\designBoxRule}{0.6pt}
+\newcommand{\designLeftRule}{2pt}
+\newcommand{\sbIconHex}{9mm}       % icon hexagon of concept/code boxes
+\newcommand{\sbIconGlyph}{6.4mm}
+\newcommand{\sbIconHexLeft}{8mm}   % icon hexagon of task/example boxes
+\newcommand{\sbIconGlyphLeft}{5.6mm}
+
+\tikzset{
+  hex/.style={regular polygon, regular polygon sides=6, minimum height=#1,
+    inner sep=0pt, rounded corners=\designHexRound*#1},
+  phex/.style={hex=#1, shape border rotate=30},  % pointy-topped
+}
+
+% ---------------------------------------------------------------- palette
+% The scripts define Rhodamine!90!black (CMYK) and mix it with black; these
+% are the RGB values those CMYK colours render as (poppler), fixed in RGB so
+% that the projector shows the same colours in every viewer.
+\definecolor{baseColor}{HTML}{DC3D9A}     % Rhodamine!90!black
+\definecolor{primaryDark}{HTML}{5D4750}   % baseColor!30!black
+\definecolor{primaryLight}{HTML}{B94F8A}  % baseColor!80!black
+\colorlet{primary}{primaryLight}
+
+\newif\ifsbdark
+\ifdefstring{\slidepalette}{dark}{\sbdarktrue}{\sbdarkfalse}
+
+\ifsbdark
+  \definecolor{pageBg}{HTML}{151116}
+  \definecolor{textFg}{HTML}{EFEAF0}
+  \definecolor{mutedFg}{HTML}{ADA3AF}
+  \definecolor{termColor}{HTML}{ED9ACB}       % baseColor!50!white, 9:1 on pageBg
+  \colorlet{borderColor}{primaryLight}
+  \colorlet{bandBg}{primaryDark}
+  \colorlet{bandFg}{white}
+  \colorlet{bandRule}{primaryLight}
+  \colorlet{boxBg}{baseColor!9!pageBg}
+  \colorlet{boxTitleBg}{primaryDark}
+  \colorlet{codeBg}{baseColor!5!pageBg}
+  \colorlet{hexFill}{primaryDark}
+  \colorlet{hexRim}{primaryLight}
+  \colorlet{faint}{baseColor!22!pageBg}     % decorative outlines
+  \colorlet{sheetBg}{baseColor!4!pageBg}
+  % modes: «Mach mit» loud (subject colour), «Zum Lesen» quiet (slate)
+  \colorlet{doCol}{primaryLight}
+  \colorlet{doFg}{white}
+  \definecolor{readCol}{HTML}{3D4957}
+  \definecolor{readText}{HTML}{B4C1CE}
+  \definecolor{readRim}{HTML}{8796A6}
+  \colorlet{readFg}{white}
+  % figures (slidefigures.sty)
+  \colorlet{nodeFill}{primaryDark}
+  \colorlet{nodeText}{white}
+  \colorlet{nodeActive}{termColor}
+  \definecolor{nodeActiveText}{HTML}{2A1A24}
+  \colorlet{edgeCol}{baseColor!45!pageBg}
+  \colorlet{chosenCol}{white}
+  \definecolor{removedCol}{HTML}{6A626C}
+  \colorlet{braceCol}{termColor}
+  \colorlet{figText}{textFg}
+  \colorlet{cellFill}{primaryDark}
+  \colorlet{cellRim}{primaryLight}
+  \colorlet{cellText}{white}
+  \colorlet{cellActive}{primaryLight}
+  \colorlet{cellActiveRim}{termColor}
+  \definecolor{cellDone}{HTML}{5A525C}
+  % code
+  \colorlet{codeKey}{termColor}
+  \definecolor{codeStr}{HTML}{9FD8B0}
+  \colorlet{codeComment}{mutedFg}
+  \definecolor{codeBuiltin}{HTML}{E8C07A}
+\else
+  \definecolor{pageBg}{HTML}{FFFFFF}
+  \definecolor{textFg}{HTML}{1C171D}
+  \definecolor{mutedFg}{HTML}{5E5661}
+  \definecolor{termColor}{HTML}{A0457A}  % between primaryLight and primaryDark: 5.8:1 on white
+  \colorlet{borderColor}{primaryLight}
+  \colorlet{bandBg}{primaryDark}
+  \colorlet{bandFg}{white}
+  \colorlet{bandRule}{primaryLight}
+  \colorlet{boxBg}{baseColor!5!white}
+  \colorlet{boxTitleBg}{primaryDark}
+  \colorlet{codeBg}{baseColor!3!white}
+  \colorlet{hexFill}{primaryDark}
+  \colorlet{hexRim}{primaryLight}
+  \colorlet{faint}{baseColor!14!white}
+  \colorlet{sheetBg}{white}
+  \colorlet{doCol}{primaryLight}
+  \colorlet{doFg}{white}
+  \definecolor{readCol}{HTML}{45515E}
+  \definecolor{readText}{HTML}{45515E}
+  \definecolor{readRim}{HTML}{7A8896}
+  \colorlet{readFg}{white}
+  \colorlet{nodeFill}{primaryLight!12!white}
+  \colorlet{nodeText}{primaryDark}
+  \colorlet{nodeActive}{primaryDark}
+  \colorlet{nodeActiveText}{white}
+  \colorlet{edgeCol}{primaryLight!60!white}
+  \colorlet{chosenCol}{primaryDark}
+  \definecolor{removedCol}{HTML}{B5ADB7}
+  \colorlet{braceCol}{primaryLight}
+  \colorlet{figText}{textFg}
+  \colorlet{cellFill}{primaryLight!10!white}
+  \colorlet{cellRim}{primaryLight}
+  \colorlet{cellText}{primaryDark}
+  \colorlet{cellActive}{primaryLight!32!white}
+  \colorlet{cellActiveRim}{primaryDark}
+  \definecolor{cellDone}{HTML}{6E6671}
+  \colorlet{codeKey}{primaryLight}
+  \definecolor{codeStr}{HTML}{1F6B3A}
+  \colorlet{codeComment}{mutedFg}
+  \definecolor{codeBuiltin}{HTML}{8A4B00}
+\fi
+\definecolor{coverTint}{HTML}{E6B9D3}  % primaryLight!35!white
+\definecolor{coverDark}{HTML}{4F4045}  % primaryDark!75!black
+\definecolor{coverText}{HTML}{EDCCDF}  % primaryLight!25!white
+
+\setbeamercolor{normal text}{fg=textFg, bg=pageBg}
+\setbeamercolor{background canvas}{bg=pageBg}
+\setbeamercolor{structure}{fg=termColor}
+\setbeamercolor{alerted text}{fg=termColor}
+\setbeamertemplate{navigation symbols}{}
+
+\RequirePackage{slideicons}
+\RequirePackage{slidelogo}
+\RequirePackage{slidefigures}
+
+% ---------------------------------------------------------------- text
+\newcommand{\term}[1]{\textbf{\color{termColor}#1}}
+\newcommand{\sbcaps}[2][80]{\textls[#1]{\MakeUppercase{#2}}}
+\def\sbinf{011010010110111001100110}
+\def\sbschool{011100110110001101101000011011110110111101101100}
+\newcommand{\sbnocopy}[1]{\BeginAccSupp{method=plain,ActualText={}}#1\EndAccSupp{}}
+\setlength{\parskip}{0.45\baselineskip}
+
+% deck metadata
+\newcommand{\sbsubject}{Algorithmik}
+\newcommand{\sbchapter}{3}
+\newcommand{\setsubject}[1]{\renewcommand{\sbsubject}{#1}}
+\newcommand{\setchapter}[1]{\renewcommand{\sbchapter}{#1}}
+\newcommand{\sbsecnum}{\sbchapter.\insertsectionnumber}
+% kicker line: «3.2 Selectionsort», before the first section «Algorithmik · Kapitel 3»
+\DeclareRobustCommand{\sbsep}{\ \mbox{\textls[0]{\textperiodcentered}}\ }  % in letterspaced capitals
+\newcommand{\sbsecline}{\ifnum\value{section}=0 \sbsubject\sbsep Kapitel \sbchapter\else\sbsecnum\enspace\insertsectionhead\fi}
+% number for hexagons: 3.2, before the first section just 3
+\newcommand{\sbhexnum}{\ifnum\value{section}=0 \sbchapter\else\sbsecnum\fi}
+\newcommand{\sbnohyph}{\hyphenchar\font=-1 \raggedright}
+\newcommand{\sbphotos}{}
+\newcommand{\setphotos}[1]{\renewcommand{\sbphotos}{#1}}
+% n-th photo of the list (1-based) into \sbphoto
+\newcommand{\sbgetphoto}[1]{\gdef\sbphoto{}\foreach \f [count=\j] in \sbphotos {\ifnum\j=#1\relax\xdef\sbphoto{\f}\fi}}
+
+% ---------------------------------------------------------------- icons
+% open book: «Zum Lesen» (same 24-unit grid and stroke as slideicons.sty)
+\makeatletter
+\@namedef{boxicon@book}{%
+  \draw (12,5.5) .. controls (9.5,7.2) and (6.5,7.6) .. (2.5,7)
+        -- (2.5,18.5) .. controls (6.5,19.1) and (9.5,18.7) .. (12,17)
+        .. controls (14.5,18.7) and (17.5,19.1) .. (21.5,18.5)
+        -- (21.5,7) .. controls (17.5,7.6) and (14.5,7.2) .. (12,5.5) -- cycle;
+  \draw (12,5.5) -- (12,17);}
+\makeatother
+% icon in a hexagon, inline: \sbiconhex[fill][rim]{icon}{size}
+\NewDocumentCommand{\sbiconhex}{O{hexFill} O{hexRim} m m}{%
+  \tikz[baseline=-0.6ex]{\node[phex=#4, fill=#1, draw=#2, line width=\designRim] (h) {};
+    \pic at (h.center) {boxicon={#3}{0.7*#4}};}}
+
+% ---------------------------------------------------------------- lists
+\setbeamertemplate{itemize item}{\raisebox{0.12ex}{\tikz\node[hex=2.1mm, fill=termColor]{};}}
+\setbeamertemplate{itemize subitem}{\raisebox{0.2ex}{\tikz\node[hex=1.7mm, draw=termColor, line width=0.6pt]{};}}
+\setbeamertemplate{enumerate item}{\tikz[baseline=(n.base)]\node[phex=5.6mm, fill=hexFill,
+  draw=hexRim, line width=0.3mm, text=white, font=\footnotesize\bfseries] (n) {\insertenumlabel};}
+\setlength{\leftmargini}{1.4em}
+\setlength{\leftmarginii}{1.3em}
+\setbeamerfont{itemize/enumerate subbody}{size=\normalsize}
+\setbeamercolor{itemize/enumerate subbody}{fg=mutedFg}
+\addtobeamertemplate{itemize/enumerate body begin}{}{\setlength{\itemsep}{0.35\baselineskip}}
+
+% ---------------------------------------------------------------- modes
+% \begin{frame}[machmit={zu zweit · 15 Min}]{...}   class works now
+% \begin{frame}[lesen={Skript S. 92}]{...}          read, don't copy
+\newif\ifsbmachmit
+\newif\ifsblesen
+\newif\ifsbspecial   % title/section frames: no chrome
+\gdef\sbtag{}
+\BeforeBeginEnvironment{frame}{\global\sbmachmitfalse\global\sblesenfalse\global\sbspecialfalse}
+\makeatletter
+\define@key{beamerframe}{machmit}{\global\sbmachmittrue\gdef\sbtag{#1}}
+\define@key{beamerframe}{lesen}{\global\sblesentrue\gdef\sbtag{#1}}
+\define@key{beamerframe}{special}[true]{\global\sbspecialtrue}
+\makeatother
+\newif\ifsbmode
+\newcommand{\sbmodecheck}{\sbmodefalse\ifsbmachmit\sbmodetrue\fi\ifsblesen\sbmodetrue\fi}
+\newcommand{\sbmodeicon}{\ifsbmachmit task\else book\fi}
+\newcommand{\sbmodename}{\ifsbmachmit Mach mit\else Zum Lesen\fi}
+\newcommand{\sbmodecol}{\ifsbmachmit doCol\else readCol\fi}
+\newcommand{\sbmoderim}{\ifsbmachmit termColor\else readRim\fi}
+\newcommand{\sbmodetext}{\ifsbmachmit termColor\else readText\fi}
+
+% ---------------------------------------------------------------- photo hexagons
+% \sbphotohex[extra node options]{coordinate}{size}{image}: duotone as on the
+% scripts' cover (grey levels of the photo times a light tint)
+\newsavebox{\sbimgbox}
+\newcommand{\sbcoverimage}[3]{%
+  \sbox{\sbimgbox}{\includegraphics{#1}}%
+  \pgfmathsetmacro{\sbscale}{max((#2)/\wd\sbimgbox, (#3)/\ht\sbimgbox)}%
+  \includegraphics[scale=\sbscale]{#1}}
+\NewDocumentCommand{\sbphotohex}{O{} m m m O{1.2mm}}{%
+  \node[hex=#3, fill=white, #1, path picture={
+      \begin{scope}[blend mode=luminosity]
+        \node[inner sep=0pt] at (path picture bounding box.center)
+          {\sbcoverimage{#4}{#3}{#3}};
+      \end{scope}
+      \begin{scope}[blend mode=multiply]
+        \fill[coverTint] (path picture bounding box.south west)
+          rectangle (path picture bounding box.north east);
+      \end{scope}}] at (#2) {};
+  \node[hex=#3, draw=borderColor, line width=#5, #1] at (#2) {};}
+
+% ---------------------------------------------------------------- boxes
+\newcommand{\boxtitle}[1]{\sbcaps{#1}}
+% concept: title bar, icon hexagon at the top right
+\newtcolorbox{sbtitlebox}[3][]{enhanced, colback=boxBg, colbacktitle=boxTitleBg,
+  colframe=borderColor, boxrule=\designBoxRule, leftrule=1pt, rightrule=1pt,
+  arc=\designArc, coltitle=white, fonttitle=\bfseries\normalsize,
+  toptitle=0.8mm, bottomtitle=0.8mm, left=3mm, right=3mm, top=1.5mm, bottom=1.5mm,
+  title={\boxtitle{#2}}, before skip=2mm, after skip=3mm, coltext=textFg,
+  overlay={\node[phex=\sbIconHex, fill=hexFill, draw=hexRim, line width=\designRim, anchor=north]
+    (hex) at ([xshift=-8mm, yshift=1.6mm]frame.north east) {};
+    \pic at (hex.center) {boxicon={#3}{\sbIconGlyph}};}, #1}
+\newenvironment{concept}[1][]{\begin{sbtitlebox}{#1}{bulb}}{\end{sbtitlebox}}
+\newenvironment{info}[1][]{\begin{sbtitlebox}{#1}{info}}{\end{sbtitlebox}}
+% task/example: left rule, icon hexagon on the rule
+\newtcolorbox{sbmarkleft}[3][]{enhanced, boxrule=0pt, frame hidden, colback=pageBg,
+  borderline west={\designLeftRule}{0pt}{borderColor}, arc=0pt, outer arc=0pt,
+  left=6.5mm, right=2mm, top=1mm, bottom=1.5mm, coltext=textFg, before skip=3mm, after skip=3mm,
+  overlay={\node[phex=\sbIconHexLeft, fill=hexFill, draw=hexRim, line width=\designRim, anchor=north]
+    (hex) at ([xshift=0.5\designLeftRule, yshift=1mm]frame.north west) {};
+    \pic at (hex.center) {boxicon={#3}{\sbIconGlyphLeft}};},
+  #1}
+\newenvironment{task}[2]{\begin{sbmarkleft}{#2}{task}%
+  {\bfseries\color{termColor}\boxtitle{Aufgabe #1:}} {\bfseries\boxtitle{#2}}\par\smallskip}
+  {\end{sbmarkleft}}
+
+% numbered steps of an algorithm: \sbstep{1}{text}, \sbstep[hl]{2}{text}
+\tcbset{
+  sbstep/.style={enhanced, frame hidden, arc=\designArc, boxrule=0pt,
+    left=10mm, right=2mm, top=1.2mm, bottom=1.2mm, before skip=1mm, after skip=1mm,
+    coltext=textFg, colback=pageBg, before upper=\raggedright},
+  sbstep hl/.style={sbstep, colback=boxBg, borderline west={1.2mm}{0pt}{termColor}},
+  sbstep hex/.style 2 args={overlay={\node[phex=6.4mm, fill=#1, draw=hexRim,
+    line width=0.3mm, text=#2, font=\small\bfseries, anchor=north west]
+    at ([xshift=2mm, yshift=-0.6mm]frame.north west) {\sbstepnum};}},
+}
+\ifsbdark\definecolor{stepHlText}{HTML}{2A1A24}\else\colorlet{stepHlText}{white}\fi
+\NewDocumentCommand{\sbstep}{o m m}{\def\sbstepnum{#2}%
+  \IfValueTF{#1}%
+    {\begin{tcolorbox}[sbstep hl, sbstep hex={termColor}{stepHlText}]#3\end{tcolorbox}}%
+    {\begin{tcolorbox}[sbstep, sbstep hex={hexFill}{white}]#3\end{tcolorbox}}}
+
+% ---------------------------------------------------------------- code
+\lstdefinestyle{sbpython}{language=Python, basicstyle=\ttfamily\normalsize\color{textFg},
+  keywordstyle=\bfseries\color{codeKey}, commentstyle=\itshape\color{codeComment},
+  stringstyle=\color{codeStr}, emph={range,len,print}, emphstyle=\color{codeBuiltin},
+  numbers=left, numberstyle=\ttfamily\footnotesize\color{mutedFg}, numbersep=3mm,
+  showstringspaces=false, columns=fullflexible, keepspaces=true, upquote=true,
+  literate={ä}{{\"a}}1 {ö}{{\"o}}1 {ü}{{\"u}}1}
+% \begin{codebox}{file.py} ... \end{codebox} (frame must be fragile)
+\newtcblisting{codebox}[2][]{enhanced, listing only, colback=codeBg, colframe=borderColor,
+  colbacktitle=boxTitleBg, coltitle=white, boxrule=\designBoxRule, arc=\designArc,
+  title={\hspace{8mm}\ttfamily\normalsize #2}, fonttitle=\normalsize, toptitle=0.8mm, bottomtitle=0.8mm,
+  left=9mm, top=1mm, bottom=1mm,
+  listing options={style=sbpython},
+  overlay={\node[phex=7.5mm, fill=hexFill, draw=hexRim, line width=\designRim]
+    (hex) at ([xshift=4.5mm]title.west) {};
+    \pic at (hex.center) {boxicon={python}{5.3mm}};}, #1}
+
+% ---------------------------------------------------------------- pitch page
+% \sbpitch{idea}{Eigenschaften items}{Stärken items}{Schwächen items}{wenn ...}
+\newcommand{\sbpitchhead}[1]{{\bfseries\color{termColor}\sbcaps{#1}}\par\vspace{0.5mm}}
+\newenvironment{sbplist}{\begin{list}{\usebeamertemplate{itemize item}}{%
+  \setlength{\leftmargin}{1.1em}\setlength{\labelsep}{0.45em}\setlength{\itemsep}{0.6mm}%
+  \setlength{\parsep}{0pt}\setlength{\topsep}{0pt}\small}}{\end{list}}
+\newcommand{\sbpitch}[5]{%
+  {\bfseries\raggedright #1\par}\vspace{1mm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.4\textwidth}\small\raggedright
+      \sbpitchhead{Eigenschaften}
+      \begin{sbplist}#2\end{sbplist}
+    \end{column}
+    \begin{column}{0.28\textwidth}\small\raggedright
+      \sbpitchhead{Stärken}
+      \begin{sbplist}#3\end{sbplist}
+    \end{column}
+    \begin{column}{0.28\textwidth}\small\raggedright
+      \sbpitchhead{Schwächen}
+      \begin{sbplist}#4\end{sbplist}
+    \end{column}
+  \end{columns}
+  \vspace{2mm}{\small\raggedright\textbf{\color{termColor}Nimm dieses Design, wenn} #5\par}}
+
+% small pill with text: \sbpill{fill}{text colour}{text}
+\newcommand{\sbpill}[3]{\tikz[baseline=(p.base)]\node[fill=#1, text=#2, rounded corners=1.2mm,
+  inner xsep=2mm, inner ysep=1mm, font=\footnotesize\bfseries] (p) {#3};}
