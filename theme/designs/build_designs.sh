@@ -20,3 +20,10 @@ designs=${*:-"d01 d02 d03 d04 d05 d06 d07 d08 d09 d10"}
 for d in $designs; do
   for p in dark light; do build "$d" "$p" algorithmik "$(echo "$d" | tr d D)-$p"; done
 done
+# colour scheme variants (same slides): only when all designs are built
+if [ -z "$*" ]; then
+  for p in dark light; do
+    build d03 "$p" networks "D03-networks-$p"
+    build d07 "$p" graphite "D07-graphite-$p"
+  done
+fi
