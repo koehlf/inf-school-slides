@@ -26,7 +26,7 @@
 
 \RTitle
 
-\begin{frame}{Sortieren}
+\begin{frame}[text=large]{Sortieren}
   \begin{itemize}
     \item Was heisst Sortieren?
     \item Was sortieren Menschen?
@@ -34,7 +34,7 @@
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Sortieren}
+\begin{frame}[text=large]{Sortieren}
   \begin{itemize}
     \item Was ist eine aufsteigend sortierte Liste?
   \end{itemize}
@@ -52,7 +52,7 @@
   \only<3>{\cardArray{items={10h,9h,7h,6h,5h,2h}, size=0.12}}
 \end{frame}
 
-\begin{frame}{Sortieralgorithmen}
+\begin{frame}[text=large]{Sortieralgorithmen}
   \begin{itemize}
     \item Bedingungen: Wir dürfen pro Zug …
     \begin{itemize}
@@ -71,7 +71,7 @@
 
 \RSection{1}{Selectionsort}{Wiederholtes Suchen des Minimums}
 
-\begin{frame}{Selectionsort}
+\begin{frame}[text=small]{Selectionsort}
   \begin{enumerate}
     \item Teile die Elemente in einen sortierten (\term{S}) und einen unsortierten (\term{U}) Teil auf.
       S ist zu Beginn leer, U umfasst alle Elemente.
@@ -100,13 +100,13 @@
 \begin{frame}{Fragen zu Selectionsort?}
 \end{frame}
 
-\begin{frame}{Effizienz}
+\begin{frame}[text=large]{Effizienz}
   \begin{itemize}
     \item Was ist ein effizienter Algorithmus?
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Effizienz: Laufzeit}
+\begin{frame}[text=large]{Effizienz: Laufzeit}
   \begin{itemize}
     \item Wie «schnell» ist Selectionsort?
     \item Wie messen wir die Effizienz eines solchen Algorithmus?
@@ -117,7 +117,7 @@
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Effizienz: Laufzeit}
+\begin{frame}[text=large]{Effizienz: Laufzeit}
   \begin{itemize}
     \item Zeitmessung nicht immer geeignet!
     \begin{itemize}
@@ -134,7 +134,7 @@
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Effizienz (Laufzeit)}
+\begin{frame}[text=large]{Effizienz (Laufzeit)}
   \begin{itemize}
     \item \textbf{Problem 1:} Wir kennen die Grösse des Inputs nicht.
     \begin{itemize}
@@ -144,13 +144,18 @@
     \begin{itemize}
       \item Oft als $n$ bezeichnet.
     \end{itemize}
-    \item<2-> \textbf{Problem 2:} Wir kennen den Input nicht.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[text=large]{Effizienz (Laufzeit)}
+  \begin{itemize}
+    \item \textbf{Problem 2:} Wir kennen den Input nicht.
     \begin{itemize}
-      \item<2-> z.\,B. wie die Liste aussieht, die wir sortieren sollen.
+      \item z.\,B. wie die Liste aussieht, die wir sortieren sollen.
     \end{itemize}
-    \item<2-> \textbf{Lösung:} Wir geben die Effizienz für den besten oder schlechtesten Fall an.
+    \item \textbf{Lösung:} Wir geben die Effizienz für den besten oder schlechtesten Fall an.
     \begin{itemize}
-      \item<2-> Oft auch für den «durchschnittlichen» Fall
+      \item Oft auch für den «durchschnittlichen» Fall
     \end{itemize}
   \end{itemize}
 \end{frame}
@@ -193,7 +198,7 @@
   \end{itemize}
 \end{frame}
 
-\begin{frame}{«Kleiner Gauss»}
+\begin{frame}[text=large]{«Kleiner Gauss»}
   \vspace*{8mm}
   \[ 1 + 2 + 3 + \dots + (x-2) + (x-1) + x \;=\; \frac{x \cdot (x+1)}{2} \]
   \vspace{4mm}
@@ -204,13 +209,13 @@
   \begin{itemize}
     \item $1 + 2 + 3 + \dots + (n-3) + (n-2) + (n-1)$ Vergleiche
   \end{itemize}
-  \[ 1 + 2 + 3 + \dots + (n-2) + (n-1) \;=\; \frac{(n-1) \cdot n}{2} \;=\; \frac{n^2-n}{2} \text{ Vergleiche} \]
+  \[ 1 + 2 + 3 + \dots + (n-2) + (n-1) \;=\; \frac{(n-1) \cdot n}{2} \;=\; \frac{n^2-n}{2} \]
   \begin{itemize}
     \item $n-1$ Durchgänge mit je max.~1 Vertauschung: max.~$n-1$ Vertauschungen
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Selectionsort: Effizienz}
+\begin{frame}[text=large]{Selectionsort: Effizienz}
   \begin{columns}[T,onlytextwidth]
     \begin{column}{0.48\textwidth}
       \begin{itemize}
@@ -261,13 +266,13 @@
     \end{itemize}}
 \end{frame}
 
-\begin{frame}[doit={zu zweit}]{Ihr seid dran!}
+\begin{frame}[doit={zu zweit}, text=large]{Ihr seid dran!}
   \vfill
   \RTask{38–41}{Sortieren von Hand}{Löst die Aufgaben 38–41 im Skript.}
   \vfill
 \end{frame}
 
-\begin{frame}{Zwischenfazit}
+\begin{frame}[text=large]{Zwischenfazit}
   \begin{itemize}
     \item Selectionsort und Bubblesort haben beide eine \term{quadratische Laufzeit}.
     \begin{itemize}
@@ -285,7 +290,7 @@
 
 \RSection{3}{Mergesort}{Divide and Conquer}
 
-\begin{frame}{Divide and Conquer}
+\begin{frame}[text=large]{Divide and Conquer}
   \begin{itemize}
     \item Ansatz zum Lösen von Problemen
     \item \term{Divide}
@@ -300,7 +305,7 @@
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Beispiel: Mergesort}
+\begin{frame}[text=large]{Beispiel: Mergesort}
   \begin{itemize}
     \item Effizientes Sortierverfahren
     \item Basiert auf \term{Divide and Conquer}
@@ -321,7 +326,7 @@
   \end{tikzpicture}
 \end{frame}
 
-\begin{frame}{Mergesort: Conquer}
+\begin{frame}[text=large]{Mergesort: Conquer}
   \begin{itemize}
     \item Resultat: viele kleine Listen der Länge 1
     \begin{itemize}
@@ -367,7 +372,7 @@
   \vfill\stepdots{4}
 \end{frame}
 
-\begin{frame}{Mergesort: Conquer}
+\begin{frame}[text=large]{Mergesort: Conquer}
   \begin{itemize}
     \item Gleiches Verfahren mit der rechten Teilliste.
     \item Dann bleiben noch 2 Teillisten (à je 4 Elemente) übrig.
@@ -392,7 +397,7 @@
   \vfill\stepdots{8}
 \end{frame}
 
-\begin{frame}{Mergesort: Effizienz}
+\begin{frame}[text=large]{Mergesort: Effizienz}
   \begin{itemize}
     \item $O(n \cdot \log(n))$
     \item Sprich: Grössenordnung $n \cdot \log(n)$

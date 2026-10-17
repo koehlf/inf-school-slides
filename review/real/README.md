@@ -20,6 +20,20 @@ each as `-dark.pdf` (presenting) and `-light.pdf`.
 
 [`overview.png`](overview.png) and [`overview-krypto.png`](overview-krypto.png): one row per design (D01, D02, D06, B1, B2, B5): title, section, card step, text slide (sorting, dark), Königsberg map, Fleury step (Euler, light); for Kryptologie: title, three text slides, punch card (dark), text and the key diagram (light).
 
+## Type size trial (2026-10-18)
+
+All six designs are built at **14 pt** base. Slides can step up or down per frame
+(`theme/real/realtext.sty`), as fixed steps, never as automatic fitting:
+
+| Step | Body text | Share of page width | ≈ size in a 28 cm Impress page | Used on |
+|---|---|---|---|---|
+| `text=large` | 17.3 pt | 38 ‰ | 30 pt | slides with little text (most text slides of the originals: 37–40 ‰) |
+| default | 14.4 pt | 32 ‰ | 25 pt | text with figures, longer lists |
+| `text=small` | 12 pt | 26.5 ‰ | 21 pt | the two long step lists («Selectionsort», «Finden einer Eulertour»; originals: 28.6 ‰) |
+
+At these sizes D01, D02, D06 and B1 fit every slide. **B2 and B5 overflow on several slides** (figures, Bäume, Pfade, Merge):
+B2 loses width to its strip, B5 reserves 15 mm for the title and 11 mm for the progress line, and set B spaces lists more widely.
+
 Porting notes:
 
 - The text is the original's, with Swiss conventions («…», ss) and a few typos fixed. Step sequences (one Impress slide per step) are one frame with overlays.

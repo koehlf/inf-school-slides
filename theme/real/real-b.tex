@@ -6,11 +6,12 @@
 \ifdefined\slidedesign\else\def\slidedesign{B1}\fi
 \ifdefined\realdeck\else\def\realdeck{sorting}\fi
 \def\realkrypto{krypto}\ifx\realdeck\realkrypto\def\sbsubjectbase{SeaGreen}\fi
-\documentclass[aspectratio=169,12pt,t,xcolor={dvipsnames}]{beamer}
+\documentclass[aspectratio=169,14pt,t,xcolor={dvipsnames}]{beamer}  % type size trial: 14 pt
 \usepackage{sb\slidedesign}
 \usepackage{pifont}
 \usepackage{pgfplots}\pgfplotsset{compat=1.18}
 \makeatletter
+\usepackage{realtext}
 % the frame keys of set D as aliases
 \define@key{beamerframe}{doit}{\global\sbmachmittrue\gdef\sbtag{#1}}
 \define@key{beamerframe}{read}{\global\sblesentrue\gdef\sbtag{#1}}

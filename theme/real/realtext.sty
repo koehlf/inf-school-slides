@@ -1,0 +1,16 @@
+% realtext.sty -- type size trial (M0-3): base 14 pt (class option) and one step up or down per frame.
+%   \begin{frame}[text=large]{…}   body text 17.28 pt (≈ 30 pt in a 28 cm wide Impress deck): little text
+%   \begin{frame}[text=small]{…}   body text 12 pt (≈ 21 pt): dense slides (long step lists)
+% Only \normalsize changes: list levels follow it (subbody = \normalsize), the chrome's \small,
+% \footnotesize and \Large stay as they are.
+\ProvidesPackage{realtext}
+\def\real@large{large}\def\real@small{small}
+\define@key{beamerframe}{text}{\def\real@arg{#1}%
+  \ifx\real@arg\real@large\gdef\normalsize{\@setfontsize\normalsize{17.28}{21}}\fi
+  \ifx\real@arg\real@small\gdef\normalsize{\@setfontsize\normalsize{12}{14.5}}\fi
+  \normalsize}
+% beamer sets the key environment=frame on every frame before the frame's own keys:
+% there every frame starts again at the base size, so a step never carries over
+\AtBeginDocument{\global\let\real@basesize\normalsize
+  \let\real@envkey\KV@beamerframe@environment
+  \def\KV@beamerframe@environment#1{\global\let\normalsize\real@basesize\normalsize\real@envkey{#1}}}

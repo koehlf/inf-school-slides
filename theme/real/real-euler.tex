@@ -65,7 +65,7 @@
   \end{graph}
 \end{frame}
 
-\begin{frame}[doit={Einstieg}]{Hands on!}
+\begin{frame}[doit={Einstieg}, text=large]{Hands on!}
   \begin{itemize}
     \item Einstieg
     \begin{itemize}
@@ -78,14 +78,14 @@
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Find the dog}
+\begin{frame}[text=large]{Find the dog}
   \begin{itemize}
     \item Wo ist der Hund gestartet? Wo ist er jetzt?
   \end{itemize}
 \end{frame}
 
 \section{Eulertouren}
-\begin{frame}{Über sieben Brücken …}
+\begin{frame}[text=large]{Über sieben Brücken …}
   \begin{itemize}
     \item Die Brücken von Königsberg
   \end{itemize}
@@ -114,12 +114,14 @@
 \end{frame}
 
 \begin{frame}{Pfade}
+  \begin{itemize}
+    \item Ein \term{Pfad} ist eine Folge von Knoten $v_0, v_1, v_2, \dots, v_n$, wobei $v_i$ und $v_{i+1}$
+      jeweils durch eine Kante verbunden sein müssen.
+  \end{itemize}
   \begin{columns}[T,onlytextwidth]
-    \begin{column}{0.5\textwidth}
+    \begin{column}{0.4\textwidth}
       \begin{itemize}
-        \item Ein \term{Pfad} ist eine Folge von Knoten $v_0, v_1, v_2, \dots, v_n$, wobei $v_i$ und $v_{i+1}$
-          jeweils durch eine Kante verbunden sein müssen.
-        \begin{itemize}
+        \item[] \begin{itemize}
           \item A, B, C \yes
           \item B, A, B, E, F \yes
           \item A, C, B \no
@@ -127,9 +129,9 @@
         \end{itemize}
       \end{itemize}
     \end{column}
-    \begin{column}{0.48\textwidth}
-      \vspace*{6mm}
-      \begin{graph}[x=4.6mm, y=4.6mm, vertex/.append style={minimum size=5.5mm, font=\scriptsize\bfseries}]
+    \begin{column}{0.58\textwidth}
+      \centering
+      \begin{graph}[x=6mm, y=6mm, vertex/.append style={minimum size=6mm, font=\scriptsize\bfseries}]
         \roadnodes{}
         \path (A) edge (B) (A) edge (E) (B) edge (C) (B) edge (E) (C) edge (D) (C) edge (F) (C) edge (G) (D) edge (E)
               (F) edge (E) (F) edge (H) (G) edge (H) (G) edge (K) (H) edge (K) (K) edge (Z) (H) edge (J) (H) edge (I)
@@ -139,7 +141,7 @@
   \end{columns}
 \end{frame}
 
-\begin{frame}{Der Königsberger Pfad}
+\begin{frame}[text=large]{Der Königsberger Pfad}
   \begin{concept}[Eulerpfad]
     Ein Pfad, bei welchem jede Kante eines Graphen genau einmal benutzt wird, nennt man \term{Eulerpfad}.
   \end{concept}
@@ -149,7 +151,7 @@
   \end{concept}
 \end{frame}
 
-\begin{frame}{Königsberger Graph}
+\begin{frame}[text=large]{Königsberger Graph}
   \begin{columns}[T,onlytextwidth]
     \begin{column}{0.55\textwidth}
       \begin{itemize}
@@ -176,7 +178,7 @@
   \end{columns}
 \end{frame}
 
-\begin{frame}{Eulersche Regel}
+\begin{frame}[text=large]{Eulersche Regel}
   \begin{concept}[Eulersche Regel]
     Ein zusammenhängender Graph enthält genau dann einen Eulerpfad, wenn zwei oder keiner seiner Knoten
     einen ungeraden Kantengrad haben.
@@ -186,7 +188,7 @@
   \end{itemize}
 \end{frame}
 
-\begin{frame}[read={Algorithmus von Fleury}]{Finden einer Eulertour}
+\begin{frame}[read={Algorithmus von Fleury}, text=small]{Finden einer Eulertour}
   \begin{enumerate}
     \item Wähle einen beliebigen Knoten als aktuellen Knoten.
     \item Wähle eine unmarkierte Kante, welche vom aktuellen Knoten aus wegführt. Wähle zuerst diejenigen,
@@ -197,7 +199,7 @@
   \end{enumerate}
 \end{frame}
 
-\begin{frame}{Fleury in Action}
+\begin{frame}[text=large]{Fleury in Action}
   \begin{columns}[T,onlytextwidth]
     \begin{column}{0.5\textwidth}
       \begin{itemize}
@@ -234,26 +236,26 @@
   \end{columns}
 \end{frame}
 
-\begin{frame}[doit={Aufgabe 4}]{Ihr seid dran: Staubsaugen!}
+\begin{frame}[doit={Aufgabe 4}, text=large]{Ihr seid dran: Staubsaugen!}
   \vfill
   \RTask{4}{Staubsaugen}{Löst Aufgabe 4 im Skript.}
   \vfill
 \end{frame}
 
-\begin{frame}{Staubsaugen}
+\begin{frame}[text=large]{Staubsaugen}
   \begin{itemize}
     \item Fragen / Unklarheiten?
   \end{itemize}
 \end{frame}
 
-\begin{frame}[doit={Aufgabe 5}]{Rätsel: Teeren}
+\begin{frame}[doit={Aufgabe 5}, text=large]{Rätsel: Teeren}
   \vfill
   \RTask{5}{Teeren}{Löst Aufgabe 5 im Skript.}
   \vfill
 \end{frame}
 
 \section{Spannbäume}
-\begin{frame}{(Spannende) Bäume}
+\begin{frame}[text=large]{(Spannende) Bäume}
   \begin{concept}[Baum]
     Ein \term{Baum} ist ein zusammenhängender Graph, welcher keinen Kreis enthält.
   \end{concept}
@@ -274,7 +276,7 @@
   \end{graph}
 \end{frame}
 
-\begin{frame}{(Spannende) Bäume}
+\begin{frame}[text=large]{(Spannende) Bäume}
   \begin{concept}[Spannbaum]
     Ein \term{Spannbaum} eines Graphen $G$ ist ein Baum, der alle Knoten von $G$ enthält.
   \end{concept}
@@ -287,7 +289,7 @@
   \end{graph}
 \end{frame}
 
-\begin{frame}{(Spannende) Bäume}
+\begin{frame}[text=large]{(Spannende) Bäume}
   \begin{concept}[Minimaler Spannbaum]
     Ein \term{minimaler Spannbaum} ist ein Spannbaum, bei dem die Summe der Kantengewichte minimal ist.
   \end{concept}
@@ -307,7 +309,7 @@
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Greedy}
+\begin{frame}[text=large]{Greedy}
   \begin{itemize}
     \item Kruskal ist ein Beispiel eines \term{Greedy-Algorithmus}.
   \end{itemize}
