@@ -187,6 +187,10 @@
 % (as on odd script pages), title, section name on the right (as on even pages).
 % In the modes a second hexagon with the mode icon sits on the band's edge
 % (like the icons on the boxes) and a tag replaces the section name.
+% title in the band: 18.5 pt, the capitals centred on the band (baseline half a cap height below the middle),
+% so ascenders, descenders and parentheses never move it or touch the band's edges
+\newcommand{\slide@titlefont}{\bfseries\fontsize{18.5}{22}\selectfont}
+\newcommand{\slide@titledrop}{2.2mm}
 \setbeamertemplate{frametitle}{%
   \begin{tikzpicture}[remember picture, overlay]
     \slide@band{north}{north}{\designHeaderHeight}
@@ -202,15 +206,15 @@
     \slide@ifmode{doit}{\colorlet{modeRim}{white}\def\slide@icon{task}\def\slide@label{Mach mit}\colorlet{tagBg}{bgColor}}%
       {\colorlet{modeRim}{borderColor}\def\slide@icon{read}\def\slide@label{Zum Lesen}\colorlet{tagBg}{bgColor!70!black}}%
     \slide@ifmode{normal}{%
-      \node[anchor=west, inner sep=0pt, text=titleColor, font=\usebeamerfont{frametitle}]
-        at ([xshift=14mm]band.west) {\insertframetitle\strut};
+      \node[anchor=base west, inner sep=0pt, text=titleColor, font=\slide@titlefont]
+        at ([xshift=14mm, yshift=-\slide@titledrop]band.west) {\insertframetitle};
       \node[anchor=east, inner sep=0pt, text=titleColor!80!bgColor, font=\scriptsize\bfseries]
         at ([xshift=-5mm]band.east) {\insertsectionhead\strut};}{%
       \node[hex=10mm, draw=modeRim, line width=\designRim, fill=bgColor]
         (modehex) at ([xshift=19mm, yshift=-1.5mm]band.west) {};
       \pic at (modehex.center) {boxicon={\slide@icon}{7mm}};
-      \node[anchor=west, inner sep=0pt, text=titleColor, font=\usebeamerfont{frametitle}]
-        at ([xshift=26mm]band.west) {\insertframetitle\strut};
+      \node[anchor=base west, inner sep=0pt, text=titleColor, font=\slide@titlefont]
+        at ([xshift=26mm, yshift=-\slide@titledrop]band.west) {\insertframetitle};
       \node[anchor=east, rounded corners=\designArc, fill=tagBg,
         text=titleColor, font=\scriptsize\bfseries, inner xsep=2.2mm, inner ysep=1.1mm]
         at ([xshift=-4mm]band.east) {\boxtitle{\slide@label%
