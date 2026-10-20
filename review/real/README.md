@@ -11,12 +11,12 @@ each as `-dark.pdf` (presenting) and `-light.pdf`.
 
 | Design | Sorting | Euler / MST | Kryptologie |
 |---|---|---|---|
-| D01 Buch | [dark](sorting-D01-dark.pdf) · [light](sorting-D01-light.pdf) | [dark](euler-D01-dark.pdf) · [light](euler-D01-light.pdf) | [dark](krypto-D01-dark.pdf) · [light](krypto-D01-light.pdf) |
-| D02 Band 2.0 | [dark](sorting-D02-dark.pdf) · [light](sorting-D02-light.pdf) | [dark](euler-D02-dark.pdf) · [light](euler-D02-light.pdf) | [dark](krypto-D02-dark.pdf) · [light](krypto-D02-light.pdf) |
-| D06 Klartext | [dark](sorting-D06-dark.pdf) · [light](sorting-D06-light.pdf) | [dark](euler-D06-dark.pdf) · [light](euler-D06-light.pdf) | [dark](krypto-D06-dark.pdf) · [light](krypto-D06-light.pdf) |
-| B1 Band | [dark](sorting-B1-dark.pdf) · [light](sorting-B1-light.pdf) | [dark](euler-B1-dark.pdf) · [light](euler-B1-light.pdf) | [dark](krypto-B1-dark.pdf) · [light](krypto-B1-light.pdf) |
-| B2 Leiste | [dark](sorting-B2-dark.pdf) · [light](sorting-B2-light.pdf) | [dark](euler-B2-dark.pdf) · [light](euler-B2-light.pdf) | [dark](krypto-B2-dark.pdf) · [light](krypto-B2-light.pdf) |
-| B5 Bühne | [dark](sorting-B5-dark.pdf) · [light](sorting-B5-light.pdf) | [dark](euler-B5-dark.pdf) · [light](euler-B5-light.pdf) | [dark](krypto-B5-dark.pdf) · [light](krypto-B5-light.pdf) |
+| D01 Buch | [dark](sorting-D01-dark.pdf) · [light](sorting-D01-light.pdf) | [dark](euler-D01-dark.pdf) · [light](euler-D01-light.pdf) | [dark](krypto-intro/krypto-D01-dark.pdf) · [light](krypto-intro/krypto-D01-light.pdf) |
+| D02 Band 2.0 | [dark](sorting-D02-dark.pdf) · [light](sorting-D02-light.pdf) | [dark](euler-D02-dark.pdf) · [light](euler-D02-light.pdf) | [dark](krypto-intro/krypto-D02-dark.pdf) · [light](krypto-intro/krypto-D02-light.pdf) |
+| D06 Klartext | [dark](sorting-D06-dark.pdf) · [light](sorting-D06-light.pdf) | [dark](euler-D06-dark.pdf) · [light](euler-D06-light.pdf) | [dark](krypto-intro/krypto-D06-dark.pdf) · [light](krypto-intro/krypto-D06-light.pdf) |
+| B1 Band | [dark](sorting-B1-dark.pdf) · [light](sorting-B1-light.pdf) | [dark](euler-B1-dark.pdf) · [light](euler-B1-light.pdf) | [dark](krypto-intro/krypto-B1-dark.pdf) · [light](krypto-intro/krypto-B1-light.pdf) |
+| B2 Leiste | [dark](sorting-B2-dark.pdf) · [light](sorting-B2-light.pdf) | [dark](euler-B2-dark.pdf) · [light](euler-B2-light.pdf) | [dark](krypto-intro/krypto-B2-dark.pdf) · [light](krypto-intro/krypto-B2-light.pdf) |
+| B5 Bühne | [dark](sorting-B5-dark.pdf) · [light](sorting-B5-light.pdf) | [dark](euler-B5-dark.pdf) · [light](euler-B5-light.pdf) | [dark](krypto-intro/krypto-B5-dark.pdf) · [light](krypto-intro/krypto-B5-light.pdf) |
 
 [`overview.png`](overview.png) and [`overview-krypto.png`](overview-krypto.png): one row per design (D01, D02, D06, B1, B2, B5): title, section, card step, text slide (sorting, dark), Königsberg map, Fleury step (Euler, light); for Kryptologie: title, three text slides, punch card (dark), text and the key diagram (light).
 

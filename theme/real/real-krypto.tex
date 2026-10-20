@@ -47,7 +47,7 @@
   k/letter/.style={inner sep=0pt, font=\ttfamily\bfseries\large, text=textFg}}
 % \PolybiosGrid: 5x5 square, row and column numbers outside (from 0, as in the script)
 \newcommand{\PolybiosGrid}{%
-  \begin{tikzpicture}[x=10.3mm, y=10.3mm]
+  \begin{tikzpicture}[x=9.7mm, y=9.7mm]
     \foreach \row [count=\r from 0] in {{A,B,C,D,E},{F,G,H,IJ,K},{L,M,N,O,P},{Q,R,S,T,U},{V,W,X,Y,Z}}{%
       \node[k/coord] at (0,-\r) {\r};
       \foreach \L [count=\c] in \row \node[k/tile] at (\c,-\r) {\L};}
@@ -74,9 +74,9 @@
         \ifnum\hasdot=1 \pigpendot{\x+1.5+0.42*\dx,1.5+0.42*\dy}\fi}}
   \end{tikzpicture}}
 % \CaesarWheel[k]: outer ring plaintext, inner ring ciphertext turned by k positions counter-clockwise;
-% the pair at the top is marked, the arrow and the pill show k
+% the pair at the top is marked
 \NewDocumentCommand{\CaesarWheel}{O{3}}{%
-  \begin{tikzpicture}[x=1.08cm, y=1.08cm]
+  \begin{tikzpicture}[x=1.0cm, y=1.0cm]
     \def\R{2.12}\def\dR{0.58}\def\Ri{1.5}\def\dRi{0.58}
     \pgfmathsetmacro\step{360/26}
     \fill[cellFill] (0,0) circle (\R+\dR);
@@ -92,10 +92,6 @@
       \node[font=\ttfamily\bfseries, text=cellText, rotate=\ang-90] at (\ang:\Ri+\dRi/2) {\L};
       \draw[cellRim, line width=0.5pt] (\ang+\step/2:\Ri) -- (\ang+\step/2:\Ri+\dRi);}
     \draw[kStrong, line width=1pt] (0,0) circle (\R+\dR) (0,0) circle (\R) (0,0) circle (\Ri+\dRi) (0,0) circle (\Ri);
-    \draw[kStrong, line width=1.4pt, -{Stealth[length=2.6mm, width=2.1mm]}]
-      (90:\Ri-0.3) arc[start angle=90, end angle={90+#1*\step}, radius=\Ri-0.3];
-    \node[rectangle, rounded corners=\designInnerArc, fill=pageBg, draw=kStrong, line width=0.8pt, font=\small\bfseries,
-      text=textFg, inner xsep=4pt, inner ysep=2pt] at ({90+#1*\step/2}:\Ri-0.82) {$#1$};
     \fill[kStrong] (0,0) circle (0.09);
   \end{tikzpicture}}
 
@@ -297,12 +293,12 @@
 \end{frame}
 
 \begin{frame}{Polybios-Quadrat}
-  \centering
+  \centering\vspace*{4mm}
   \PolybiosGrid
 \end{frame}
 
 \begin{frame}{Caesar-Verschlüsselung}
-  \centering\vspace*{-1mm}
+  \centering\vspace*{4mm}
   \CaesarWheel[3]
 \end{frame}
 

@@ -1,6 +1,6 @@
 #!/bin/sh
 # Builds the real decks (sorting, euler, krypto) in the shortlisted designs, light and dark,
-# into review/real/<deck>-<design>-<palette>.pdf.
+# into review/real/<deck>-<design>-<palette>.pdf (the krypto deck into review/real/krypto-intro/).
 #   theme/real/build_real.sh               all
 #   theme/real/build_real.sh D01 B5        some designs
 #   DECKS=krypto theme/real/build_real.sh  some decks
@@ -14,7 +14,8 @@ build() { # driver design palette deck jobname
   latexmk -pdf -interaction=nonstopmode -halt-on-error -outdir="$work" \
     "-usepretex=\\def\\slidedesign{$2}\\def\\slidepalette{$3}\\def\\realdeck{$4}" \
     -jobname="$5" "$1" >"$work/$5.txt" 2>&1 || { echo "FAILED $5"; grep -A5 '^!' "$work/$5.log" | head -20; return 1; }
-  cp "$work/$5.pdf" "$out/$5.pdf"
+  case $4 in krypto) dest=$out/krypto-intro ;; *) dest=$out ;; esac
+  mkdir -p "$dest"; cp "$work/$5.pdf" "$dest/$5.pdf"
   grep -q 'Overfull' "$work/$5.log" && echo "overfull: $5 $(grep -c Overfull "$work/$5.log")" || true
 }
 designs=${*:-"D01 D02 D06 B1 B2 B5"}
