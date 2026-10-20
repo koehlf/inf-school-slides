@@ -26,9 +26,9 @@
     \node[hex=7mm, fill=dsgPage, text=white, font=\footnotesize\bfseries]
       at ([xshift=-10mm, yshift=-5mm]current page.north east) {\insertframenumber};
     \dsg@ifnormal{%
-      \node[anchor=west, text=titleColor, font=\Large\bfseries] at ([xshift=12mm, yshift=-5mm]current page.north west) {\insertframetitle};}{%
+      \node[anchor=west, text=titleColor, font=\Large\bfseries] at ([xshift=12mm, yshift=-5mm]current page.north west) {\insertframetitle\strut};}{%
       \dsg@modehex{[xshift=15mm, yshift=-5mm]current page.north west}{8mm}{5.6mm}
-      \node[anchor=west, text=titleColor, font=\Large\bfseries] at ([xshift=22mm, yshift=-5mm]current page.north west) {\insertframetitle};
+      \node[anchor=west, text=titleColor, font=\Large\bfseries] at ([xshift=22mm, yshift=-5mm]current page.north west) {\insertframetitle\strut};
       \node[anchor=east, fill=bgColor, rounded corners=\designArc, text=white, font=\footnotesize\bfseries, inner xsep=2mm, inner ysep=1mm]
         at ([xshift=-17mm, yshift=-5mm]current page.north east) {\dsg@tag};}
   \end{tikzpicture}\vspace*{7mm}}

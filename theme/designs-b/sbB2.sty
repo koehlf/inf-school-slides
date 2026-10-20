@@ -34,9 +34,9 @@
       at (0.5*\sbRailW,7.5mm) {\insertframenumber};
     % title
     \node[anchor=base west, inner sep=0pt, text=\ifsbmode\sbmodetext\else termColor\fi, font=\bfseries\footnotesize]
-      at (22mm,\paperheight-8mm) {\sbcaps[120]{\ifsbmode\sbmodename\else\sbsecline\fi}};
+      at (22mm,\paperheight-8mm) {\sbcaps[120]{\ifsbmode\sbmodename\else\sbsecline\fi}\strut};
     \node[anchor=base west, inner sep=0pt, text=textFg, font=\bfseries\LARGE]
-      at (22mm,\paperheight-15.5mm) {\insertframetitle};
+      at (22mm,\paperheight-15.5mm) {\insertframetitle\strut};
     \ifsbmachmit
       \node[anchor=north east, fill=doCol, text=doFg, rounded corners=1.2mm, font=\small\bfseries,
         inner xsep=2.5mm, inner ysep=1.4mm] at (\paperwidth-8mm,\paperheight-5mm) {\sbtag};
@@ -84,7 +84,7 @@
     \node[anchor=base west, text=mutedFg, font=\small\bfseries, inner sep=0pt]
       at ([xshift=72mm, yshift=58mm]sw) {\sbcaps[150]{Kapitel \sbchapter\sbsep \inserttitle}};
     \node[anchor=base west, text=textFg, font=\bfseries\fontsize{28}{32}\selectfont, inner sep=0pt]
-      at ([xshift=72mm, yshift=44mm]sw) {\insertsectionhead};
+      at ([xshift=72mm, yshift=44mm]sw) {\insertsectionhead\strut};
     \node[anchor=north west, text=termColor, font=\large, inner sep=0pt, text width=78mm]
       at ([xshift=72mm, yshift=38mm]sw) {\sbnohyph«#1»};
   \end{tikzpicture}

@@ -31,7 +31,7 @@
       font=\bfseries\Large] at (8mm,\paperheight-6.2mm) {\sbchapter};
     % title
     \node[anchor=west, text=white, font=\bfseries\Large, inner sep=0pt] (tt)
-      at (17.5mm,\paperheight-0.5*\sbBandH-0.3mm) {\insertframetitle};
+      at (17.5mm,\paperheight-0.5*\sbBandH-0.3mm) {\insertframetitle\strut};
     % binary text after the title, covered by the label on the right
     \begin{scope}
       \clip (0,\paperheight-\sbBandH+\designBandRule) rectangle (\paperwidth-40mm,\paperheight-\designBandRule);
@@ -47,7 +47,7 @@
         {\textbf{\sbcaps{\sbmodename}}\enspace·\enspace\sbtag};
     \else
       \node[anchor=east, text=white, font=\small, fill=band, inner xsep=3mm, inner ysep=1.5mm]
-        at (\paperwidth-7mm,\paperheight-0.5*\sbBandH-0.3mm) {\insertsectionhead};
+        at (\paperwidth-7mm,\paperheight-0.5*\sbBandH-0.3mm) {\insertsectionhead\strut};
     \fi
     % footer band and page number
     \fill[bandBg] (0,0) rectangle (\paperwidth,\sbFootH);
@@ -101,7 +101,7 @@
     \fill[bandRule] ([yshift=58mm]sw) rectangle ([yshift=56.8mm]current page.south east);
     \fill[bandRule] ([yshift=26mm]sw) rectangle ([yshift=27.2mm]current page.south east);
     \node[anchor=base west, inner sep=0pt, text=white, font=\bfseries\fontsize{30}{34}\selectfont]
-      at ([xshift=10mm, yshift=43mm]sw) {\insertsectionhead};
+      at ([xshift=10mm, yshift=43mm]sw) {\insertsectionhead\strut};
     \node[anchor=base west, inner sep=0pt, text=coverText, font=\large]
       at ([xshift=10mm, yshift=33mm]sw) {«#1»};
     \node[hex=40mm, fill=bandBg, draw=bandRule, line width=1.6mm, text=white,

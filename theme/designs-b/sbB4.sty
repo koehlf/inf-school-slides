@@ -41,7 +41,7 @@
     \sbtab{6mm}{\sbtabw+20mm}{bandBg}
     \node[hex=9mm, fill=bandBg, draw=bandRule, line width=0.3mm, text=white, font=\bfseries\scriptsize]
       at (12.5mm,\sbSheetTop+4.8mm) {\sbhexnum};
-    \node[anchor=west, inner sep=0pt, text=white, font=\bfseries\Large] at (18.5mm,\sbSheetTop+4.3mm) {\insertframetitle};
+    \node[anchor=west, inner sep=0pt, text=white, font=\bfseries\Large] at (18.5mm,\sbSheetTop+4.3mm) {\insertframetitle\strut};
     \ifsbmode
       \sbtab{\paperwidth-6mm-\sbmodetabw-17mm}{\sbmodetabw+17mm}{\sbmodecol}
       \node[phex=7.5mm, fill=\sbmodecol, draw=white, line width=0.3mm] (mh)
@@ -110,7 +110,7 @@
     \node[anchor=west, inner sep=0pt, text=white, font=\small\bfseries] at ([xshift=12mm, yshift=80.6mm]sw)
       {\sbcaps[120]{Kapitel \sbchapter\sbsep \inserttitle}};
     \node[anchor=base west, text=textFg, font=\bfseries\fontsize{30}{34}\selectfont, inner sep=0pt]
-      at ([xshift=16mm, yshift=44mm]sw) {\insertsectionhead};
+      at ([xshift=16mm, yshift=44mm]sw) {\insertsectionhead\strut};
     \node[anchor=base west, text=termColor, font=\large, inner sep=0pt]
       at ([xshift=16mm, yshift=33mm]sw) {«#1»};
     \draw[borderColor, line width=1.2mm, line cap=round] ([xshift=16mm, yshift=56mm]sw) -- ++(12mm,0);

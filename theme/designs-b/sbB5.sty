@@ -37,7 +37,7 @@
       \node[hex=8.5mm, fill=hexFill, draw=hexRim, line width=0.3mm, text=white, font=\bfseries\footnotesize]
         at ({12mm+\sbprog*(\paperwidth-24mm)},5mm) {\insertframenumber};
     \fi
-    \node[anchor=base west, inner sep=0pt, text=textFg, font=\bfseries\LARGE] at (12mm,\paperheight-13mm) {\insertframetitle};
+    \node[anchor=base west, inner sep=0pt, text=textFg, font=\bfseries\LARGE] at (12mm,\paperheight-13mm) {\insertframetitle\strut};
     \fi
   \end{tikzpicture}}
 
@@ -80,7 +80,7 @@
     \node[anchor=base west, text=mutedFg, font=\small\bfseries, inner sep=0pt]
       at ([xshift=84mm, yshift=58mm]sw) {\sbcaps[150]{Kapitel \sbchapter\sbsep \inserttitle}};
     \node[anchor=base west, text=textFg, font=\bfseries\fontsize{28}{32}\selectfont, inner sep=0pt]
-      at ([xshift=84mm, yshift=44mm]sw) {\insertsectionhead};
+      at ([xshift=84mm, yshift=44mm]sw) {\insertsectionhead\strut};
     \node[anchor=north west, text=termColor, font=\large, inner sep=0pt, text width=66mm]
       at ([xshift=84mm, yshift=37mm]sw) {\sbnohyph«#1»};
   \end{tikzpicture}

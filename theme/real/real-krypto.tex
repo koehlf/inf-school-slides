@@ -1,42 +1,15 @@
 % Real slides: «Kryptologie» (Einführung), ported 1:1 from references/krypto_intro.odp.
 % Slides that only reveal the next part of the same slide are one frame with overlays here.
 % The original has no section slides; the two \section commands only feed the chrome.
-% Pictures from the deck: theme/real/pictures/krypto/ (key, skytale). Polybios, Freimaurer and Caesar are drawn after the script; the punch card is typeset.
+% Pictures from the deck: theme/real/pictures/krypto/ (skytale). The two schemas, Polybios, Freimaurer and Caesar are drawn after the script; the punch card is typeset.
 % Input by real-d.tex or real-b.tex, which define \RTitle, \RSection and \RTask; the drivers set the Kryptologie colour.
 \slidesubject{Kryptologie}
 \slidechapter{1}
 \slidecoverimages{cover/kryptologie/binary-code.jpg, cover/kryptologie/enigma.jpg, cover/kryptologie/enigma-rotors.jpg,
   cover/kryptologie/padlock.jpg, cover/kryptologie/fingerprint.jpg, cover/kryptologie/vault-door.jpg}
-\usetikzlibrary{shapes.symbols}
 \title{Kryptologie}
 \subtitle{Geheimschriften und Kryptosysteme}
 \author{Florian Köhl}
-
-% a box of the communication diagrams: \kbox{name}{position}{text}
-\newcommand{\kbox}[3]{\node[fill=primaryDark, draw=borderColor, line width=0.6pt, rounded corners=\designInnerArc, text=white,
-  minimum width=27mm, minimum height=8mm, font=\small] (#1) at (#2) {#3};}
-% the communication diagram; #1: true for a cryptosystem (key, Verschlüsselung)
-\newcommand{\kdiagram}[1]{%
-  \begin{tikzpicture}[x=8.6mm, y=10mm]
-    \node[font=\small, text=mutedFg] at (0,3.2) {Sender};
-    \node[font=\small, text=mutedFg] at (9,3.2) {Empfänger};
-    \kbox{k1}{0,2}{Klartext} \kbox{g1}{0,0}{Geheimtext}
-    \kbox{k2}{9,2}{Klartext} \kbox{g2}{9,0}{Geheimtext}
-    \draw[pointer, draw=borderColor] (k1) -- node[right, font=\footnotesize, text=textFg]
-      {\ifx#1t\textbf{Ver}schlüsselung\else Chiffrierung\fi} (g1);
-    \draw[pointer, draw=borderColor] (g2) -- node[left, font=\footnotesize, text=textFg]
-      {\ifx#1t\textbf{Ent}schlüsselung\else Dechiffrierung\fi} (k2);
-    \node[cloud, cloud puffs=11, draw=borderColor, fill=primaryDark, text=white, font=\small,
-      minimum width=26mm, minimum height=11mm] (m) at (4.5,0) {Medium};
-    \draw[edgeCol, line width=1pt, dashed, -{Stealth}] (g1) -- (m);
-    \draw[edgeCol, line width=1pt, dashed, -{Stealth}] (m) -- (g2);
-    \foreach \b in {k1,k2} \draw[borderColor, dashed, rounded corners=2mm]
-      ([shift={(-4mm,-14mm)}]\b.south west |- g1.south) rectangle ([shift={(4mm,3mm)}]\b.north east);
-    \ifx#1t
-      \node[anchor=west, inner sep=0pt] at ([xshift=2mm]k1.east) {\includegraphics[height=9mm]{real/pictures/krypto/key.png}};
-      \node[anchor=west, inner sep=0pt] at ([xshift=2mm]g2.east) {\includegraphics[height=9mm]{real/pictures/krypto/key.png}};
-    \fi
-  \end{tikzpicture}}
 
 % Cipher figures after the script (scripts/Kryptologie: letter_rows.tex, caesar.sty): letters in typewriter
 % bold on letter tiles; the theme's cell colours stand in for the script's tints, so they follow the palette.
@@ -93,6 +66,59 @@
       \draw[cellRim, line width=0.5pt] (\ang+\step/2:\Ri) -- (\ang+\step/2:\Ri+\dRi);}
     \draw[kStrong, line width=1pt] (0,0) circle (\R+\dR) (0,0) circle (\R) (0,0) circle (\Ri+\dRi) (0,0) circle (\Ri);
     \fill[kStrong] (0,0) circle (0.09);
+  \end{tikzpicture}}
+
+% The sender/receiver schema of the script (scripts/Kryptologie/figures/cryptofigs.sty, \cfschema), in the theme's
+% colours: \kschema{encryption}{decryption}; \kschema* adds the key on both sides (cryptosystem).
+\colorlet{kAccent}{termColor}    % arrows, rims, key (the script's primaryLight)
+\tikzset{k/field/.style={rectangle, rounded corners=\designInnerArc, fill=pageBg, draw=cellRim, line width=0.6pt,
+    inner xsep=5pt, inner ysep=3pt, font=\small, text=textFg},
+  k/arrow/.style={-{Stealth[length=2.6mm, width=2.1mm]}, line width=1.2pt, draw=kAccent}}
+% key: round bow with a hole, shaft, bit with two teeth; about 1.0 long, centred on pos (\cfkey of the script)
+\newcommand{\kkey}[3][1]{%
+  \begin{scope}[shift={(#2)}, scale=#1, shift={(-0.31,0)}]
+    \path[sharp corners, fill=#3, even odd rule, line join=round]
+      (0.1936,0.05) -- (0.25,0.05) -- (0.25,0.09) -- (0.31,0.09) -- (0.31,0.05)
+      -- (0.82,0.05) -- (0.82,-0.20) -- (0.74,-0.20) -- (0.74,-0.13) -- (0.66,-0.13)
+      -- (0.66,-0.20) -- (0.57,-0.20) -- (0.57,-0.05) -- (0.31,-0.05) -- (0.31,-0.09)
+      -- (0.25,-0.09) -- (0.25,-0.05) -- (0.1936,-0.05)
+      arc[start angle=-14.48, end angle=-345.52, radius=0.2] -- cycle (0,0) circle (0.08);
+  \end{scope}}
+% globe for the insecure channel (\cfglobe of the script): \kglobe{pos}{radius}
+\newcommand{\kglobe}[2]{%
+  \begin{scope}[shift={(#1)}]
+    \fill[kAccent!12!pageBg] (0,0) circle (#2);
+    \draw[kAccent, line width=0.6pt] (0,0) ellipse ({0.45*#2} and #2) (0,0) ellipse ({0.82*#2} and #2)
+      (-#2,0) -- (#2,0) ({-0.87*#2},{0.5*#2}) -- ({0.87*#2},{0.5*#2}) ({-0.87*#2},{-0.5*#2}) -- ({0.87*#2},{-0.5*#2})
+      (0,#2) -- (0,-#2);
+    \draw[kAccent, line width=1.1pt] (0,0) circle (#2);
+  \end{scope}}
+\NewDocumentCommand{\kschema}{s m m}{%
+  \begin{tikzpicture}[x=1cm, y=0.8cm]
+    \IfBooleanTF{#1}{\def\kkx{1.12}\def\kpw{2.45}}{\def\kkx{0}\def\kpw{2.1}}
+    \foreach \x/\n in {-3.7/Sender, 3.7/Empfänger}{
+      \path[rounded corners=\designArc, fill=cellFill, draw=cellRim, line width=0.8pt]
+        (\x-\kpw,0) rectangle (\x+\kpw,-6.9);
+      \node[font=\footnotesize\bfseries, text=kStrong] at (\x,-0.45) {\textls[110]{\MakeUppercase{\n}}};}
+    \node[k/field] (kl) at (-3.7-\kkx,-1.5) {Klartext};
+    \node[k/field] (kr) at (3.7+\kkx,-1.5) {Klartext};
+    \foreach \n/\x/\t in {enc/-3.7/#2, dec/3.7/#3}
+      \node[rectangle, rounded corners=\designArc, fill=kStrong, draw=kStrong, text=nodeActiveText, font=\small\bfseries,
+        minimum width=3.6cm, minimum height=1cm, align=center] (\n) at (\x,-3.6) {\t};
+    \node[k/field] (gl) at (-3.7,-5.7) {Geheimtext};
+    \node[k/field] (gr) at (3.7,-5.7) {Geheimtext};
+    \draw[k/arrow] (kl) -- (kl |- enc.north);
+    \draw[k/arrow] (kr |- dec.north) -- (kr);
+    \IfBooleanT{#1}{%
+      \foreach \n/\x in {sl/-3.7+\kkx, sr/3.7-\kkx}
+        \node[k/field, draw=kAccent] (\n) at (\x,-1.5) {\tikz[baseline=-0.6ex]{\kkey[0.6]{0,0}{kAccent}}\,Schlüssel};
+      \draw[k/arrow] (sl) -- (sl |- enc.north);
+      \draw[k/arrow] (sr) -- (sr |- dec.north);}
+    \draw[k/arrow] (enc) -- (gl);
+    \draw[k/arrow] (gr) -- (dec);
+    \draw[k/arrow] (gl) -- (gr);
+    \kglobe{0,-5.7}{0.5}
+    \node[font=\scriptsize\itshape, text=mutedFg, anchor=south, align=center] at ([yshift=5.5mm]0,-5.7) {unsicherer\\Kanal};
   \end{tikzpicture}}
 
 \begin{document}
@@ -172,8 +198,8 @@
 \end{frame}
 
 \begin{frame}{Grundbegriffe}
-  \vspace*{4mm}
-  \centering\kdiagram{f}
+  \vspace*{1mm}
+  \centering\kschema{Chiffrierung}{Dechiffrierung}
 \end{frame}
 
 \begin{frame}[text=large]{Alphabete und Texte}
@@ -252,8 +278,8 @@
 \end{frame}
 
 \begin{frame}{Kryptosysteme}
-  \vspace*{4mm}
-  \centering\kdiagram{t}
+  \vspace*{1mm}
+  \centering\kschema*{Verschlüsselung}{Entschlüsselung}
 \end{frame}
 
 \begin{frame}{Beispiel: Lochkarten}

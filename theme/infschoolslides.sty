@@ -203,14 +203,14 @@
       {\colorlet{modeRim}{borderColor}\def\slide@icon{read}\def\slide@label{Zum Lesen}\colorlet{tagBg}{bgColor!70!black}}%
     \slide@ifmode{normal}{%
       \node[anchor=west, inner sep=0pt, text=titleColor, font=\usebeamerfont{frametitle}]
-        at ([xshift=14mm]band.west) {\insertframetitle};
+        at ([xshift=14mm]band.west) {\insertframetitle\strut};
       \node[anchor=east, inner sep=0pt, text=titleColor!80!bgColor, font=\scriptsize\bfseries]
-        at ([xshift=-5mm]band.east) {\insertsectionhead};}{%
+        at ([xshift=-5mm]band.east) {\insertsectionhead\strut};}{%
       \node[hex=10mm, draw=modeRim, line width=\designRim, fill=bgColor]
         (modehex) at ([xshift=19mm, yshift=-1.5mm]band.west) {};
       \pic at (modehex.center) {boxicon={\slide@icon}{7mm}};
       \node[anchor=west, inner sep=0pt, text=titleColor, font=\usebeamerfont{frametitle}]
-        at ([xshift=26mm]band.west) {\insertframetitle};
+        at ([xshift=26mm]band.west) {\insertframetitle\strut};
       \node[anchor=east, rounded corners=\designArc, fill=tagBg,
         text=titleColor, font=\scriptsize\bfseries, inner xsep=2.2mm, inner ysep=1.1mm]
         at ([xshift=-4mm]band.east) {\boxtitle{\slide@label%

@@ -32,8 +32,8 @@
   \end{tikzpicture}}
 \setbeamertemplate{frametitle}{\dsg@setmode
   \begin{tikzpicture}[remember picture, overlay]
-    \node[anchor=west, text=pageTitle, font=\Large\bfseries] at ([xshift=19mm, yshift=-7.5mm]current page.north west) {\insertframetitle};
-    \dsg@ifnormal{\node[anchor=east, text=mutedFg, font=\footnotesize\bfseries] at ([xshift=-9mm, yshift=-7.5mm]current page.north east) {\boxtitle{\insertsectionhead}};}{%
+    \node[anchor=west, text=pageTitle, font=\Large\bfseries] at ([xshift=19mm, yshift=-7.5mm]current page.north west) {\insertframetitle\strut};
+    \dsg@ifnormal{\node[anchor=east, text=mutedFg, font=\footnotesize\bfseries] at ([xshift=-9mm, yshift=-7.5mm]current page.north east) {\boxtitle{\insertsectionhead}\strut};}{%
       \node[anchor=east, fill=dsgModeBg, rounded corners=\designArc, text=white, font=\footnotesize\bfseries, inner xsep=2mm, inner ysep=1mm]
         (tag) at ([xshift=-9mm, yshift=-7.5mm]current page.north east) {\dsg@tag};
       \dsg@modehex{[xshift=-5mm]tag.west}{8mm}{5.6mm}}

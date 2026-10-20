@@ -22,11 +22,11 @@
     \coordinate (hx) at ([xshift=12mm, yshift=-10.5mm]current page.north west);
     \dsg@ifnormal{%
       \node[hex=16mm, fill=bgColor, draw=borderColor, line width=0.5mm, text=white, font=\Large\bfseries] at (hx) {\slide@chapter};
-      \node[anchor=south west, text=termColor, font=\footnotesize\bfseries] at ([xshift=24mm, yshift=-8mm]current page.north west) {\boxtitle{\insertsectionhead}};}{%
+      \node[anchor=south west, text=termColor, font=\footnotesize\bfseries] at ([xshift=24mm, yshift=-8mm]current page.north west) {\boxtitle{\insertsectionhead}\strut};}{%
       \node[hex=16mm, fill=dsgModeBg, draw=dsgRim, line width=0.5mm] (modehex) at (hx) {};
       \pic at (modehex.center) {boxicon={\dsg@icon}{10mm}};
       \node[anchor=south west, text=dsgModeText, font=\footnotesize\bfseries] at ([xshift=24mm, yshift=-8mm]current page.north west) {\dsg@tag};}
-    \node[anchor=north west, text=pageTitle, font=\Large\bfseries] at ([xshift=24mm, yshift=-8.5mm]current page.north west) {\insertframetitle};
+    \node[anchor=north west, text=pageTitle, font=\Large\bfseries] at ([xshift=24mm, yshift=-8.5mm]current page.north west) {\insertframetitle\strut};
     \draw[borderColor, line width=0.4mm] ([xshift=20mm, yshift=-17mm]current page.north west) -- ([xshift=-17mm, yshift=-17mm]current page.north east);
     \node[hex=7mm, fill=bgColor, draw=borderColor, line width=\designRim, text=white, font=\footnotesize\bfseries]
       at ([xshift=-13mm, yshift=-17mm]current page.north east) {\insertframenumber};

@@ -32,12 +32,12 @@
       \node[hex=9mm, fill=bgColor, draw=borderColor, line width=\designRim, text=white, font=\bfseries]
         at ([xshift=9mm, yshift=-9mm]current page.north west) {\slide@chapter};
       \node[anchor=north west, text=white!70!bgColor, font=\footnotesize\bfseries, text width=31mm, inner sep=0pt]
-        at ([xshift=4mm, yshift=-16mm]current page.north west) {\raggedright\boxtitle{\insertsectionhead}};}{%
+        at ([xshift=4mm, yshift=-16mm]current page.north west) {\raggedright\strut\boxtitle{\insertsectionhead}};}{%
       \dsg@modehex{[xshift=11mm, yshift=-11mm]current page.north west}{14mm}{9mm}
       \node[anchor=north west, text=white, font=\footnotesize\bfseries, text width=32mm] at ([xshift=4mm, yshift=-20mm]current page.north west) {\dsg@tag};}
     \dsg@ifnormal{\def\dsg@ty{-22mm}}{\def\dsg@ty{-31mm}}
     \node[anchor=north west, inner sep=0pt, text=white, font=\fontsize{15}{18}\selectfont\bfseries, text width=33mm]
-      at ([xshift=4mm, yshift=\dsg@ty]current page.north west) {\raggedright\insertframetitle};
+      at ([xshift=4mm, yshift=\dsg@ty]current page.north west) {\raggedright\strut\insertframetitle};
   \end{tikzpicture}\vspace*{2mm}}
 
 \setbeamertemplate{title page}{%

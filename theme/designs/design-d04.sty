@@ -37,7 +37,7 @@
     \node[anchor=east, text=mutedFg, font=\footnotesize\bfseries] at ([xshift=-10mm, yshift=4mm]current page.south east) {\insertframenumber};
   \end{tikzpicture}}
 \setbeamertemplate{frametitle}{\dsg@setmode\vspace*{1mm}\hspace*{9mm}%
-  {\color{pageTitle}\fontsize{22}{26}\selectfont\insertframetitle}%
+  {\color{pageTitle}\fontsize{22}{26}\selectfont\strut\insertframetitle}%
   \dsg@ifnormal{}{\begin{tikzpicture}[remember picture, overlay]
     \node[anchor=south east, text=dsgModeText, font=\footnotesize\bfseries]
       at ([xshift=-20mm, yshift=-13.5mm]current page.north east) {\dsg@tag};

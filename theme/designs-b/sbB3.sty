@@ -44,7 +44,7 @@
         font=\bfseries\scriptsize] at (h) {\sbhexnum};
       \sbcluster{\paperwidth-12mm}{7mm}{hexFill}{faint}
     \fi
-    \node[anchor=west, inner sep=0pt, text=textFg, font=\bfseries\LARGE] at (25.5mm,\paperheight-10mm) {\insertframetitle};
+    \node[anchor=west, inner sep=0pt, text=textFg, font=\bfseries\LARGE] at (25.5mm,\paperheight-10mm) {\insertframetitle\strut};
     \draw[borderColor!45!pageBg, line width=0.6pt] (24mm,\paperheight-16.5mm) -- (\paperwidth-13mm,\paperheight-16.5mm);
     \pic at (13mm,3.6mm) {infschool logo={font=\scriptsize, text=mutedFg, fill=pageBg, rim=mutedFg}};
     \fi
@@ -93,7 +93,7 @@
     \node[hex=34mm, fill=hexFill, draw=hexRim, line width=1.4mm, text=white,
       font=\bfseries\fontsize{28}{32}\selectfont] at ([xshift=80mm, yshift=58mm]sw) {\sbsecnum};
     \node[anchor=base, text=textFg, font=\bfseries\fontsize{28}{32}\selectfont, inner sep=0pt]
-      at ([xshift=80mm, yshift=25mm]sw) {\insertsectionhead};
+      at ([xshift=80mm, yshift=25mm]sw) {\insertsectionhead\strut};
     \node[anchor=base, text=termColor, font=\large, inner sep=0pt]
       at ([xshift=80mm, yshift=15mm]sw) {«#1»};
   \end{tikzpicture}

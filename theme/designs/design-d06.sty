@@ -26,7 +26,7 @@
     \node[anchor=south east, text=mutedFg, font=\footnotesize\bfseries] at ([xshift=-5mm, yshift=3mm]current page.south east) {\insertframenumber};
   \end{tikzpicture}}
 \setbeamertemplate{frametitle}{\dsg@setmode\vspace*{2mm}%
-  {\color{pageTitle}\LARGE\bfseries\insertframetitle}\par
+  {\color{pageTitle}\LARGE\bfseries\strut\insertframetitle}\par
   \dsg@ifnormal{}{{\color{dsgModeText}\footnotesize\bfseries\dsg@tag}\par}\vspace*{1mm}}
 
 \setbeamertemplate{title page}{%
