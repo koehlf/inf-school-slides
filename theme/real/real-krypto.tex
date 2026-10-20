@@ -1,7 +1,7 @@
 % Real slides: «Kryptologie» (Einführung), ported 1:1 from references/krypto_intro.odp.
 % Slides that only reveal the next part of the same slide are one frame with overlays here.
 % The original has no section slides; the two \section commands only feed the chrome.
-% Pictures from the deck: theme/real/pictures/krypto/; the Polybios square and the punch card are typeset.
+% Pictures from the deck: theme/real/pictures/krypto/ (key, skytale). Polybios, Freimaurer and Caesar are drawn after the script; the punch card is typeset.
 % Input by real-d.tex or real-b.tex, which define \RTitle, \RSection and \RTask; the drivers set the Kryptologie colour.
 \slidesubject{Kryptologie}
 \slidechapter{1}
@@ -36,6 +36,67 @@
       \node[anchor=west, inner sep=0pt] at ([xshift=2mm]k1.east) {\includegraphics[height=9mm]{real/pictures/krypto/key.png}};
       \node[anchor=west, inner sep=0pt] at ([xshift=2mm]g2.east) {\includegraphics[height=9mm]{real/pictures/krypto/key.png}};
     \fi
+  \end{tikzpicture}}
+
+% Cipher figures after the script (scripts/Kryptologie: letter_rows.tex, caesar.sty): letters in typewriter
+% bold on letter tiles; the theme's cell colours stand in for the script's tints, so they follow the palette.
+\colorlet{kStrong}{nodeActive}   % coordinates, rims, dots: primaryDark in light, the term colour in dark palettes
+\tikzset{k/tile/.style={cell, minimum size=9.6mm, inner sep=0pt, font=\ttfamily\bfseries\large, text=cellText},
+  k/coord/.style={inner sep=0pt, font=\ttfamily\bfseries, text=kStrong},
+  k/line/.style={draw=kStrong, line width=1.4pt, line cap=round},
+  k/letter/.style={inner sep=0pt, font=\ttfamily\bfseries\large, text=textFg}}
+% \PolybiosGrid: 5x5 square, row and column numbers outside (from 0, as in the script)
+\newcommand{\PolybiosGrid}{%
+  \begin{tikzpicture}[x=10.3mm, y=10.3mm]
+    \foreach \row [count=\r from 0] in {{A,B,C,D,E},{F,G,H,IJ,K},{L,M,N,O,P},{Q,R,S,T,U},{V,W,X,Y,Z}}{%
+      \node[k/coord] at (0,-\r) {\r};
+      \foreach \L [count=\c] in \row \node[k/tile] at (\c,-\r) {\L};}
+    \foreach \c in {0,...,4} \node[k/coord] at (\c+1,0.8) {\c};
+  \end{tikzpicture}}
+% \PigpenKey: the four figures of the Freimaurer alphabet in one row; a dot sits between letter and centre
+\newcommand{\pigpendot}[1]{\fill[kStrong] (#1) circle (0.6mm);}
+\newcommand{\PigpenKey}{%
+  \begin{tikzpicture}[x=9.2mm, y=9.2mm]
+    \foreach \x/\letters/\hasdot in {0/{A,B,C,D,E,F,G,H,I}/0, 3.5/{J,K,L,M,N,O,P,Q,R}/1}{%
+      \draw[k/line] (\x+1,0) -- +(0,3) (\x+2,0) -- +(0,3) (\x,1) -- +(3,0) (\x,2) -- +(3,0);
+      \foreach \L [count=\i from 0] in \letters {%
+        \pgfmathsetmacro\cx{mod(\i,3)}\pgfmathsetmacro\cy{2-floor(\i/3)}
+        \ifnum\hasdot=1
+          \pgfmathsetmacro\dx{\cx==1 ? 0 : 1-\cx}\pgfmathsetmacro\dy{(\cx==1 && \cy==1) ? -1 : 1-\cy}
+          \node[k/letter] at (\x+\cx+0.5-0.1*\dx,\cy+0.5-0.1*\dy) {\L};
+          \pigpendot{\x+\cx+0.5+0.34*\dx,\cy+0.5+0.34*\dy}
+        \else \node[k/letter] at (\x+\cx+0.5,\cy+0.5) {\L};\fi}}
+    \foreach \x/\letters/\hasdot in {7.0/{S,T,U,V}/0, 10.5/{W,X,Y,Z}/1}{%
+      \draw[k/line] (\x,0) -- +(3,3) (\x,3) -- +(3,-3);
+      \foreach \L [count=\i] in \letters {%
+        \ifcase\i\or\def\dx{0}\def\dy{1}\or\def\dx{-1}\def\dy{0}\or\def\dx{1}\def\dy{0}\or\def\dx{0}\def\dy{-1}\fi
+        \node[k/letter] at (\x+1.5+0.9*\dx,1.5+0.9*\dy) {\L};
+        \ifnum\hasdot=1 \pigpendot{\x+1.5+0.42*\dx,1.5+0.42*\dy}\fi}}
+  \end{tikzpicture}}
+% \CaesarWheel[k]: outer ring plaintext, inner ring ciphertext turned by k positions counter-clockwise;
+% the pair at the top is marked, the arrow and the pill show k
+\NewDocumentCommand{\CaesarWheel}{O{3}}{%
+  \begin{tikzpicture}[x=1.08cm, y=1.08cm]
+    \def\R{2.12}\def\dR{0.58}\def\Ri{1.5}\def\dRi{0.58}
+    \pgfmathsetmacro\step{360/26}
+    \fill[cellFill] (0,0) circle (\R+\dR);
+    \fill[cellActive] (0,0) circle (\Ri+\dRi);
+    \fill[pageBg] (0,0) circle (\Ri);
+    \foreach \a/\b in {\R/\dR, \Ri/\dRi}
+      \fill[kStrong!50!pageBg] (90-\step/2:\a) arc[start angle=90-\step/2, end angle=90+\step/2, radius=\a]
+        -- (90+\step/2:\a+\b) arc[start angle=90+\step/2, end angle=90-\step/2, radius=\a+\b] -- cycle;
+    \foreach \L [count=\i from 0, evaluate=\i as \ang using 90-\i*\step] in {A,B,...,Z}{%
+      \node[font=\ttfamily\bfseries, text=cellText, rotate=\ang-90] at (\ang:\R+\dR/2) {\L};
+      \draw[cellRim, line width=0.5pt] (\ang+\step/2:\R) -- (\ang+\step/2:\R+\dR);}
+    \foreach \L [count=\i from 0, evaluate=\i as \ang using 90-\i*\step+#1*\step] in {A,B,...,Z}{%
+      \node[font=\ttfamily\bfseries, text=cellText, rotate=\ang-90] at (\ang:\Ri+\dRi/2) {\L};
+      \draw[cellRim, line width=0.5pt] (\ang+\step/2:\Ri) -- (\ang+\step/2:\Ri+\dRi);}
+    \draw[kStrong, line width=1pt] (0,0) circle (\R+\dR) (0,0) circle (\R) (0,0) circle (\Ri+\dRi) (0,0) circle (\Ri);
+    \draw[kStrong, line width=1.4pt, -{Stealth[length=2.6mm, width=2.1mm]}]
+      (90:\Ri-0.3) arc[start angle=90, end angle={90+#1*\step}, radius=\Ri-0.3];
+    \node[rectangle, rounded corners=\designInnerArc, fill=pageBg, draw=kStrong, line width=0.8pt, font=\small\bfseries,
+      text=textFg, inner xsep=4pt, inner ysep=2pt] at ({90+#1*\step/2}:\Ri-0.82) {$#1$};
+    \fill[kStrong] (0,0) circle (0.09);
   \end{tikzpicture}}
 
 \begin{document}
@@ -226,8 +287,8 @@
 \end{frame}
 
 \begin{frame}{Geheimschrift der Freimaurer}
-  \centering\vspace*{2mm}
-  \includegraphics[height=0.7\textheight]{real/pictures/krypto/freimaurer.png}
+  \centering\vspace*{12mm}
+  \PigpenKey
 \end{frame}
 
 \begin{frame}{Skytale}
@@ -236,21 +297,13 @@
 \end{frame}
 
 \begin{frame}{Polybios-Quadrat}
-  \centering\vspace*{4mm}
-  {\Large\ttfamily
-  \begin{tabular}{c|ccccc}
-       & 0 & 1 & 2 & 3  & 4 \\ \hline
-    0  & A & B & C & D  & E \\
-    1  & F & G & H & IJ & K \\
-    2  & L & M & N & O  & P \\
-    3  & Q & R & S & T  & U \\
-    4  & V & W & X & Y  & Z \\
-  \end{tabular}}
+  \centering
+  \PolybiosGrid
 \end{frame}
 
 \begin{frame}{Caesar-Verschlüsselung}
-  \centering\vspace*{2mm}
-  \includegraphics[height=0.7\textheight]{real/pictures/krypto/caesar.png}
+  \centering\vspace*{-1mm}
+  \CaesarWheel[3]
 \end{frame}
 
 \end{document}

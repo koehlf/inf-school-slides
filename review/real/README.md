@@ -7,7 +7,7 @@ each as `-dark.pdf` (presenting) and `-light.pdf`.
 |---|---|---|---|
 | `sorting-*` | `sorting_2025.odp` (111 slides) | 36 | questions, definitions, card sequences, long nested lists, formulas, a photo, merge figures, a chart |
 | `euler-*` | `euler_mst.odp` (36 slides) | 24 | text-only slides, weighted graphs (12 vertices), the Königsberg map, text + graph with overlays |
-| `krypto-*` | `krypto_intro.odp` (25 slides) | 22 | **Kryptologie colour (SeaGreen)**: definitions, two flow diagrams, a punch card grid, a table, three pictures |
+| `krypto-*` | `krypto_intro.odp` (25 slides) | 22 | **Kryptologie colour (SeaGreen)**: definitions, two flow diagrams, a punch card grid; Polybios, Freimaurer and Caesar drawn like the script (tiles, theme cell colours); the Skytale photo |
 
 | Design | Sorting | Euler / MST | Kryptologie |
 |---|---|---|---|
